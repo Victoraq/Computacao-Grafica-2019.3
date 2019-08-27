@@ -29,6 +29,7 @@ int   last_x, last_y;
 int   width, height;
 const int QUANT_PRISMAS = 4;
 triangle prismas[QUANT_PRISMAS];
+int proj = 1;
 
 
 /// Functions
@@ -209,10 +210,34 @@ void display(void)
 {
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    /* Mudando projeção */
+    glMatrixMode (GL_PROJECTION);
+    glLoadIdentity ();
+
+    // Mudança entre visão perspectiva e ortogonal
+    int h = height;
+    int w = width;
+    int ortho = 5;
+    int proj_vision;
+    if(proj == -1)
+    {
+        // glOrtho(-orho, orho, -orho, orho, -200, 200);
+        if (width <= height)
+            glOrtho (-ortho, ortho, -ortho*h/w, ortho*h/w, -100.0, 100.0);
+        else
+            glOrtho (-ortho*w/h, ortho*w/h, -ortho, ortho, -100.0, 100.0);
+        proj_vision = 0.0;
+    }
+    else {
+        gluPerspective(60.0f,(GLfloat)width/(GLfloat)height,0.01f,200.0f);	// Calculate The Aspect Ratio Of The Window
+        proj_vision = -6.0;
+    }
+
+    /* Camera e desenhos */
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    gluLookAt (0.0, -6.0, zdist, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    gluLookAt (0.0, proj_vision, zdist, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
     glPushMatrix();
         glRotatef( rotationY, 0.0, 1.0, 0.0 );
@@ -222,6 +247,7 @@ void display(void)
         //Desenhando os prismas aleatórios
         for (int i = 0; i < QUANT_PRISMAS; i++)
             drawPrisma(prismas[i]);
+
     glPopMatrix();
 
     glutSwapBuffers();
@@ -238,9 +264,7 @@ void reshape (int w, int h)
     height = h;
 
     glViewport (0, 0, (GLsizei) w, (GLsizei) h);
-    glMatrixMode (GL_PROJECTION);
-    glLoadIdentity ();
-    gluPerspective(60.0, (GLfloat) w/(GLfloat) h, 0.01, 200.0);
+
 }
 
 void keyboard (unsigned char key, int x, int y)
@@ -248,6 +272,9 @@ void keyboard (unsigned char key, int x, int y)
 
     switch (tolower(key))
     {
+        case 'p':
+            proj *= -1;
+            break;
         case 27:
             exit(0);
             break;

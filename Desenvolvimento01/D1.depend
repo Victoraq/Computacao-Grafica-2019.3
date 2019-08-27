@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1566910542 source:/home/victor/Documentos/CG/D1_20193_Base/main.cpp
+1566914312 source:/home/victor/Documentos/CG/D1_20193_Base/main.cpp
 	<GL/glut.h>
 	<stdlib.h>
 	<stdio.h>
@@ -10,16 +10,4 @@
 	"extras.h"
 
 1566867385 /home/victor/Documentos/CG/D1_20193_Base/extras.h
-
-1566910542 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.2/main.cpp
-	<GL/glut.h>
-	<stdlib.h>
-	<stdio.h>
-	<ctype.h>
-	<cstdlib>
-	<time.h>
-	<math.h>
-	"extras.h"
-
-1566867385 /home/victor/Documentos/CG/Computacao-Grafica-2019.2/extras.h
 
