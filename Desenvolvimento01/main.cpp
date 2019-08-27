@@ -174,31 +174,64 @@ void drawPrisma(triangle t) {
 
     // Triangulo inferior
     glBegin(GL_TRIANGLES);
+        glNormal3f(0.0, 0.0, -1);
         glColor3f (1, 0.5, 0.5);
         glVertex3f (t.v[0].x, t.v[0].y, 0.0);
         glVertex3f (t.v[1].x, t.v[1].y, 0.0);
         glVertex3f (t.v[2].x, t.v[2].y, 0.0);
     glEnd();
 
-    //Paredes
+    // Paredes
+
+    /* A cada parede é formado um triangulo a partir do triangulo superior para calculo da normal */
+
+    vertice vetorNormal; //vetor normal para as paredes
+
+    //P1
+    // vertice e triangulo auxilar para as paredes
+    vertice vAux1[3] = {{t.v[0].x, t.v[0].y, 1.0},
+               {t.v[0].x, t.v[0].y, 0.0},
+               {t.v[1].x, t.v[1].y, 0.0}};
+    triangle tAux1 = {vAux1[0], vAux1[1], vAux1[2]};
+    CalculaNormal(tAux1, &vetorNormal); // Passa face triangular e endereço do vetor normal de saída
+
     glBegin(GL_TRIANGLE_FAN);
         glColor3f (1, 0.5, 0.5);
+        glNormal3f(vetorNormal.x, vetorNormal.y,vetorNormal.z);
         glVertex3f (t.v[0].x, t.v[0].y, 1.0);
         glVertex3f (t.v[0].x, t.v[0].y, 0.0);
         glVertex3f (t.v[1].x, t.v[1].y, 0.0);
         glVertex3f (t.v[1].x, t.v[1].y, 1.0);
     glEnd();
 
+    //P2
+
+    vertice vAux2[3] = {{t.v[2].x, t.v[2].y, 1.0},
+               {t.v[2].x, t.v[2].y, 0.0},
+               {t.v[0].x, t.v[0].y, 0.0}};
+    triangle tAux2 = {vAux2[0], vAux2[1], vAux2[2]};
+    CalculaNormal(tAux2, &vetorNormal); // Passa face triangular e endereço do vetor normal de saída
+
     glBegin(GL_TRIANGLE_FAN);
         glColor3f (1, 0.5, 0.5);
+        glNormal3f(vetorNormal.x, vetorNormal.y,vetorNormal.z);
         glVertex3f (t.v[2].x, t.v[2].y, 1.0);
         glVertex3f (t.v[2].x, t.v[2].y, 0.0);
         glVertex3f (t.v[0].x, t.v[0].y, 0.0);
         glVertex3f (t.v[0].x, t.v[0].y, 1.0);
     glEnd();
 
+    //P3
+
+    vertice vAux3[3] = {{t.v[1].x, t.v[1].y, 1.0},
+               {t.v[1].x, t.v[1].y, 0.0},
+               {t.v[2].x, t.v[2].y, 0.0}};
+    triangle tAux3 = {vAux3[0], vAux3[1], vAux3[2]};
+    CalculaNormal(tAux3, &vetorNormal); // Passa face triangular e endereço do vetor normal de saída
+
     glBegin(GL_TRIANGLE_FAN);
         glColor3f (1, 0.5, 0.5);
+        glNormal3f(vetorNormal.x, vetorNormal.y,vetorNormal.z);
         glVertex3f (t.v[1].x, t.v[1].y, 1.0);
         glVertex3f (t.v[1].x, t.v[1].y, 0.0);
         glVertex3f (t.v[2].x, t.v[2].y, 0.0);
@@ -218,22 +251,22 @@ void display(void)
     int h = height;
     int w = width;
     int ortho = 5;
-    int proj_vision;
-    if(proj == -1)
-    {
-        // glOrtho(-orho, orho, -orho, orho, -200, 200);
+    int proj_vision; // muda o y para ajustar a camera durante a mudança de perspectiva
+
+    if(proj == -1) { // Visão ortogonal
         if (width <= height)
             glOrtho (-ortho, ortho, -ortho*h/w, ortho*h/w, -100.0, 100.0);
         else
             glOrtho (-ortho*w/h, ortho*w/h, -ortho, ortho, -100.0, 100.0);
         proj_vision = 0.0;
     }
-    else {
+    else { // Visão perspectiva
         gluPerspective(60.0f,(GLfloat)width/(GLfloat)height,0.01f,200.0f);	// Calculate The Aspect Ratio Of The Window
         proj_vision = -6.0;
     }
 
     /* Camera e desenhos */
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
@@ -244,6 +277,7 @@ void display(void)
         glRotatef( rotationX, 1.0, 0.0, 0.0 );
         //drawObject();
         drawCampo();
+
         //Desenhando os prismas aleatórios
         for (int i = 0; i < QUANT_PRISMAS; i++)
             drawPrisma(prismas[i]);
@@ -272,7 +306,7 @@ void keyboard (unsigned char key, int x, int y)
 
     switch (tolower(key))
     {
-        case 'p':
+        case 'p': // Mudança de perspectiva
             proj *= -1;
             break;
         case 27:

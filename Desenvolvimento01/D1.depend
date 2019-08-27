@@ -11,3 +11,15 @@
 
 1566867385 /home/victor/Documentos/CG/D1_20193_Base/extras.h
 
+1566923917 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Desenvolvimento01/main.cpp
+	<GL/glut.h>
+	<stdlib.h>
+	<stdio.h>
+	<ctype.h>
+	<cstdlib>
+	<time.h>
+	<math.h>
+	"extras.h"
+
+1566867385 /home/victor/Documentos/CG/Computacao-Grafica-2019.3/Desenvolvimento01/extras.h
+
