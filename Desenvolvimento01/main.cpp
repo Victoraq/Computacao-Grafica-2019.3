@@ -7,20 +7,10 @@
 #include <math.h>
 
 #include "extras.h"
+#include "Prisma.h"
 
 /// Estruturas iniciais para armazenar vertices
 //  Você poderá utilizá-las adicionando novos métodos (de acesso por exemplo) ou usar suas próprias estruturas.
-class vertice
-{
-    public:
-        float x,y,z;
-};
-
-class triangle
-{
-    public:
-        vertice v[3];
-};
 
 /// Globals
 float zdist = 5.0;
@@ -28,7 +18,7 @@ float rotationX = 0.0, rotationY = 0.0;
 int   last_x, last_y;
 int   width, height;
 const int QUANT_PRISMAS = 4;
-triangle prismas[QUANT_PRISMAS];
+Prisma *prismas[QUANT_PRISMAS];
 int proj = 1;
 
 
@@ -80,28 +70,6 @@ void CalculaNormal(triangle t, vertice *vn)
     vn->z /= len;
 }
 
-void drawObject()
-{
-    vertice vetorNormal;
-    vertice v[4] = {{-1.0f, -1.0f,  0.0f},
-                    { 1.0f, -1.0f,  0.0f},
-                    {-1.0f,  1.0f,  0.0f},
-                    { 1.0f,  1.0f, -0.5f}};
-
-    triangle t[2] = {{v[0], v[1], v[2]},
-                     {v[1], v[3], v[2]}};
-
-    glBegin(GL_TRIANGLES);
-        for(int i = 0; i < 2; i++) // triangulos
-        {
-            CalculaNormal(t[i], &vetorNormal); // Passa face triangular e endereço do vetor normal de saída
-            glNormal3f(vetorNormal.x, vetorNormal.y,vetorNormal.z);
-            for(int j = 0; j < 3; j++) // vertices do triangulo
-                glVertex3d(t[i].v[j].x, t[i].v[j].y, t[i].v[j].z);
-        }
-    glEnd();
-}
-
 void drawCampo(void) {
 
     //Campo
@@ -149,6 +117,7 @@ void drawCampo(void) {
     glEnd();
 }
 
+/// Gera triangulo aleatório
 triangle randomTriangulo(void) {
     // valores do ponto inicial do triangulo
     float xInicial = rand() % 6 - 3;
@@ -156,87 +125,10 @@ triangle randomTriangulo(void) {
 
     vertice v[3] = {{xInicial,yInicial, 1.0},
                 {xInicial,yInicial-0.5, 1.0},
-                {xInicial-0.5,yInicial, 1.0}};
+                {xInicial-0.5,yInicial-0.25, 1.0}};
     triangle t = {v[0],v[1],v[2]};
 
     return t;
-}
-
-void drawPrisma(triangle t) {
-    // Triangulo superior
-    glBegin(GL_TRIANGLES);
-        glNormal3f(0.0, 0.0, 1);
-        glColor3f (1, 0.5, 0.5);
-        glVertex3f (t.v[0].x, t.v[0].y, 1.0);
-        glVertex3f (t.v[1].x, t.v[1].y, 1.0);
-        glVertex3f (t.v[2].x, t.v[2].y, 1.0);
-    glEnd();
-
-    // Triangulo inferior
-    glBegin(GL_TRIANGLES);
-        glNormal3f(0.0, 0.0, -1);
-        glColor3f (1, 0.5, 0.5);
-        glVertex3f (t.v[0].x, t.v[0].y, 0.0);
-        glVertex3f (t.v[1].x, t.v[1].y, 0.0);
-        glVertex3f (t.v[2].x, t.v[2].y, 0.0);
-    glEnd();
-
-    // Paredes
-
-    /* A cada parede é formado um triangulo a partir do triangulo superior para calculo da normal */
-
-    vertice vetorNormal; //vetor normal para as paredes
-
-    //P1
-    // vertice e triangulo auxilar para as paredes
-    vertice vAux1[3] = {{t.v[0].x, t.v[0].y, 1.0},
-               {t.v[0].x, t.v[0].y, 0.0},
-               {t.v[1].x, t.v[1].y, 0.0}};
-    triangle tAux1 = {vAux1[0], vAux1[1], vAux1[2]};
-    CalculaNormal(tAux1, &vetorNormal); // Passa face triangular e endereço do vetor normal de saída
-
-    glBegin(GL_TRIANGLE_FAN);
-        glColor3f (1, 0.5, 0.5);
-        glNormal3f(vetorNormal.x, vetorNormal.y,vetorNormal.z);
-        glVertex3f (t.v[0].x, t.v[0].y, 1.0);
-        glVertex3f (t.v[0].x, t.v[0].y, 0.0);
-        glVertex3f (t.v[1].x, t.v[1].y, 0.0);
-        glVertex3f (t.v[1].x, t.v[1].y, 1.0);
-    glEnd();
-
-    //P2
-
-    vertice vAux2[3] = {{t.v[2].x, t.v[2].y, 1.0},
-               {t.v[2].x, t.v[2].y, 0.0},
-               {t.v[0].x, t.v[0].y, 0.0}};
-    triangle tAux2 = {vAux2[0], vAux2[1], vAux2[2]};
-    CalculaNormal(tAux2, &vetorNormal); // Passa face triangular e endereço do vetor normal de saída
-
-    glBegin(GL_TRIANGLE_FAN);
-        glColor3f (1, 0.5, 0.5);
-        glNormal3f(vetorNormal.x, vetorNormal.y,vetorNormal.z);
-        glVertex3f (t.v[2].x, t.v[2].y, 1.0);
-        glVertex3f (t.v[2].x, t.v[2].y, 0.0);
-        glVertex3f (t.v[0].x, t.v[0].y, 0.0);
-        glVertex3f (t.v[0].x, t.v[0].y, 1.0);
-    glEnd();
-
-    //P3
-
-    vertice vAux3[3] = {{t.v[1].x, t.v[1].y, 1.0},
-               {t.v[1].x, t.v[1].y, 0.0},
-               {t.v[2].x, t.v[2].y, 0.0}};
-    triangle tAux3 = {vAux3[0], vAux3[1], vAux3[2]};
-    CalculaNormal(tAux3, &vetorNormal); // Passa face triangular e endereço do vetor normal de saída
-
-    glBegin(GL_TRIANGLE_FAN);
-        glColor3f (1, 0.5, 0.5);
-        glNormal3f(vetorNormal.x, vetorNormal.y,vetorNormal.z);
-        glVertex3f (t.v[1].x, t.v[1].y, 1.0);
-        glVertex3f (t.v[1].x, t.v[1].y, 0.0);
-        glVertex3f (t.v[2].x, t.v[2].y, 0.0);
-        glVertex3f (t.v[2].x, t.v[2].y, 1.0);
-    glEnd();
 }
 
 void display(void)
@@ -279,8 +171,9 @@ void display(void)
         drawCampo();
 
         //Desenhando os prismas aleatórios
-        for (int i = 0; i < QUANT_PRISMAS; i++)
-            drawPrisma(prismas[i]);
+        for (int i = 0; i < QUANT_PRISMAS; i++) {
+            prismas[i]->draw();
+        }
 
     glPopMatrix();
 
@@ -355,9 +248,10 @@ int main(int argc, char** argv)
     glutInitWindowPosition (100, 100);
     glutCreateWindow (argv[0]);
     init ();
-    //gerando prismas aleatórios
-    for (int i = 0; i < QUANT_PRISMAS; i++)
-        prismas[i] = randomTriangulo();
+    //gerando prismas a partir de triangulos aleatórios
+    for (int i = 0; i < QUANT_PRISMAS; i++) {
+        prismas[i] = new Prisma(randomTriangulo());
+    }
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutMouseFunc( mouse );
