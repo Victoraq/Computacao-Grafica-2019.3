@@ -17,7 +17,7 @@ float zdist = 5.0;
 float rotationX = 0.0, rotationY = 0.0;
 int   last_x, last_y;
 int   width, height;
-const int QUANT_PRISMAS = 4;
+const int QUANT_PRISMAS = 5;
 Prisma *prismas[QUANT_PRISMAS];
 int proj = 1;
 
@@ -26,7 +26,6 @@ int proj = 1;
 void init(void)
 {
     initLight(width, height); // Função extra para tratar iluminação.
-    setMaterials();
 }
 
 /* Exemplo de cálculo de vetor normal que são definidos a partir dos vértices do triângulo;
@@ -121,7 +120,7 @@ void drawCampo(void) {
 triangle randomTriangulo(void) {
     // valores do ponto inicial do triangulo
     float xInicial = rand() % 6 - 3;
-    float yInicial = rand() % 6 - 3;
+    float yInicial = rand() % 6 - 2;
 
     vertice v[3] = {{xInicial,yInicial, 1.0},
                 {xInicial,yInicial-0.5, 1.0},
@@ -167,13 +166,18 @@ void display(void)
     glPushMatrix();
         glRotatef( rotationY, 0.0, 1.0, 0.0 );
         glRotatef( rotationX, 1.0, 0.0, 0.0 );
-        //drawObject();
-        drawCampo();
+
+        setMaterials();
+        drawCampo(); // Campo
 
         //Desenhando os prismas aleatórios
         for (int i = 0; i < QUANT_PRISMAS; i++) {
             prismas[i]->draw();
         }
+
+        setColor(0.0, 1.0, 0.0);
+        glTranslatef(0.0, -3.0, 0.25); // Posicionamento inicial da esfera
+        glutSolidSphere(0.35, 100, 100);
 
     glPopMatrix();
 

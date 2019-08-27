@@ -47,3 +47,44 @@ void setMaterials(void)
     glMaterialfv(GL_FRONT, GL_SPECULAR, objeto_especular);
     glMaterialfv(GL_FRONT, GL_SHININESS, objeto_brilho);
 }
+
+void setColorBase(void)
+{
+    // Parametros comuns para os dois lados da superfície
+    GLfloat objeto_especular[] = { 0.626, 0.626, 0.626, 1.0 };
+    GLfloat objeto_brilho[]    = { 90.0f };
+    GLfloat objeto_ambient[]   = { 0.1, 0.1, 0.1, 1.0 };
+
+    // Material da faces 'frente' (amarelo)
+    GLfloat objeto_difusa[]    = { 0.6, 0.6, 0.0, 1.0 };
+
+    glMaterialfv(GL_FRONT, GL_AMBIENT, objeto_ambient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, objeto_difusa);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, objeto_especular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, objeto_brilho);
+
+    // Material das faces 'back' (vermelho)
+    GLfloat objeto_difusa_back[]    = { 0.6, 0.0, 0.0, 1.0 };
+
+    glMaterialfv(GL_BACK, GL_AMBIENT, objeto_ambient);
+    glMaterialfv(GL_BACK, GL_DIFFUSE, objeto_difusa_back);
+    glMaterialfv(GL_BACK, GL_SPECULAR, objeto_especular);
+    glMaterialfv(GL_BACK, GL_SHININESS, objeto_brilho);
+}
+
+
+void setColor(float r, float g, float b)
+{
+    // Parametros comuns para os dois lados da superfície
+    GLfloat objeto_especular[] = { 0.626, 0.626, 0.626, 1.0 };
+    GLfloat objeto_brilho[]    = { 90.0f };
+    GLfloat objeto_ambient[]   = { 0.1, 0.1, 0.1, 1.0 };
+
+    // Material da faces 'frente' (amarelo)
+    GLfloat objeto_difusa[]    = { r, g, b, 1.0 };
+
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, objeto_ambient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, objeto_difusa);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, objeto_especular);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, objeto_brilho);
+}
