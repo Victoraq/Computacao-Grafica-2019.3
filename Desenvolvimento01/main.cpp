@@ -20,10 +20,12 @@ float zdist = 5.0;
 float rotationX = 0.0, rotationY = 0.0;
 int   last_x, last_y;
 int   width, height;
-Prisma *prismas[QUANT_PRISMAS];
-int proj = 1;
-float cursor_coords[] = {0.0, 1};
-float angulo = 0;
+Prisma *prismas[QUANT_PRISMAS];    // Vetor que irá conter os prismas
+int proj = 1;                      // Indica em que projeção será exibido
+float cursor_coords[] = {0.0, 1};  // Coodenadas do cursor/bola
+float angulo = 0;                  // Angulo em que o cursor está
+float velocidade = 1.0;            // Velocidade do curso/bola
+float xvisor_vel = -3;             // Auxilia para ajustar posição do cursor
 
 
 /// Functions
@@ -143,12 +145,18 @@ void rotacao(float coords[], float angulo) {
 }
 
 void drawCursor(void) {
+    // Cursor de direção da bolsa
     glBegin(GL_QUADS);
         glVertex3f (0.1, 0.0, 0.1);
         glVertex3f (cursor_coords[0]+0.1, cursor_coords[1], 0.1);
         glVertex3f (cursor_coords[0]-0.1, cursor_coords[1], 0.1);
         glVertex3f (-0.1, 0.0, 0.1);
     glEnd();
+
+    // Cursor de velocidade da bola
+    glTranslatef(xvisor_vel,-1.0,0.5);
+    glScalef(velocidade,1.0, 1.0);
+    glutSolidCube(0.25);
 }
 
 void display(void)
@@ -203,7 +211,7 @@ void display(void)
             glutSolidSphere(0.35, 100, 100);
         glPopMatrix();
 
-        // Cursor
+        // Cursor de direção e velocidade
         drawCursor();
 
     glPopMatrix();
@@ -243,6 +251,18 @@ void keyboard (unsigned char key, int x, int y)
             if (angulo < 60) {
                 angulo = ((int) angulo + 2) % 360;
                 rotacao(cursor_coords, (2*3.14)/180.0);
+            }
+            break;
+        case 'w':
+            if (xvisor_vel < -1.6) {
+                xvisor_vel += 0.0315;
+                velocidade += 0.25;
+            }
+            break;
+        case 's':
+            if (xvisor_vel > -3) {
+                xvisor_vel -= 0.0315;
+                velocidade -= 0.25;
             }
             break;
         case 27:
