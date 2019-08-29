@@ -12,14 +12,18 @@
 /// Estruturas iniciais para armazenar vertices
 //  Você poderá utilizá-las adicionando novos métodos (de acesso por exemplo) ou usar suas próprias estruturas.
 
+/// Constantes
+const int QUANT_PRISMAS = 5;
+
 /// Globals
 float zdist = 5.0;
 float rotationX = 0.0, rotationY = 0.0;
 int   last_x, last_y;
 int   width, height;
-const int QUANT_PRISMAS = 5;
 Prisma *prismas[QUANT_PRISMAS];
 int proj = 1;
+float cursor_coords[] = {0.0, 1};
+float angulo = 0;
 
 
 /// Functions
@@ -75,44 +79,44 @@ void drawCampo(void) {
     glBegin(GL_TRIANGLE_FAN);
         glNormal3f(0,0,1);
         glColor3f (1, 1, 0.3);
-        glVertex3f (-3.5, 3.5, 0.0);
-        glVertex3f (-3.5, -3.5, 0.0);
-        glVertex3f (3.5, -3.5, 0.0);
-        glVertex3f (3.5, 3.5, 0.0);
+        glVertex3f (-3.5, 6.5, 0.0);
+        glVertex3f (-3.5, -0.5, 0.0);
+        glVertex3f (3.5, -0.5, 0.0);
+        glVertex3f (3.5, 6.5, 0.0);
     glEnd();
 
     // Paredes
     glBegin(GL_TRIANGLE_FAN);
         glNormal3f(1,0,0);
         glColor3f (1, 1, 0.3);
-        glVertex3f (-3.5, 3.5, 1.0);
-        glVertex3f (-3.5, -3.5, 1.0);
-        glVertex3f (-3.5, -3.5, 0.0);
-        glVertex3f (-3.5, 3.5, 0.0);
+        glVertex3f (-3.5, 6.5, 1.0);
+        glVertex3f (-3.5, -0.5, 1.0);
+        glVertex3f (-3.5, -0.5, 0.0);
+        glVertex3f (-3.5, 6.5, 0.0);
     glEnd();
     glBegin(GL_TRIANGLE_FAN);
         glNormal3f(-1,0,0);
         glColor3f (1, 1, 0.3);
-        glVertex3f (3.5, 3.5, 0.0);
-        glVertex3f (3.5, -3.5, 0.0);
-        glVertex3f (3.5, -3.5, 1.0);
-        glVertex3f (3.5, 3.5, 1.0);
+        glVertex3f (3.5, 6.5, 0.0);
+        glVertex3f (3.5, -0.5, 0.0);
+        glVertex3f (3.5, -0.5, 1.0);
+        glVertex3f (3.5, 6.5, 1.0);
     glEnd();
     glBegin(GL_TRIANGLE_FAN);
         glNormal3f(0,1,0);
         glColor3f (1, 1, 0.3);
-        glVertex3f (-3.5, -3.5, 1.0);
-        glVertex3f (3.5, -3.5, 1.0);
-        glVertex3f (3.5, -3.5, 0.0);
-        glVertex3f (-3.5, -3.5, 0.0);
+        glVertex3f (-3.5, -0.5, 1.0);
+        glVertex3f (3.5, -0.5, 1.0);
+        glVertex3f (3.5, -0.5, 0.0);
+        glVertex3f (-3.5, -0.5, 0.0);
     glEnd();
     glBegin(GL_TRIANGLE_FAN);
         glNormal3f(0,-1,0);
         glColor3f (1, 1, 0.3);
-        glVertex3f (-3.5, 3.5, 0.0);
-        glVertex3f (3.5, 3.5, 0.0);
-        glVertex3f (3.5, 3.5, 1.0);
-        glVertex3f (-3.5, 3.5, 1.0);
+        glVertex3f (-3.5, 6.5, 0.0);
+        glVertex3f (3.5, 6.5, 0.0);
+        glVertex3f (3.5, 6.5, 1.0);
+        glVertex3f (-3.5, 6.5, 1.0);
     glEnd();
 }
 
@@ -120,7 +124,7 @@ void drawCampo(void) {
 triangle randomTriangulo(void) {
     // valores do ponto inicial do triangulo
     float xInicial = rand() % 6 - 3;
-    float yInicial = rand() % 6 - 2;
+    float yInicial = rand() % 6 + 1.5;
 
     vertice v[3] = {{xInicial,yInicial, 1.0},
                 {xInicial,yInicial-0.5, 1.0},
@@ -128,6 +132,23 @@ triangle randomTriangulo(void) {
     triangle t = {v[0],v[1],v[2]};
 
     return t;
+}
+
+void rotacao(float coords[], float angulo) {
+    float x = coords[0] * cos(angulo) - coords[1] * sin(angulo);
+    float y = coords[0] * sin(angulo) + coords[1] * cos(angulo);
+
+    coords[0] = x;
+    coords[1] = y;
+}
+
+void drawCursor(void) {
+    glBegin(GL_QUADS);
+        glVertex3f (0.1, 0.0, 0.1);
+        glVertex3f (cursor_coords[0]+0.1, cursor_coords[1], 0.1);
+        glVertex3f (cursor_coords[0]-0.1, cursor_coords[1], 0.1);
+        glVertex3f (-0.1, 0.0, 0.1);
+    glEnd();
 }
 
 void display(void)
@@ -149,11 +170,11 @@ void display(void)
             glOrtho (-ortho, ortho, -ortho*h/w, ortho*h/w, -100.0, 100.0);
         else
             glOrtho (-ortho*w/h, ortho*w/h, -ortho, ortho, -100.0, 100.0);
-        proj_vision = 0.0;
+        proj_vision = 3.0;
     }
     else { // Visão perspectiva
         gluPerspective(60.0f,(GLfloat)width/(GLfloat)height,0.01f,200.0f);	// Calculate The Aspect Ratio Of The Window
-        proj_vision = -6.0;
+        proj_vision = -3.0;
     }
 
     /* Camera e desenhos */
@@ -161,7 +182,7 @@ void display(void)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    gluLookAt (0.0, proj_vision, zdist, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    gluLookAt (0.0, proj_vision, zdist, 0.0, 3.0, 0.0, 0.0, 1.0, 0.0);
 
     glPushMatrix();
         glRotatef( rotationY, 0.0, 1.0, 0.0 );
@@ -175,9 +196,15 @@ void display(void)
             prismas[i]->draw();
         }
 
-        setColor(0.0, 1.0, 0.0);
-        glTranslatef(0.0, -3.0, 0.25); // Posicionamento inicial da esfera
-        glutSolidSphere(0.35, 100, 100);
+        // Esfera
+        glPushMatrix();
+            setColor(0.0, 1.0, 0.0);
+            glTranslatef(0.0, 0.0, 0.35); // Posicionamento inicial da esfera
+            glutSolidSphere(0.35, 100, 100);
+        glPopMatrix();
+
+        // Cursor
+        drawCursor();
 
     glPopMatrix();
 
@@ -205,6 +232,18 @@ void keyboard (unsigned char key, int x, int y)
     {
         case 'p': // Mudança de perspectiva
             proj *= -1;
+            break;
+        case 'd':
+            if (angulo > -60) {
+                angulo = ((int) angulo - 2) % 360;
+                rotacao(cursor_coords, (-2*3.14)/180.0);
+            }
+            break;
+        case 'a':
+            if (angulo < 60) {
+                angulo = ((int) angulo + 2) % 360;
+                rotacao(cursor_coords, (2*3.14)/180.0);
+            }
             break;
         case 27:
             exit(0);
