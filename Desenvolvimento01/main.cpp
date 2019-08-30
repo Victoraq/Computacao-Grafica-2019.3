@@ -22,11 +22,13 @@ int   last_x, last_y;
 int   width, height;
 Prisma *prismas[QUANT_PRISMAS];    // Vetor que irá conter os prismas
 int proj = 1;                      // Indica em que projeção será exibido
-float cursor_coords[] = {0.0, 1};  // Coodenadas do cursor/bola
+float cursor_coords[] = {0.0, 1};  // Coodenadas do cursor
+float ball_coords[] = {0.0, 0.0};  // Coordenadas da bola
+float *ball_vector;                // Vetor de direção da bola
 float angulo = 0;                  // Angulo em que o cursor está
 float velocidade = 1.0;            // Velocidade do curso/bola
 float xvisor_vel = -3;             // Auxilia para ajustar posição do cursor
-
+bool movimenta = false;            // Indica o movimento da bola
 
 /// Functions
 void init(void)
@@ -205,14 +207,19 @@ void display(void)
         }
 
         // Esfera
+        if (movimenta) { // Se foi liberada a movimentação as suas coordenadas serão iteradas com base na velocidade
+            ball_coords[0]+=ball_vector[0]/(100/velocidade);
+            ball_coords[1]+=ball_vector[1]/(100/velocidade);
+        }
         glPushMatrix();
             setColor(0.0, 1.0, 0.0);
-            glTranslatef(0.0, 0.0, 0.35); // Posicionamento inicial da esfera
+            glTranslatef(ball_coords[0], ball_coords[1], 0.35); // Posicionamento inicial da esfera
             glutSolidSphere(0.35, 100, 100);
         glPopMatrix();
 
         // Cursor de direção e velocidade
-        drawCursor();
+        if (!movimenta)
+            drawCursor();
 
     glPopMatrix();
 
@@ -263,6 +270,12 @@ void keyboard (unsigned char key, int x, int y)
             if (xvisor_vel > -3) {
                 xvisor_vel -= 0.0315;
                 velocidade -= 0.25;
+            }
+            break;
+        case ' ':
+            if (!movimenta) {
+                movimenta = true;
+                ball_vector = cursor_coords; // bola pega coordenadas do cursor para indicar direção
             }
             break;
         case 27:
