@@ -29,6 +29,7 @@ float angulo = 0;                  // Angulo em que o cursor está
 float velocidade = 1.0;            // Velocidade do curso/bola
 float xvisor_vel = -3;             // Auxilia para ajustar posição do cursor
 bool movimenta = false;            // Indica o movimento da bola
+bool limite = false;               // auxiliar para indicar que a colisão com a parede inferior pode ser analisada
 
 /// Functions
 void init(void)
@@ -138,6 +139,7 @@ triangle randomTriangulo(void) {
     return t;
 }
 
+/// Rotaciona vetor a partir de um ângulo
 void rotacao(float coords[], float angulo) {
     float x = coords[0] * cos(angulo) - coords[1] * sin(angulo);
     float y = coords[0] * sin(angulo) + coords[1] * cos(angulo);
@@ -146,6 +148,16 @@ void rotacao(float coords[], float angulo) {
     coords[1] = y;
 }
 
+float calculaAngulo(float x1, float y1, float x2, float y2)
+{
+    float a=(x1*x2)+(y1*y2);
+    float b1=sqrt(pow(x1+y1, 2));
+    float b2=sqrt(pow(x2+y2, 2));
+    float c=a/(b1*b2);
+    return 1/c;
+}
+
+/// Desenha cursor de direção da bola
 void drawCursor(void) {
     // Cursor de direção da bolsa
     glBegin(GL_QUADS);
@@ -159,6 +171,24 @@ void drawCursor(void) {
     glTranslatef(xvisor_vel,-1.0,0.5);
     glScalef(velocidade,1.0, 1.0);
     glutSolidCube(0.25);
+}
+
+void colisaoParedes(void) {
+    //Parede superior
+    if (ball_coords[1]+0.3975 >= 6.5)
+        ball_vector[1] *= -1;
+
+    // Parede inferior
+    if (ball_coords[1]-0.3975 <= -0.5 && limite)
+        ball_vector[1] *= -1;
+
+    // Parede lateral direita
+    if (ball_coords[0]+0.3975 >= 3.5)
+        ball_vector[0] *= -1;
+
+    // Parede lateral esquerda
+    if (ball_coords[0]-0.3975 <= -3.5)
+        ball_vector[0] *= -1;
 }
 
 void display(void)
@@ -210,11 +240,27 @@ void display(void)
         if (movimenta) { // Se foi liberada a movimentação as suas coordenadas serão iteradas com base na velocidade
             ball_coords[0]+=ball_vector[0]/(100/velocidade);
             ball_coords[1]+=ball_vector[1]/(100/velocidade);
+
+            // Auxilia para que a colisão com a parede inferior não ocorra no momento do lançamento
+            if (!limite && ball_coords[1] >= 0.1)
+                limite = true;
         }
+
+        // Colisão com as paredes
+        colisaoParedes();
+
+//        for (int i = 0; i < QUANT_PRISMAS; i++) {
+//
+//          if (prismas[i]->paredes[0][0].x >= ball_coords[0]-0.1 &&
+//              ball_coords[1]-0.1 <= prismas[i]->paredes[0][0].y &&
+//              prismas[i]->paredes[0][1].y <= ball_coords[1]+0.1)
+//              ball_vector[1] *= -1;
+//        }
+
         glPushMatrix();
             setColor(0.0, 1.0, 0.0);
             glTranslatef(ball_coords[0], ball_coords[1], 0.35); // Posicionamento inicial da esfera
-            glutSolidSphere(0.35, 100, 100);
+            glutSolidSphere(0.3, 100, 100);
         glPopMatrix();
 
         // Cursor de direção e velocidade
@@ -249,27 +295,35 @@ void keyboard (unsigned char key, int x, int y)
             proj *= -1;
             break;
         case 'd':
-            if (angulo > -60) {
-                angulo = ((int) angulo - 2) % 360;
-                rotacao(cursor_coords, (-2*3.14)/180.0);
+            if (!movimenta) {
+                if (angulo > -60) {
+                    angulo = ((int) angulo - 2) % 360;
+                    rotacao(cursor_coords, (-2*3.14)/180.0);
+                }
             }
             break;
         case 'a':
-            if (angulo < 60) {
-                angulo = ((int) angulo + 2) % 360;
-                rotacao(cursor_coords, (2*3.14)/180.0);
+            if (!movimenta) {
+                if (angulo < 60) {
+                    angulo = ((int) angulo + 2) % 360;
+                    rotacao(cursor_coords, (2*3.14)/180.0);
+                }
             }
             break;
         case 'w':
-            if (xvisor_vel < -1.6) {
-                xvisor_vel += 0.0315;
-                velocidade += 0.25;
+            if (!movimenta) {
+                if (xvisor_vel < -1.6) {
+                    xvisor_vel += 0.0315;
+                    velocidade += 0.25;
+                }
             }
             break;
         case 's':
-            if (xvisor_vel > -3) {
-                xvisor_vel -= 0.0315;
-                velocidade -= 0.25;
+            if (!movimenta) {
+                if (xvisor_vel > -3) {
+                    xvisor_vel -= 0.0315;
+                    velocidade -= 0.25;
+                }
             }
             break;
         case ' ':
