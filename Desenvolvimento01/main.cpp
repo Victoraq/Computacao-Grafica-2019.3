@@ -13,7 +13,8 @@
 //  Você poderá utilizá-las adicionando novos métodos (de acesso por exemplo) ou usar suas próprias estruturas.
 
 /// Constantes
-const int QUANT_PRISMAS = 5;
+const int QUANT_PRISMAS = 5;       // Quantidade máxima de prismas
+const float RAIO = 0.1;            // Raio da bola
 
 /// Globals
 float zdist = 5.0;
@@ -162,8 +163,8 @@ void drawCursor(void) {
     // Cursor de direção da bolsa
     glBegin(GL_QUADS);
         glVertex3f (0.1, 0.0, 0.1);
-        glVertex3f (cursor_coords[0]+0.1, cursor_coords[1], 0.1);
-        glVertex3f (cursor_coords[0]-0.1, cursor_coords[1], 0.1);
+        glVertex3f (cursor_coords[0]+RAIO, cursor_coords[1], 0.1);
+        glVertex3f (cursor_coords[0]-RAIO, cursor_coords[1], 0.1);
         glVertex3f (-0.1, 0.0, 0.1);
     glEnd();
 
@@ -189,6 +190,72 @@ void colisaoParedes(void) {
     // Parede lateral esquerda
     if (ball_coords[0]-0.3975 <= -3.5)
         ball_vector[0] *= -1;
+}
+
+void colisaoPrismas(void) {
+    for (int i = 0; i < QUANT_PRISMAS; i++) {
+
+        // Parede 01
+        if (ball_coords[1]-RAIO <= prismas[i]->topo.v[0].y && ball_coords[1]+RAIO >= prismas[i]->topo.v[1].y) {
+            // Produto interno entre a bola e o prisma
+            int PI_ball = ball_coords[0] * prismas[i]->normais[0].x +
+                          ball_coords[1] * prismas[i]->normais[0].x;
+
+            // Se a bola está dentro do prisma
+            if (ball_coords[0]-RAIO <= prismas[i]->topo.v[0].x && ball_coords[0]+RAIO >= prismas[i]->topo.v[0].x) {
+                // Produto interno entre ponto inicial do prisma e sua normal
+                int PI_prisma = prismas[i]->topo.v[2].x * prismas[i]->normais[0].x +
+                                prismas[i]->topo.v[2].y * prismas[i]->normais[0].y;
+
+                if (PI_prisma <= PI_ball) {
+                    ball_vector[0] *= -1;
+                    break;
+                }
+            }
+
+        }
+
+        // Parede 02
+        if (ball_coords[1]-RAIO <= prismas[i]->topo.v[0].y && ball_coords[1]+RAIO >= prismas[i]->topo.v[2].y) {
+            // Produto interno entre a bola e o prisma
+            int PI_ball = ball_coords[0] * prismas[i]->normais[1].x +
+                          ball_coords[1] * prismas[i]->normais[1].x;
+
+            // Se a bola está dentro do prisma
+            if (ball_coords[0]-RAIO <= prismas[i]->topo.v[0].x && ball_coords[0]+RAIO >= prismas[i]->topo.v[2].x) {
+                // Produto interno entre ponto inicial do prisma e sua normal
+                int PI_prisma = prismas[i]->topo.v[0].x * prismas[i]->normais[1].x +
+                                prismas[i]->topo.v[0].y * prismas[i]->normais[1].y;
+
+                if (PI_prisma <= PI_ball) {
+                    ball_vector[1] *= -1;
+                    break;
+                }
+            }
+
+        }
+
+        // Parede 03
+        if (ball_coords[1]-RAIO <= prismas[i]->topo.v[2].y && ball_coords[1]+RAIO >= prismas[i]->topo.v[1].y) {
+            // Produto interno entre a bola e o prisma
+            int PI_ball = ball_coords[0] * prismas[i]->normais[2].x +
+                          ball_coords[1] * prismas[i]->normais[2].x;
+
+            // Se a bola está dentro do prisma
+            if (ball_coords[0]-RAIO <= prismas[i]->topo.v[0].x && ball_coords[0]+RAIO >= prismas[i]->topo.v[2].x) {
+                // Produto interno entre ponto inicial do prisma e sua normal
+                int PI_prisma = prismas[i]->topo.v[2].x * prismas[i]->normais[2].x +
+                                prismas[i]->topo.v[2].y * prismas[i]->normais[2].y;
+
+                if (PI_prisma >= PI_ball) {
+                    ball_vector[1] *= -1;
+                    break;
+                }
+            }
+
+        }
+
+    }
 }
 
 void display(void)
@@ -237,30 +304,10 @@ void display(void)
         }
 
         // Esfera
-        if (movimenta) { // Se foi liberada a movimentação as suas coordenadas serão iteradas com base na velocidade
-            ball_coords[0]+=ball_vector[0]/(100/velocidade);
-            ball_coords[1]+=ball_vector[1]/(100/velocidade);
-
-            // Auxilia para que a colisão com a parede inferior não ocorra no momento do lançamento
-            if (!limite && ball_coords[1] >= 0.1)
-                limite = true;
-        }
-
-        // Colisão com as paredes
-        colisaoParedes();
-
-//        for (int i = 0; i < QUANT_PRISMAS; i++) {
-//
-//          if (prismas[i]->paredes[0][0].x >= ball_coords[0]-0.1 &&
-//              ball_coords[1]-0.1 <= prismas[i]->paredes[0][0].y &&
-//              prismas[i]->paredes[0][1].y <= ball_coords[1]+0.1)
-//              ball_vector[1] *= -1;
-//        }
-
         glPushMatrix();
             setColor(0.0, 1.0, 0.0);
             glTranslatef(ball_coords[0], ball_coords[1], 0.35); // Posicionamento inicial da esfera
-            glutSolidSphere(0.3, 100, 100);
+            glutSolidSphere(RAIO*2, 100, 100);
         glPopMatrix();
 
         // Cursor de direção e velocidade
@@ -274,6 +321,44 @@ void display(void)
 
 void idle ()
 {
+    float t, desiredFrameTime, frameTime;
+    static float tLast = 0.0;
+
+    // Get elapsed time
+    t = glutGet(GLUT_ELAPSED_TIME);
+    // convert milliseconds to seconds
+    t /= 1000.0;
+
+    // Calculate frame time
+    frameTime = t - tLast;
+    // Calculate desired frame time
+    desiredFrameTime = 1.0 / (float) (60);
+
+    // Check if the desired frame time was achieved. If not, skip animation.
+    if( frameTime <= desiredFrameTime)
+        return;
+
+    // **  UPDATE ANIMATION VARIABLES ** //
+    float step = 100; // Speed of the animation
+
+    // Movimentação esfera
+    if (movimenta) { // Se foi liberada a movimentação as suas coordenadas serão iteradas com base na velocidade
+        ball_coords[0]+=ball_vector[0]/(step/velocidade);
+        ball_coords[1]+=ball_vector[1]/(step/velocidade);
+
+        // Auxilia para que a colisão com a parede inferior não ocorra no momento do lançamento
+        if (!limite && ball_coords[1] >= RAIO*2)
+            limite = true;
+    }
+
+    // Colisão com as paredes
+    colisaoParedes();
+
+    // Coliso Prismas
+    colisaoPrismas();
+
+    // Update tLast for next time, using static local variable
+    tLast = t;
     glutPostRedisplay();
 }
 
