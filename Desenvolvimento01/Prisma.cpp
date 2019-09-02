@@ -37,8 +37,10 @@ Prisma::~Prisma() {}
 /// Desenha o modelo 3D do prisma
 void Prisma::draw() {
     // Triangulo superior
+    vertice n;
+    calculaNormal(topo, &n);
     glBegin(GL_TRIANGLES);
-        glNormal3f(0.0, 0.0, 1);
+        glNormal3f(n.x, n.y,n.z);
         glVertex3f (topo.v[0].x, topo.v[0].y, 1.0);
         glVertex3f (topo.v[1].x, topo.v[1].y, 1.0);
         glVertex3f (topo.v[2].x, topo.v[2].y, 1.0);
