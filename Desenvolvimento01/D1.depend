@@ -11,7 +11,7 @@
 
 1566867385 /home/victor/Documentos/CG/D1_20193_Base/extras.h
 
-1567433394 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Desenvolvimento01/main.cpp
+1567442208 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Desenvolvimento01/main.cpp
 	<GL/glut.h>
 	<stdlib.h>
 	<stdio.h>
@@ -31,7 +31,7 @@
 
 1566947013 /home/victor/Documentos/CG/Computacao-Grafica-2019.3/Desenvolvimento01/Prisma.h
 
-1567281636 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Desenvolvimento01/Prisma.cpp
+1567441848 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Desenvolvimento01/Prisma.cpp
 	"Prisma.h"
 	<math.h>
 	<GL/glut.h>

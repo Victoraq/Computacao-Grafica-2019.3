@@ -155,7 +155,7 @@ float calculaAngulo(float x1, float y1, float x2, float y2)
     float b1=sqrt(pow(x1+y1, 2));
     float b2=sqrt(pow(x2+y2, 2));
     float c=a/(b1*b2);
-    return 1/c;
+    return acos(c)*2;
 }
 
 /// Desenha cursor de direção da bola
@@ -176,26 +176,26 @@ void drawCursor(void) {
 
 void colisaoParedes(void) {
     //Parede superior
-    if (ball_coords[1]+0.3975 >= 6.5)
+    if (ball_coords[1]+0.26 >= 6.5)
         ball_vector[1] *= -1;
 
     // Parede inferior
-    if (ball_coords[1]-0.3975 <= -0.5 && limite)
+    if (ball_coords[1]-0.26 <= -0.5 && limite)
         ball_vector[1] *= -1;
 
     // Parede lateral direita
-    if (ball_coords[0]+0.3975 >= 3.5)
+    if (ball_coords[0]+0.26 >= 3.5)
         ball_vector[0] *= -1;
 
     // Parede lateral esquerda
-    if (ball_coords[0]-0.3975 <= -3.5)
+    if (ball_coords[0]-0.26 <= -3.5)
         ball_vector[0] *= -1;
 }
 
 void colisaoPrismas(void) {
     for (int i = 0; i < QUANT_PRISMAS; i++) {
 
-        // Parede 01
+        // Parede Lateral
         if (ball_coords[1]-RAIO <= prismas[i]->topo.v[0].y && ball_coords[1]+RAIO >= prismas[i]->topo.v[1].y) {
             // Produto interno entre a bola e o prisma
             int PI_ball = ball_coords[0] * prismas[i]->normais[0].x +
@@ -215,7 +215,7 @@ void colisaoPrismas(void) {
 
         }
 
-        // Parede 02
+        // Parede Supeior
         if (ball_coords[1]-RAIO <= prismas[i]->topo.v[0].y && ball_coords[1]+RAIO >= prismas[i]->topo.v[2].y) {
             // Produto interno entre a bola e o prisma
             int PI_ball = ball_coords[0] * prismas[i]->normais[1].x +
@@ -228,14 +228,16 @@ void colisaoPrismas(void) {
                                 prismas[i]->topo.v[0].y * prismas[i]->normais[1].y;
 
                 if (PI_prisma <= PI_ball) {
-                    ball_vector[1] *= -1;
+//                    ball_vector[1] *= -1;
+                    float a = calculaAngulo(ball_vector[0], ball_vector[1], prismas[i]->normais[1].x, prismas[i]->normais[1].y);
+                    rotacao(ball_vector,a);
                     break;
                 }
             }
 
         }
 
-        // Parede 03
+        // Parede Inferior
         if (ball_coords[1]-RAIO <= prismas[i]->topo.v[2].y && ball_coords[1]+RAIO >= prismas[i]->topo.v[1].y) {
             // Produto interno entre a bola e o prisma
             int PI_ball = ball_coords[0] * prismas[i]->normais[2].x +
@@ -248,7 +250,9 @@ void colisaoPrismas(void) {
                                 prismas[i]->topo.v[2].y * prismas[i]->normais[2].y;
 
                 if (PI_prisma >= PI_ball) {
-                    ball_vector[1] *= -1;
+//                    ball_vector[1] *= -1;
+                    float a = calculaAngulo(ball_vector[0], ball_vector[1], prismas[i]->normais[2].x, prismas[i]->normais[2].y);
+                    rotacao(ball_vector,a);
                     break;
                 }
             }
@@ -335,7 +339,7 @@ void idle ()
     desiredFrameTime = 1.0 / (float) (60);
 
     // Check if the desired frame time was achieved. If not, skip animation.
-    if( frameTime <= desiredFrameTime)
+    if(frameTime <= desiredFrameTime)
         return;
 
     // **  UPDATE ANIMATION VARIABLES ** //
