@@ -198,26 +198,6 @@ void colisaoParedes(void) {
 void colisaoPrismas(void) {
     for (int i = 0; i < QUANT_PRISMAS; i++) {
 
-        // Parede Lateral
-        if (ball_coords[1]-RAIO <= prismas[i]->topo.v[0].y && ball_coords[1]+RAIO >= prismas[i]->topo.v[1].y) {
-            // Produto interno entre a bola e o prisma
-            int PI_ball = ball_coords[0] * prismas[i]->normais[0].x +
-                          ball_coords[1] * prismas[i]->normais[0].x;
-
-            // Se a bola está dentro do prisma
-            if (ball_coords[0]-RAIO <= prismas[i]->topo.v[0].x && ball_coords[0]+RAIO >= prismas[i]->topo.v[0].x) {
-                // Produto interno entre ponto inicial do prisma e sua normal
-                int PI_prisma = prismas[i]->topo.v[1].x * prismas[i]->normais[0].x +
-                                prismas[i]->topo.v[1].y * prismas[i]->normais[0].y;
-
-                if (PI_prisma >= PI_ball) {
-                    ball_vector[0] *= -1;
-                    break;
-                }
-            }
-
-        }
-
         // Parede Superior
         if (ball_coords[1]-RAIO <= prismas[i]->topo.v[0].y && ball_coords[1]+RAIO >= prismas[i]->topo.v[2].y) {
             // Produto interno entre a bola e o prisma
@@ -230,9 +210,11 @@ void colisaoPrismas(void) {
                 int PI_prisma = prismas[i]->topo.v[0].x * prismas[i]->normais[1].x +
                                 prismas[i]->topo.v[0].y * prismas[i]->normais[1].y;
 
-                if (PI_prisma <= PI_ball) {
+                // Angulo para realizar a rotação e testar se a colisão foi de fato com esta parede
+                float a = calculaAngulo(ball_vector[0], ball_vector[1], prismas[i]->normais[1].x, prismas[i]->normais[1].y);
+
+                if (PI_prisma <= PI_ball && a >= 0) {
 //                    ball_vector[1] *= -1;
-                    float a = calculaAngulo(ball_vector[0], ball_vector[1], prismas[i]->normais[1].x, prismas[i]->normais[1].y);
                     rotacao(ball_vector,a);
                     break;
                 }
@@ -252,10 +234,35 @@ void colisaoPrismas(void) {
                 int PI_prisma = prismas[i]->topo.v[2].x * prismas[i]->normais[2].x +
                                 prismas[i]->topo.v[2].y * prismas[i]->normais[2].y;
 
-                if (PI_prisma >= PI_ball) {
+                // Angulo para realizar a rotação e testar se a colisão foi de fato com esta parede
+                float a = calculaAngulo(ball_vector[0], ball_vector[1], prismas[i]->normais[2].x, prismas[i]->normais[2].y);
+
+                if (PI_prisma >= PI_ball && a >=0) {
                     //ball_vector[1] *= -1;
-                    float a = calculaAngulo(ball_vector[0], ball_vector[1], prismas[i]->normais[2].x, prismas[i]->normais[2].y);
                     rotacao(ball_vector,a);
+                    break;
+                }
+            }
+
+        }
+
+        // Parede Lateral
+        if (ball_coords[1]-RAIO <= prismas[i]->topo.v[0].y && ball_coords[1]+RAIO >= prismas[i]->topo.v[1].y) {
+            // Produto interno entre a bola e o prisma
+            int PI_ball = ball_coords[0] * prismas[i]->normais[0].x +
+                          ball_coords[1] * prismas[i]->normais[0].x;
+
+            // Se a bola está dentro do prisma
+            if (ball_coords[0]-RAIO <= prismas[i]->topo.v[0].x && ball_coords[0]+RAIO >= prismas[i]->topo.v[0].x) {
+                // Produto interno entre ponto inicial do prisma e sua normal
+                int PI_prisma = prismas[i]->topo.v[1].x * prismas[i]->normais[0].x +
+                                prismas[i]->topo.v[1].y * prismas[i]->normais[0].y;
+
+                // Angulo para testar se a colisão foi de fato com esta parede
+                float a = calculaAngulo(ball_vector[0], ball_vector[1], prismas[i]->normais[0].x, prismas[i]->normais[0].y);
+
+                if (PI_prisma >= PI_ball && a >= 0) {
+                    ball_vector[0] *= -1;
                     break;
                 }
             }
