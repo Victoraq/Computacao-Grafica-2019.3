@@ -151,11 +151,14 @@ void rotacao(float coords[], float angulo) {
 
 float calculaAngulo(float x1, float y1, float x2, float y2)
 {
+    float c;
     float a=(x1*x2)+(y1*y2);
-    float b1=sqrt(pow(x1+y1, 2));
-    float b2=sqrt(pow(x2+y2, 2));
-    float c=a/(b1*b2);
-    return acos(c);
+    float b1=sqrt(pow(x1, 2)+pow(y1, 2));
+    float b2=sqrt(pow(x2, 2)+pow(y2, 2));
+
+    c=((x1*x2)+(y1*y2))/(sqrt(pow(x1, 2)+pow(y1, 2))*sqrt(pow(x2, 2)+pow(y2, 2)));
+
+    return 3.14-acos(c);
 }
 
 /// Desenha cursor de direção da bola
@@ -208,7 +211,6 @@ void colisaoPrismas(void) {
                                 prismas[i]->topo.v[1].y * prismas[i]->normais[0].y;
 
                 if (PI_prisma >= PI_ball) {
-
                     ball_vector[0] *= -1;
                     break;
                 }
@@ -216,7 +218,7 @@ void colisaoPrismas(void) {
 
         }
 
-        // Parede Supeior
+        // Parede Superior
         if (ball_coords[1]-RAIO <= prismas[i]->topo.v[0].y && ball_coords[1]+RAIO >= prismas[i]->topo.v[2].y) {
             // Produto interno entre a bola e o prisma
             int PI_ball = ball_coords[0] * prismas[i]->normais[1].x +
@@ -229,9 +231,9 @@ void colisaoPrismas(void) {
                                 prismas[i]->topo.v[0].y * prismas[i]->normais[1].y;
 
                 if (PI_prisma <= PI_ball) {
-                    ball_vector[1] *= -1;
-//                    float a = calculaAngulo(ball_vector[0], ball_vector[1], prismas[i]->normais[1].x, prismas[i]->normais[1].y);
-//                    rotacao(ball_vector,a);
+//                    ball_vector[1] *= -1;
+                    float a = calculaAngulo(ball_vector[0], ball_vector[1], prismas[i]->normais[1].x, prismas[i]->normais[1].y);
+                    rotacao(ball_vector,a);
                     break;
                 }
             }
@@ -250,10 +252,10 @@ void colisaoPrismas(void) {
                 int PI_prisma = prismas[i]->topo.v[2].x * prismas[i]->normais[2].x +
                                 prismas[i]->topo.v[2].y * prismas[i]->normais[2].y;
 
-                if (PI_prisma <= PI_ball) {
-                    ball_vector[1] *= -1;
-//                    float a = calculaAngulo(ball_vector[0], ball_vector[1], prismas[i]->normais[2].x, prismas[i]->normais[2].y);
-//                    rotacao(ball_vector,a);
+                if (PI_prisma >= PI_ball) {
+                    //ball_vector[1] *= -1;
+                    float a = calculaAngulo(ball_vector[0], ball_vector[1], prismas[i]->normais[2].x, prismas[i]->normais[2].y);
+                    rotacao(ball_vector,a);
                     break;
                 }
             }
