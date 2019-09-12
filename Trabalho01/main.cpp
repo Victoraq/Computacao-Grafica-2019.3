@@ -7,6 +7,8 @@
 #include <math.h>
 
 #include "extras.h"
+#include "Bloco.h"
+#include "Enemy.h"
 
 /// Estruturas iniciais para armazenar vertices
 //  Você poderá utilizá-las adicionando novos métodos (de acesso por exemplo) ou usar suas próprias estruturas.
@@ -17,6 +19,9 @@ float rotationX = 0.0, rotationY = 0.0;
 int   last_x, last_y;
 int   width, height;
 int proj = 1;                      // Indica em que projeção será exibido
+Bloco *b;
+Enemy *e;
+vertice playerCenter = {0.0,0.0,0.0};
 
 
 /// Functions
@@ -31,29 +36,29 @@ void drawCampo(void) {
     // Paredes
     glPushMatrix();
         setColor(0.765, 0.796, 0.851);
-        glTranslatef(-3,2.0,0.5);
+        glTranslatef(-3.5,2.0,0.0);
         glScalef(1,25.0, 1.0);
         glutSolidCube(0.25);
     glPopMatrix();
 
     glPushMatrix();
         setColor(0.765, 0.796, 0.851);
-        glTranslatef(3,2.0,0.5);
+        glTranslatef(3.5,2.0,0.0);
         glScalef(1,25.0, 1.0);
         glutSolidCube(0.25);
     glPopMatrix();
 
     glPushMatrix();
         setColor(0.765, 0.796, 0.851);
-        glTranslatef(0,-1.25,0.5);
-        glScalef(25,1.0, 1.0);
+        glTranslatef(0,-1.25,0.0);
+        glScalef(29,1.0, 1.0);
         glutSolidCube(0.25);
     glPopMatrix();
 
     glPushMatrix();
         setColor(0.765, 0.796, 0.851);
-        glTranslatef(0,5.25,0.5);
-        glScalef(25,1.0, 1.0);
+        glTranslatef(0,5.25,0.0);
+        glScalef(29,1.0, 1.0);
         glutSolidCube(0.25);
     glPopMatrix();
 }
@@ -97,6 +102,11 @@ void display(void)
 
         setMaterials();
         drawCampo(); // Campo
+
+
+        b->drawBloco();
+
+        e->drawEnemies();
 
     glPopMatrix();
 
@@ -193,6 +203,11 @@ int main(int argc, char** argv)
     glutInitWindowPosition (100, 100);
     glutCreateWindow (argv[0]);
     init ();
+
+    // Cria bloco do player
+    float a[3] = {0.0,0.0,1.0};
+    b = new Bloco(playerCenter,5,a);
+    e = new Enemy(45);
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutMouseFunc( mouse );
