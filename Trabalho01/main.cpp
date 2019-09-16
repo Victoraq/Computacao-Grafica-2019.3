@@ -7,8 +7,6 @@
 #include <math.h>
 
 #include "extras.h"
-#include "Bloco.h"
-#include "Enemy.h"
 
 /// Estruturas iniciais para armazenar vertices
 //  Você poderá utilizá-las adicionando novos métodos (de acesso por exemplo) ou usar suas próprias estruturas.
@@ -19,10 +17,19 @@ float rotationX = 0.0, rotationY = 0.0;
 int   last_x, last_y;
 int   width, height;
 int proj = 1;                      // Indica em que projeção será exibido
-Bloco *b;
-Enemy *e;
-vertice playerCenter = {0.0,0.0,0.0};
 
+float flipperCoord[2]={0, -0.5};
+float flipperStep=0.05;
+
+float ballCoord[2]={-3, -0.35};
+float ballStep=1;
+
+typedef struct
+{
+    float x;
+    float y;
+    bool hit;
+}block;
 
 /// Functions
 void init(void)
@@ -36,29 +43,29 @@ void drawCampo(void) {
     // Paredes
     glPushMatrix();
         setColor(0.765, 0.796, 0.851);
-        glTranslatef(-3.5,2.0,0.0);
+        glTranslatef(-3,2.0,0.5);
         glScalef(1,25.0, 1.0);
         glutSolidCube(0.25);
     glPopMatrix();
 
     glPushMatrix();
         setColor(0.765, 0.796, 0.851);
-        glTranslatef(3.5,2.0,0.0);
+        glTranslatef(3,2.0,0.5);
         glScalef(1,25.0, 1.0);
         glutSolidCube(0.25);
     glPopMatrix();
 
     glPushMatrix();
         setColor(0.765, 0.796, 0.851);
-        glTranslatef(0,-1.25,0.0);
-        glScalef(29,1.0, 1.0);
+        glTranslatef(0,-1.25,0.5);
+        glScalef(25,1.0, 1.0);
         glutSolidCube(0.25);
     glPopMatrix();
 
     glPushMatrix();
         setColor(0.765, 0.796, 0.851);
-        glTranslatef(0,5.25,0.0);
-        glScalef(29,1.0, 1.0);
+        glTranslatef(0,5.25,0.5);
+        glScalef(25,1.0, 1.0);
         glutSolidCube(0.25);
     glPopMatrix();
 }
@@ -103,11 +110,21 @@ void display(void)
         setMaterials();
         drawCampo(); // Campo
 
+    glPopMatrix();
 
-        b->drawBloco();
+    glPushMatrix();
+        glColor3f(0, 0.5, 0);
 
-        e->drawEnemies();
+        glTranslatef(flipperCoord[0], flipperCoord[1], 0);
+        glScalef(1, 0.1, 0.1);
+        glutSolidCube(1);
+    glPopMatrix();
 
+    glPushMatrix();
+        glColor3f(0, 1, 1);
+
+        glTranslatef(ballCoord[0], ballCoord[1], 0);
+        glutSolidSphere(0.1, 8, 4);
     glPopMatrix();
 
     glutSwapBuffers();
@@ -191,6 +208,41 @@ void mouse(int button, int state, int x, int y)
     }
 }
 
+void mouseMoveFlipper(int x, int y)
+{
+    printf("Mouse ANDANDO solto na janela. Posição: (%d, %d)\n", x,y);
+    if(x>850)
+    {
+        glutWarpPointer(850, y);
+    }
+    if(x<140)
+    {
+        glutWarpPointer(140, y);
+    }
+
+    if(x>width/2 && flipperCoord[0]<2.5)
+        flipperCoord[0]+=flipperStep;
+    if(x<width/2 && flipperCoord[0]>-2.5)
+        flipperCoord[0]-=flipperStep;
+
+    /*
+
+    if(x>flipperScreenX)
+    {
+        flipperCoord[0]+=flipperStep;
+        flipperScreenX+=1;
+    }
+    if(x<flipperScreenX)
+    {
+        flipperCoord[0]-=flipperStep;
+        flipperScreenX-=1;
+    }
+
+    */
+
+
+}
+
 /// Main
 int main(int argc, char** argv)
 {
@@ -203,14 +255,10 @@ int main(int argc, char** argv)
     glutInitWindowPosition (100, 100);
     glutCreateWindow (argv[0]);
     init ();
-
-    // Cria bloco do player
-    float a[3] = {0.0,0.0,1.0};
-    b = new Bloco(playerCenter,5,a);
-    e = new Enemy(45);
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutMouseFunc( mouse );
+    glutPassiveMotionFunc(mouseMoveFlipper);
     glutMotionFunc( motion );
     glutKeyboardFunc(keyboard);
     glutIdleFunc(idle);

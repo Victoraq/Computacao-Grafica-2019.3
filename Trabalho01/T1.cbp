@@ -37,11 +37,9 @@
 			<Add library="z" />
 		</Linker>
 		<Unit filename="extras.h" />
-		<Unit filename="include/Bloco.h" />
-		<Unit filename="include/Enemy.h" />
+		<Unit filename="include/Block.h" />
 		<Unit filename="main.cpp" />
-		<Unit filename="src/Bloco.cpp" />
-		<Unit filename="src/Enemy.cpp" />
+		<Unit filename="src/Block.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

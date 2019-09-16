@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1568304681 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/main.cpp
+1568077123 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/main.cpp
 	<GL/glut.h>
 	<stdlib.h>
 	<stdio.h>
@@ -8,22 +8,23 @@
 	<time.h>
 	<math.h>
 	"extras.h"
-	"Bloco.h"
-	"Enemy.h"
 
 1566948584 /home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/extras.h
 
-1568304635 /home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/include/Bloco.h
-
-1568304635 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/src/Bloco.cpp
-	"Bloco.h"
+1568158320 source:/home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho01/main.cpp
 	<GL/glut.h>
 	<stdlib.h>
+	<stdio.h>
+	<ctype.h>
+	<cstdlib>
+	<time.h>
+	<math.h>
+	"extras.h"
 
-1568304331 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/src/Enemy.cpp
-	"Enemy.h"
+1568077833 /home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho01/extras.h
 
-1568304681 /home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/include/Enemy.h
-	"Bloco.h"
-	<vector>
+1568158931 source:/home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho01/src/Block.cpp
+	"Block.h"
+
+1568158931 /home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho01/include/Block.h
 
