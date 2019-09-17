@@ -14,6 +14,8 @@
 
 /// Constantes
 const int QUANT_ENEMY = 45;        // Quantidade de inimigos a ser mostrado
+const float RAIO = 0.1;            // Raio da bola
+const float VELOCIDADE = 5;      // Velocidade da bola
 
 /// Globals
 float zdist = 5.0;
@@ -24,12 +26,15 @@ int mouseX = 500;                  // Posição do mouse
 int proj = 1;                      // Indica em que projeção será exibido
 Bloco *player;                     // Bloco do player
 Enemy *enemy;                      // Armazena os inimigos
-vertice playerCenter = {0.0,0.0,0.0}; // Posição do player
+vertice playerCenter = {0.0,-0.25,0.0}; // Posição do player
 bool fullscreen = false;
 bool pause = false;                // Pausa o jogo
 bool camera = false;               // Libera movimentação da câmera
-float flipperStep=0.2;             // Passo de movimentação do player
-
+bool inicio = false;               // Inicia o jogo
+float flipperStep=0.25;            // Passo de movimentação do player
+vertice ball_coords = {0.0, 0.0, 0.0};  // Coordenadas da bola
+//float *ball_vector;                // Vetor de direção da bola
+float ball_vector[] = {1.0,0.85};
 
 /// Functions
 void init(void)
@@ -114,6 +119,13 @@ void display(void)
 
         enemy->drawEnemies(); // Desenha todos os blocos inimigos
 
+        // Esfera
+        glPushMatrix();
+            setColor(1.0, 1.0, 1.0);
+            glTranslatef(ball_coords.x, ball_coords.y, 0.0); // Posicionamento inicial da esfera
+            glutSolidSphere(RAIO, 100, 100);
+        glPopMatrix();
+
 
     glPopMatrix();
 
@@ -141,6 +153,12 @@ void idle ()
 
     // **  UPDATE ANIMATION VARIABLES ** //
     float step = 100; // Speed of the animation
+
+    // Movimentação esfera
+    if (inicio) { // Se foi liberada a movimentação as suas coordenadas serão iteradas com base na velocidade
+        ball_coords.x+=ball_vector[0]/(step/VELOCIDADE);
+        ball_coords.y+=ball_vector[1]/(step/VELOCIDADE);
+    }
 
     player->drawBloco(); // Desenha o player
 
@@ -200,6 +218,8 @@ void motion(int x, int y )
 // Mouse callback
 void mouse(int button, int state, int x, int y)
 {
+    if (button == GLUT_LEFT_BUTTON)
+        inicio = true;
     if ( button == GLUT_LEFT_BUTTON && state == GLUT_DOWN )
     {
         last_x = x;
@@ -222,13 +242,13 @@ void mouseMoveFlipper(int x, int y)
         return;
 
     // Retorna o mouse para uma posição, assim o travando
-    if(x>850)
+    if(x>550)
     {
-        glutWarpPointer(550, 500);
+        glutWarpPointer(500, 500);
     }
-    if(x<140)
+    if(x<450)
     {
-        glutWarpPointer(450, 500);
+        glutWarpPointer(500, 500);
     }
     if (y != 500) {
         glutWarpPointer(x, 500);
@@ -261,7 +281,7 @@ int main(int argc, char** argv)
     init ();
 
     // Cria bloco do player
-    float color[3] = {0.0,0.0,1.0};
+    float color[3] = {0.0,1.0,0.0};
     player = new Bloco(playerCenter,5,color); // inicializa o player
     enemy = new Enemy(QUANT_ENEMY);       // inicializa os inimigos
     glutWarpPointer(mouseX, mouseX);
