@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1568683056 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/main.cpp
+1568758632 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/main.cpp
 	<GL/glut.h>
 	<stdlib.h>
 	<stdio.h>
@@ -13,14 +13,15 @@
 1568681138 /home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/extras.h
 	<GL/glut.h>
 
-1568681180 /home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/include/Bloco.h
+1568750158 /home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/include/Bloco.h
 
-1568681130 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/src/Bloco.cpp
+1568759204 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/src/Bloco.cpp
 	"Bloco.h"
 	<GL/glut.h>
 	<stdlib.h>
+	<stdio.h>
 
-1568681911 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/src/Enemy.cpp
+1568748253 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/src/Enemy.cpp
 	"Enemy.h"
 
 1568304681 /home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/include/Enemy.h

@@ -18,8 +18,10 @@ class Bloco
         void Setorigem(vertice val) { origem = val; }
         void drawBloco();
         void setColor(float r, float g, float b);
+        void colisao(vertice centro, float vetor_direcao[], float raio);
 
     private:
+        const float SIZE = 0.25;
         vertice origem;   // Ponto de origem do bloco
         float dim;        // Dimensões do bloco
         float cor[3];     // Vetor de cores rgb

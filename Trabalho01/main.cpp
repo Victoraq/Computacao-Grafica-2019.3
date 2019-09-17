@@ -14,7 +14,7 @@
 
 /// Constantes
 const int QUANT_ENEMY = 45;        // Quantidade de inimigos a ser mostrado
-const float RAIO = 0.1;            // Raio da bola
+const float RAIO = 0.05;            // Raio da bola
 const float VELOCIDADE = 5;      // Velocidade da bola
 
 /// Globals
@@ -75,6 +75,24 @@ void drawCampo(void) {
     glPopMatrix();
 }
 
+void colisaoParedes(void) {
+    //Parede superior
+    if (ball_coords.y+0.26 >= 5.25)
+        ball_vector[1] *= -1;
+
+    // Parede inferior
+    if (ball_coords.y-0.26 <= -1.25)
+        ball_vector[1] *= -1;
+
+    // Parede lateral direita
+    if (ball_coords.x+0.26 >= 3.5)
+        ball_vector[0] *= -1;
+
+    // Parede lateral esquerda
+    if (ball_coords.x-0.26 <= -3.5)
+        ball_vector[0] *= -1;
+}
+
 void display(void)
 {
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -123,7 +141,7 @@ void display(void)
         glPushMatrix();
             setColor(1.0, 1.0, 1.0);
             glTranslatef(ball_coords.x, ball_coords.y, 0.0); // Posicionamento inicial da esfera
-            glutSolidSphere(RAIO, 100, 100);
+            glutSolidSphere(RAIO*2, 100, 100);
         glPopMatrix();
 
 
@@ -164,6 +182,10 @@ void idle ()
 
     enemy->drawEnemies(); // Desenha todos os blocos inimigos
 
+    player->colisao(ball_coords, ball_vector, RAIO);
+
+    colisaoParedes();
+
     // Update tLast for next time, using static local variable
     tLast = t;
     glutPostRedisplay();
@@ -180,7 +202,7 @@ void reshape (int w, int h)
 
 void keyboard (unsigned char key, int x, int y)
 {
-
+    printf("%d",key);
     switch (tolower(key))
     {
         case 'p': // Mudança de perspectiva
