@@ -2,6 +2,7 @@
 #include <GL/glut.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 
 Bloco::Bloco(vertice origem, float dim, float cor[])
 {
@@ -46,6 +47,11 @@ bool Bloco::colisao(vertice centro, float vetor_direcao[], float raio) {
 
     float dist_origem_y = SIZE/2;
     float dist_origem_x = (SIZE*dim)/2;
+    bool colidiu_inf = false; // verifica em que parede colidiu
+    bool colidiu_sup = false;
+
+    // Variaveis para calculo de distancia entre paredes
+    float deltaX, deltaY, dist_inf1, dist_inf2;
 
     // Parede superior e inferior
     // verifica se está entre os "x" do bloco
@@ -55,12 +61,12 @@ bool Bloco::colisao(vertice centro, float vetor_direcao[], float raio) {
             // Parede inferior
             if (centro.y+raio < origem.y) {
                 vetor_direcao[1] *= -1;
-                return true;
+                colidiu_inf = true;
             }
             // Parede superior
             if (centro.y-raio > origem.y) {
                 vetor_direcao[1] *= -1;
-                return true;
+                colidiu_sup = true;
             }
         }
 
@@ -69,19 +75,96 @@ bool Bloco::colisao(vertice centro, float vetor_direcao[], float raio) {
     // Paredes laterais
     if (centro.y + raio > origem.y - dist_origem_y && centro.y - raio < origem.y + dist_origem_y ) {
         if (centro.x + raio > origem.x - dist_origem_x && origem.x + dist_origem_x > centro.x - raio) {
+
             // Parede lateral direita
             if (centro.x+raio < origem.x) {
                 vetor_direcao[0] *= -1;
+
+                if (colidiu_inf) {
+                    // distancia da parede inferior
+                    deltaX = origem.x - centro.x;
+                    deltaY = origem.y - dist_origem_y - centro.y;
+                    dist_inf1 = sqrt(pow(deltaX,2) + pow(deltaY,2));
+
+                    // distancia da parede lateral direita
+                    deltaX = origem.x + dist_origem_x - centro.x;
+                    deltaY = origem.y - centro.y;
+                    dist_inf2 = sqrt(pow(deltaX,2) + pow(deltaY,2));
+
+                    if (dist_inf1 > dist_inf2) {
+                        vetor_direcao[1] *= -1; // reverte mudança anterior
+                    } else {
+                        vetor_direcao[0] *= -1;
+                    }
+
+                } else if (colidiu_sup) {
+                    // distancia da parede superior
+                    deltaX = origem.x - centro.x;
+                    deltaY = origem.y + dist_origem_y - centro.y;
+                    dist_inf1 = sqrt(pow(deltaX,2) + pow(deltaY,2));
+
+                    // distancia da parede lateral direita
+                    deltaX = origem.x + dist_origem_x - centro.x;
+                    deltaY = origem.y - centro.y;
+                    dist_inf2 = sqrt(pow(deltaX,2) + pow(deltaY,2));
+
+                    if (dist_inf1 > dist_inf2) {
+                        vetor_direcao[1] *= -1; // reverte mudança anterior
+                    } else {
+                        vetor_direcao[0] *= -1;
+                    }
+                }
+
                 return true;
+
             }
             // Parede lateral esquerda
             if (centro.x-raio > origem.x) {
                 vetor_direcao[0] *= -1;
+
+                if (colidiu_inf) {
+                    // distancia da parede inferior
+                    deltaX = origem.x - centro.x;
+                    deltaY = origem.y - dist_origem_y - centro.y;
+                    dist_inf1 = sqrt(pow(deltaX,2) + pow(deltaY,2));
+
+                    // distancia da parede lateral esquerda
+                    deltaX = origem.x - dist_origem_x - centro.x;
+                    deltaY = origem.y - centro.y;
+                    dist_inf2 = sqrt(pow(deltaX,2) + pow(deltaY,2));
+
+                    if (dist_inf1 > dist_inf2) {
+                        vetor_direcao[1] *= -1; // reverte mudança anterior
+                    } else {
+                        vetor_direcao[0] *= -1;
+                    }
+
+                } else if (colidiu_sup) {
+                    // distancia da parede superior
+                    deltaX = origem.x - centro.x;
+                    deltaY = origem.y + dist_origem_y - centro.y;
+                    dist_inf1 = sqrt(pow(deltaX,2) + pow(deltaY,2));
+
+                    // distancia da parede lateral esquerda
+                    deltaX = origem.x - dist_origem_x - centro.x;
+                    deltaY = origem.y - centro.y;
+                    dist_inf2 = sqrt(pow(deltaX,2) + pow(deltaY,2));
+
+                    if (dist_inf1 > dist_inf2) {
+                        vetor_direcao[1] *= -1; // reverte mudança anterior
+                    } else {
+                        vetor_direcao[0] *= -1;
+                    }
+                }
+
                 return true;
+
             }
         }
     }
-    return false;
+
+    return colidiu_inf || colidiu_sup;
+
 }
 
 
