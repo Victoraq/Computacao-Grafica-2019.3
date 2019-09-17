@@ -7,21 +7,27 @@
 #include <math.h>
 
 #include "extras.h"
-#include "Bloco.h"
+//#include "Bloco.h"
 #include "Enemy.h"
 
 /// Estruturas iniciais para armazenar vertices
 //  Você poderá utilizá-las adicionando novos métodos (de acesso por exemplo) ou usar suas próprias estruturas.
+
+/// Constantes
+const int QUANT_ENEMY = 45;        // Quantidade de inimigos a ser mostrado
 
 /// Globals
 float zdist = 5.0;
 float rotationX = 0.0, rotationY = 0.0;
 int   last_x, last_y;
 int   width, height;
+int mouseX = 500;
 int proj = 1;                      // Indica em que projeção será exibido
-Bloco *b;
-Enemy *e;
+Bloco *player;                     // Bloco do player
+Enemy *enemy;                      // Armazena os inimigos
 vertice playerCenter = {0.0,0.0,0.0};
+bool fullscreen = false;
+float flipperStep=0.15;
 
 
 /// Functions
@@ -30,7 +36,7 @@ void init(void)
     initLight(width, height); // Função extra para tratar iluminação.
 }
 
-
+/// Desenha o as paredes que delimitam o campo
 void drawCampo(void) {
 
     // Paredes
@@ -103,10 +109,10 @@ void display(void)
         setMaterials();
         drawCampo(); // Campo
 
+        player->drawBloco(); // Desenha o player
 
-        b->drawBloco();
+        enemy->drawEnemies(); // Desenha todos os blocos inimigos
 
-        e->drawEnemies();
 
     glPopMatrix();
 
@@ -135,6 +141,10 @@ void idle ()
     // **  UPDATE ANIMATION VARIABLES ** //
     float step = 100; // Speed of the animation
 
+    player->drawBloco(); // Desenha o player
+
+    enemy->drawEnemies(); // Desenha todos os blocos inimigos
+
     // Update tLast for next time, using static local variable
     tLast = t;
     glutPostRedisplay();
@@ -156,6 +166,10 @@ void keyboard (unsigned char key, int x, int y)
     {
         case 'p': // Mudança de perspectiva
             proj *= -1;
+            break;
+        case 123:
+            printf("andoadn");
+            glutFullScreen();
             break;
         case 27:
             exit(0);
@@ -191,6 +205,53 @@ void mouse(int button, int state, int x, int y)
     }
 }
 
+void mouseMoveFlipper(int x, int y)
+{
+    printf("Mouse ANDANDO solto na janela. Posição: (%d, %d)\n", x,y);
+    if(x>850)
+    {
+        glutWarpPointer(550, y);
+    }
+    if(x<140)
+    {
+        glutWarpPointer(450, y);
+    }
+
+    if (x < mouseX && playerCenter.x-flipperStep > -2.8) {
+        playerCenter.x = playerCenter.x-flipperStep;
+        player->Setorigem(playerCenter);
+    }
+    if (mouseX < x && playerCenter.x+flipperStep < 2.8) {
+        playerCenter.x = playerCenter.x+flipperStep;
+        player->Setorigem(playerCenter);
+    }
+    mouseX = x;
+
+//    if(x>width/2 && playerCenter.x<x) {
+//        playerCenter.x = playerCenter.x+flipperStep;
+//        player->Setorigem(playerCenter);
+//    }
+//    if(x<width/2 && playerCenter.x+850>x){
+//        playerCenter.x = playerCenter.x-flipperStep;
+//        player->Setorigem(playerCenter);
+//    }
+
+    /*
+    if(x>flipperScreenX)
+    {
+        flipperCoord[0]+=flipperStep;
+        flipperScreenX+=1;
+    }
+    if(x<flipperScreenX)
+    {
+        flipperCoord[0]-=flipperStep;
+        flipperScreenX-=1;
+    }
+    */
+
+
+}
+
 /// Main
 int main(int argc, char** argv)
 {
@@ -206,12 +267,14 @@ int main(int argc, char** argv)
 
     // Cria bloco do player
     float a[3] = {0.0,0.0,1.0};
-    b = new Bloco(playerCenter,5,a);
-    e = new Enemy(45);
+    player = new Bloco(playerCenter,5,a); // inicializa o player
+    enemy = new Enemy(QUANT_ENEMY);       // inicializa os inimigos
+    glutWarpPointer(mouseX, mouseX);
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutMouseFunc( mouse );
     glutMotionFunc( motion );
+    glutPassiveMotionFunc(mouseMoveFlipper);
     glutKeyboardFunc(keyboard);
     glutIdleFunc(idle);
     glutMainLoop();
