@@ -42,12 +42,10 @@ void Bloco::drawBloco() {
 }
 
 /// Calcula se o objeto passado colidiu com o bloco e muda a sua coordenada
-void Bloco::colisao(vertice centro, float vetor_direcao[], float raio) {
+bool Bloco::colisao(vertice centro, float vetor_direcao[], float raio) {
 
     float dist_origem_y = SIZE/2;
     float dist_origem_x = (SIZE*dim)/2;
-
-
 
     // Parede superior e inferior
     // verifica se está entre os "x" do bloco
@@ -55,17 +53,35 @@ void Bloco::colisao(vertice centro, float vetor_direcao[], float raio) {
 
         if (centro.y + raio > origem.y - dist_origem_y && centro.y - raio < origem.y + dist_origem_y ) {
             // Parede inferior
-            if (centro.y+raio < origem.y)
+            if (centro.y+raio < origem.y) {
                 vetor_direcao[1] *= -1;
+                return true;
+            }
             // Parede superior
-            if (centro.y-raio > origem.y)
+            if (centro.y-raio > origem.y) {
                 vetor_direcao[1] *= -1;
+                return true;
+            }
         }
 
     }
 
     // Paredes laterais
-
+    if (centro.y + raio > origem.y - dist_origem_y && centro.y - raio < origem.y + dist_origem_y ) {
+        if (centro.x + raio > origem.x - dist_origem_x && origem.x + dist_origem_x > centro.x - raio) {
+            // Parede lateral direita
+            if (centro.x+raio < origem.x) {
+                vetor_direcao[0] *= -1;
+                return true;
+            }
+            // Parede lateral esquerda
+            if (centro.x-raio > origem.x) {
+                vetor_direcao[0] *= -1;
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 
