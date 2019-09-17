@@ -1,5 +1,7 @@
+
 #ifndef BLOCO_H
 #define BLOCO_H
+
 
 class vertice
 {
@@ -15,12 +17,13 @@ class Bloco
         vertice Getorigem() { return origem; }
         void Setorigem(vertice val) { origem = val; }
         void drawBloco();
+        void setColor(float r, float g, float b);
 
     private:
-        vertice origem;
-        float dim;
-        float cor[3];
-        bool show;
+        vertice origem;   // Ponto de origem do bloco
+        float dim;        // Dimensões do bloco
+        float cor[3];     // Vetor de cores rgb
+        bool show;        // Indica se o bloco é visualizavel ou não
 };
 
 #endif // BLOCO_H

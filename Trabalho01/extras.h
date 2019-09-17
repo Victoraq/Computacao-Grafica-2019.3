@@ -1,4 +1,6 @@
-
+#include <GL/glut.h>
+#ifndef EXTRAS_H
+#define EXTRAS_H
 void initLight(int width, int height)
 {
    glEnable(GL_LIGHTING);                 // Habilita luz
@@ -88,3 +90,5 @@ void setColor(float r, float g, float b)
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, objeto_especular);
     glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, objeto_brilho);
 }
+
+#endif // BLOCO_H

@@ -1,6 +1,6 @@
 #include "Bloco.h"
 
-//#include "../extras.h"
+
 
 #include <GL/glut.h>
 #include <stdlib.h>
@@ -15,13 +15,31 @@ Bloco::Bloco(vertice origem, float dim, float cor[])
     this->show = true;
 }
 
+void Bloco::setColor(float r, float g, float b)
+{
+    // Parametros comuns para os dois lados da superfície
+    GLfloat objeto_especular[] = { 0.626, 0.626, 0.626, 1.0 };
+    GLfloat objeto_brilho[]    = { 90.0f };
+    GLfloat objeto_ambient[]   = { 0.1, 0.1, 0.1, 1.0 };
+
+    // Material da faces 'frente' (amarelo)
+    GLfloat objeto_difusa[]    = { r, g, b, 1.0 };
+
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, objeto_ambient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, objeto_difusa);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, objeto_especular);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, objeto_brilho);
+}
+
 void Bloco::drawBloco() {
     if (show) {
         glPushMatrix();
-            glColor3f(cor[0],cor[1],cor[2]);
+            setColor(cor[0],cor[1],cor[2]);
             glTranslatef(origem.x, origem.y, origem.z);
             glScalef(dim,1.0, 1.0);
             glutSolidCube(0.25);
         glPopMatrix();
     }
 }
+
+
