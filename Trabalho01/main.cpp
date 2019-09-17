@@ -26,6 +26,8 @@ Bloco *player;                     // Bloco do player
 Enemy *enemy;                      // Armazena os inimigos
 vertice playerCenter = {0.0,0.0,0.0}; // Posição do player
 bool fullscreen = false;
+bool pause = false;                // Pausa o jogo
+bool camera = false;               // Libera movimentação da câmera
 float flipperStep=0.2;             // Passo de movimentação do player
 
 
@@ -170,6 +172,13 @@ void keyboard (unsigned char key, int x, int y)
             printf("andoadn");
             glutFullScreen();
             break;
+        case ' ': // Pausa o jogo
+            pause = !pause;
+            break;
+        case 'c': // Libera movimentação da câmera
+            camera = !camera;
+            pause = camera;
+            break;
         case 27:
             exit(0);
             break;
@@ -179,11 +188,13 @@ void keyboard (unsigned char key, int x, int y)
 // Motion callback
 void motion(int x, int y )
 {
-    rotationX += (float) (y - last_y);
-    rotationY += (float) (x - last_x);
+    if (camera) {
+        rotationX += (float) (y - last_y);
+        rotationY += (float) (x - last_x);
 
-    last_x = x;
-    last_y = y;
+        last_x = x;
+        last_y = y;
+    }
 }
 
 // Mouse callback
@@ -207,6 +218,9 @@ void mouse(int button, int state, int x, int y)
 /// Realiza a movimentação a partir do mouse
 void mouseMoveFlipper(int x, int y)
 {
+    if (pause)
+        return;
+
     // Retorna o mouse para uma posição, assim o travando
     if(x>850)
     {
