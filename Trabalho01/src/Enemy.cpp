@@ -11,9 +11,9 @@ Enemy::Enemy(int quant) {
             origem.x = -2.8;
             origem.y = origem.y - 0.35;
         }
-        float a[3] = {0.5,1.0,0.5};
+        float color[3] = {0.5,1.0,0.5};
 
-        this->enemies.push_back(new Bloco(origem,2.5,a));
+        this->enemies.push_back(new Bloco(origem,2.5,color));
     }
 
 }

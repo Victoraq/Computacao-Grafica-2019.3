@@ -7,7 +7,6 @@
 #include <math.h>
 
 #include "extras.h"
-//#include "Bloco.h"
 #include "Enemy.h"
 
 /// Estruturas iniciais para armazenar vertices
@@ -21,13 +20,13 @@ float zdist = 5.0;
 float rotationX = 0.0, rotationY = 0.0;
 int   last_x, last_y;
 int   width, height;
-int mouseX = 500;
+int mouseX = 500;                  // Posição do mouse
 int proj = 1;                      // Indica em que projeção será exibido
 Bloco *player;                     // Bloco do player
 Enemy *enemy;                      // Armazena os inimigos
-vertice playerCenter = {0.0,0.0,0.0};
+vertice playerCenter = {0.0,0.0,0.0}; // Posição do player
 bool fullscreen = false;
-float flipperStep=0.15;
+float flipperStep=0.2;             // Passo de movimentação do player
 
 
 /// Functions
@@ -205,18 +204,23 @@ void mouse(int button, int state, int x, int y)
     }
 }
 
+/// Realiza a movimentação a partir do mouse
 void mouseMoveFlipper(int x, int y)
 {
-    printf("Mouse ANDANDO solto na janela. Posição: (%d, %d)\n", x,y);
+    // Retorna o mouse para uma posição, assim o travando
     if(x>850)
     {
-        glutWarpPointer(550, y);
+        glutWarpPointer(550, 500);
     }
     if(x<140)
     {
-        glutWarpPointer(450, y);
+        glutWarpPointer(450, 500);
+    }
+    if (y != 500) {
+        glutWarpPointer(x, 500);
     }
 
+    // verifica a movimentação a partir da mudança de direção do mouse
     if (x < mouseX && playerCenter.x-flipperStep > -2.8) {
         playerCenter.x = playerCenter.x-flipperStep;
         player->Setorigem(playerCenter);
@@ -225,30 +229,7 @@ void mouseMoveFlipper(int x, int y)
         playerCenter.x = playerCenter.x+flipperStep;
         player->Setorigem(playerCenter);
     }
-    mouseX = x;
-
-//    if(x>width/2 && playerCenter.x<x) {
-//        playerCenter.x = playerCenter.x+flipperStep;
-//        player->Setorigem(playerCenter);
-//    }
-//    if(x<width/2 && playerCenter.x+850>x){
-//        playerCenter.x = playerCenter.x-flipperStep;
-//        player->Setorigem(playerCenter);
-//    }
-
-    /*
-    if(x>flipperScreenX)
-    {
-        flipperCoord[0]+=flipperStep;
-        flipperScreenX+=1;
-    }
-    if(x<flipperScreenX)
-    {
-        flipperCoord[0]-=flipperStep;
-        flipperScreenX-=1;
-    }
-    */
-
+    mouseX = x; // atualiza a posição do mouse
 
 }
 
@@ -266,8 +247,8 @@ int main(int argc, char** argv)
     init ();
 
     // Cria bloco do player
-    float a[3] = {0.0,0.0,1.0};
-    player = new Bloco(playerCenter,5,a); // inicializa o player
+    float color[3] = {0.0,0.0,1.0};
+    player = new Bloco(playerCenter,5,color); // inicializa o player
     enemy = new Enemy(QUANT_ENEMY);       // inicializa os inimigos
     glutWarpPointer(mouseX, mouseX);
     glutDisplayFunc(display);
@@ -275,6 +256,7 @@ int main(int argc, char** argv)
     glutMouseFunc( mouse );
     glutMotionFunc( motion );
     glutPassiveMotionFunc(mouseMoveFlipper);
+    glutSetCursor(GLUT_CURSOR_NONE);
     glutKeyboardFunc(keyboard);
     glutIdleFunc(idle);
     glutMainLoop();
