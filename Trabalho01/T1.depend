@@ -13,18 +13,18 @@
 1568681138 /home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/extras.h
 	<GL/glut.h>
 
-1568750158 /home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/include/Bloco.h
+1568761330 /home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/include/Bloco.h
 
-1568760622 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/src/Bloco.cpp
+1568760814 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/src/Bloco.cpp
 	"Bloco.h"
 	<GL/glut.h>
 	<stdlib.h>
 	<stdio.h>
 
-1568748253 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/src/Enemy.cpp
+1568761363 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/src/Enemy.cpp
 	"Enemy.h"
 
-1568304681 /home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/include/Enemy.h
+1568760945 /home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/include/Enemy.h
 	"Bloco.h"
 	<vector>
 

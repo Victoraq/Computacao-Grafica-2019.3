@@ -184,6 +184,8 @@ void idle ()
 
     player->colisao(ball_coords, ball_vector, RAIO);
 
+    enemy->colisao(ball_coords, ball_vector, RAIO);
+
     colisaoParedes();
 
     // Update tLast for next time, using static local variable

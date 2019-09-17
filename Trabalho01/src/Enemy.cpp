@@ -28,3 +28,16 @@ void Enemy::drawEnemies() {
         this->enemies.at(i)->drawBloco();
     }
 }
+
+void Enemy::colisao(vertice centro, float vetor_direcao[], float raio) {
+    bool colidiu;
+    for (int i = 0; i < this->quant; i++) {
+        // Só é verificada a colisão se o inimigo for visualizavel
+        if (this->enemies.at(i)->Getshow()) {
+
+            colidiu = this->enemies.at(i)->colisao(centro, vetor_direcao, raio);
+
+            this->enemies.at(i)->Setshow(!colidiu); // Se colidiu, ele não é mais visualizavel
+        }
+    }
+}
