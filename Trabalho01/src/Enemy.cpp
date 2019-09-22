@@ -2,7 +2,10 @@
 
 Enemy::Enemy(int quant) {
 
+
     this->quant = quant;
+    this->enemiesOnScreen=quant;
+    cout << endl << "EOS " << this->enemiesOnScreen;
     vertice origem = {-3.5,4.7,0.0};
 
     for (int i = 0; i < this->quant; i++) {
@@ -38,6 +41,11 @@ void Enemy::colisao(vertice centro, float vetor_direcao[], float raio) {
             colidiu = this->enemies.at(i)->colisao(centro, vetor_direcao, raio);
 
             this->enemies.at(i)->setShow(!colidiu); // Se colidiu, ele não é mais visualizavel
+            if(!this->enemies.at(i)->Getshow())
+            {
+                this->decreaseEnemiesOnScreen();
+                cout << endl << "EOS " << this->enemiesOnScreen;
+            }
         }
     }
 }
@@ -46,4 +54,15 @@ void Enemy::resetEnemies()
 {
     for(vector<Bloco*>::iterator p=this->enemies.begin(); p!=this->enemies.end(); p++)
         (*p)->setShow(true);
+    this->enemiesOnScreen=quant;
+}
+
+void Enemy::decreaseEnemiesOnScreen()
+{
+    this->enemiesOnScreen--;
+}
+
+int Enemy::getEnemiesOnScreen()
+{
+    return this->enemiesOnScreen;
 }
