@@ -168,3 +168,8 @@ bool Bloco::colisao(vertice centro, float vetor_direcao[], float raio) {
 }
 
 
+void Bloco::setShow(bool b)
+{
+    this->show=b;
+}
+

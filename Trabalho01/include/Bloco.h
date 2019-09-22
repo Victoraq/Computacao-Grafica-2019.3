@@ -18,7 +18,7 @@ class Bloco
         bool Getshow() { return show; }
 
         void Setorigem(vertice val) { origem = val; }
-        void Setshow(bool val) { show = val; }
+        void setShow(bool b);
 
         void drawBloco();
         void setColor(float r, float g, float b);

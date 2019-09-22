@@ -15,7 +15,7 @@
 /// Constantes
 const int QUANT_ENEMY = 45;        // Quantidade de inimigos a ser mostrado
 const float RAIO = 0.05;            // Raio da bola
-const float VELOCIDADE = 5;      // Velocidade da bola
+const float VELOCIDADE = 7;      // Velocidade da bola
 
 /// Globals
 float zdist = 5.0;
@@ -41,6 +41,19 @@ float *ball_vector = cursor_coords;   // Vetor de direção da bola
 void init(void)
 {
     initLight(width, height); // Função extra para tratar iluminação.
+}
+
+
+/// Retorna o jogo para o estado inicial
+void reset()
+{
+    angulo = 0.0;
+    cursor_coords[0] = 0.0;
+    cursor_coords[1] = 1.0;
+    ball_coords = {0, 0, 0};
+    player->Setorigem({0.0,-0.25,0.0});
+    player->drawBloco();
+    inicio=false;
 }
 
 
@@ -96,8 +109,10 @@ void colisaoParedes(void) {
         ball_vector[1] *= -1;
 
     // Parede inferior
-    if (ball_coords.y-0.26 <= -1.25)
+    if (ball_coords.y-0.26 <= -1.25) {
         ball_vector[1] *= -1;
+        reset();  // Se colidir com a inferior o jogo é resetado
+    }
 
     // Parede lateral direita
     if (ball_coords.x+0.26 >= 3.5)
@@ -204,7 +219,7 @@ void idle ()
     float step = 100; // Speed of the animation
 
     // Movimentação esfera
-    if (inicio) { // Se foi liberada a movimentação as suas coordenadas serão iteradas com base na velocidade
+    if (inicio && !pause) { // Se foi liberada a movimentação as suas coordenadas serão iteradas com base na velocidade
         ball_coords.x+=ball_vector[0]/(step/VELOCIDADE);
         ball_coords.y+=ball_vector[1]/(step/VELOCIDADE);
     }
@@ -235,15 +250,13 @@ void reshape (int w, int h)
 
 void keyboard (unsigned char key, int x, int y)
 {
-    printf("%d",key);
     switch (tolower(key))
     {
         case 'p': // Mudança de perspectiva
             proj *= -1;
             break;
-        case 123:
-            printf("andoadn");
-            glutFullScreen();
+        case 'r': // Reseta o jogo
+            reset();
             break;
         case ' ': // Pausa o jogo
             pause = !pause;
@@ -257,6 +270,20 @@ void keyboard (unsigned char key, int x, int y)
             break;
     }
 }
+
+
+/// Teclas especiais do teclado
+void spk(int key, int x, int y)
+{
+    switch(key)
+    {
+    case GLUT_KEY_F12:
+    //do something here
+    glutFullScreen();
+    break;
+    }
+}
+
 
 // Motion callback
 void motion(int x, int y )
@@ -324,11 +351,11 @@ void mouseMoveFlipper(int x, int y)
     }
 
     // verifica a movimentação a partir da mudança de direção do mouse
-    if (x < mouseX && playerCenter.x-flipperStep > -2.8) {
+    if (x < mouseX && playerCenter.x-flipperStep > -2.8 && inicio) {
         playerCenter.x = playerCenter.x-flipperStep;
         player->Setorigem(playerCenter);
     }
-    if (mouseX < x && playerCenter.x+flipperStep < 2.8) {
+    if (mouseX < x && playerCenter.x+flipperStep < 2.8 && inicio) {
         playerCenter.x = playerCenter.x+flipperStep;
         player->Setorigem(playerCenter);
     }
@@ -361,6 +388,7 @@ int main(int argc, char** argv)
     glutPassiveMotionFunc(mouseMoveFlipper);
     glutSetCursor(GLUT_CURSOR_NONE);
     glutKeyboardFunc(keyboard);
+    glutSpecialFunc(spk);
     glutIdleFunc(idle);
     glutMainLoop();
     return 0;
