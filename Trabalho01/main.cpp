@@ -45,7 +45,7 @@ void init(void)
 
 
 /// Retorna o jogo para o estado inicial
-void reset()
+void reset(bool newgame)
 {
     angulo = 0.0;
     cursor_coords[0] = 0.0;
@@ -53,7 +53,8 @@ void reset()
     ball_coords = {0, 0, 0};
     player->Setorigem({0.0,-0.25,0.0});
     player->drawBloco();
-    enemy->resetEnemies();
+    if (newgame)
+        enemy->resetEnemies();
     inicio=false;
 }
 
@@ -112,7 +113,7 @@ void colisaoParedes(void) {
     // Parede inferior
     if (ball_coords.y-0.26 <= -1.25) {
         ball_vector[1] *= -1;
-        reset();  // Se colidir com a inferior o jogo é resetado
+        reset(false);  // Se colidir com a inferior o jogo é resetado
     }
 
     // Parede lateral direita
@@ -192,6 +193,9 @@ void display(void)
         if (!inicio)
             drawCursor();
 
+        if (enemy->numberOfEnemies() == 0)
+            reset(true);
+
     glPopMatrix();
 
     glutSwapBuffers();
@@ -257,7 +261,7 @@ void keyboard (unsigned char key, int x, int y)
             proj *= -1;
             break;
         case 'r': // Reseta o jogo
-            reset();
+            reset(true);
             break;
         case ' ': // Pausa o jogo
             pause = !pause;

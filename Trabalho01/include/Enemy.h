@@ -15,6 +15,7 @@ class Enemy
         void drawEnemies();
         void colisao(vertice centro, float vetor_direcao[], float raio);
         void resetEnemies();
+        int numberOfEnemies() { return enemies.size(); }
 
     private:
         int quant;
