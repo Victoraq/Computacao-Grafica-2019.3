@@ -44,7 +44,6 @@ void Enemy::colisao(vertice centro, float vetor_direcao[], float raio) {
             if(!this->enemies.at(i)->Getshow())
             {
                 this->decreaseEnemiesOnScreen();
-                cout << endl << "EOS " << this->enemiesOnScreen;
             }
         }
     }

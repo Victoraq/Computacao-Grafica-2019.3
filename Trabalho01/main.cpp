@@ -193,6 +193,7 @@ void display(void)
         if (!inicio)
             drawCursor();
 
+        // Termina o jogo se terminarem os inimigos
         if (enemy->numberOfEnemies() == 0)
             reset(true);
 
