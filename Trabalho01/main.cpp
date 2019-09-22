@@ -27,15 +27,14 @@ int proj = 1;                      // Indica em que projeção será exibido
 Bloco *player;                     // Bloco do player
 Enemy *enemy;                      // Armazena os inimigos
 vertice playerCenter = {0.0,-0.25,0.0}; // Posição do player
-float cursor_coords[] = {0.0, 1};  // Coodenadas do cursor
-float angulo = 0;                  // Angulo em que o cursor está
-bool fullscreen = false;           // Coloca o jogo em fullscreen
+bool fullscreen = false;
 bool pause = false;                // Pausa o jogo
 bool camera = false;               // Libera movimentação da câmera
 bool inicio = false;               // Inicia o jogo
-float flipperStep = 0.25;            // Passo de movimentação do player
-vertice ball_coords = {0.0,0.0,0.0};  // Coordenadas da bola
-float *ball_vector = cursor_coords;   // Vetor de direção da bola
+float flipperStep=0.25;            // Passo de movimentação do player
+vertice ball_coords = {0.0, 0.0, 0.0};  // Coordenadas da bola
+//float *ball_vector;                // Vetor de direção da bola
+float ball_vector[] = {1.0,0.85};
 
 /// Functions
 void init(void)
@@ -43,18 +42,14 @@ void init(void)
     initLight(width, height); // Função extra para tratar iluminação.
 }
 
+void reset()
+{
 
-/// Rotaciona vetor a partir de um ângulo
-void rotacao(float coords[], float angulo) {
-    float x = coords[0] * cos(angulo) - coords[1] * sin(angulo);
-    float y = coords[0] * sin(angulo) + coords[1] * cos(angulo);
-
-    float norma = sqrt(pow(x, 2)+pow(y, 2));
-
-    coords[0] = x/norma;
-    coords[1] = y/norma;
+    ball_coords = {0, 0, 0};
+    player->Setorigem({0.0,-0.25,0.0});
+    player->drawBloco();
+    inicio=false;
 }
-
 
 /// Desenha o as paredes que delimitam o campo
 void drawCampo(void) {
@@ -89,7 +84,6 @@ void drawCampo(void) {
     glPopMatrix();
 }
 
-
 void colisaoParedes(void) {
     //Parede superior
     if (ball_coords.y+0.26 >= 5.25)
@@ -107,19 +101,6 @@ void colisaoParedes(void) {
     if (ball_coords.x-0.26 <= -3.5)
         ball_vector[0] *= -1;
 }
-
-
-/// Desenha cursor de direção da bola
-void drawCursor(void) {
-    // Cursor de direção da bolsa
-    glBegin(GL_QUADS);
-        glVertex3f (0.1, 0.0, 0.0);
-        glVertex3f (cursor_coords[0]+RAIO, cursor_coords[1], 0.0);
-        glVertex3f (cursor_coords[0]-RAIO, cursor_coords[1], 0.0);
-        glVertex3f (-0.1, 0.0, 0.0);
-    glEnd();
-}
-
 
 void display(void)
 {
@@ -172,9 +153,6 @@ void display(void)
             glutSolidSphere(RAIO*2, 100, 100);
         glPopMatrix();
 
-        // Cursor de direção
-        if (!inicio)
-            drawCursor();
 
     glPopMatrix();
 
@@ -215,8 +193,6 @@ void idle ()
 
     player->colisao(ball_coords, ball_vector, RAIO);
 
-    enemy->colisao(ball_coords, ball_vector, RAIO);
-
     colisaoParedes();
 
     // Update tLast for next time, using static local variable
@@ -241,9 +217,8 @@ void keyboard (unsigned char key, int x, int y)
         case 'p': // Mudança de perspectiva
             proj *= -1;
             break;
-        case 123:
-            printf("andoadn");
-            glutFullScreen();
+        case 'r':
+            reset();
             break;
         case ' ': // Pausa o jogo
             pause = !pause;
@@ -255,6 +230,17 @@ void keyboard (unsigned char key, int x, int y)
         case 27:
             exit(0);
             break;
+    }
+}
+
+void spk(int key, int x, int y)
+{
+    switch(key)
+    {
+    case GLUT_KEY_F12:
+    //do something here
+    glutFullScreen();
+    break;
     }
 }
 
@@ -273,10 +259,8 @@ void motion(int x, int y )
 // Mouse callback
 void mouse(int button, int state, int x, int y)
 {
-    // inicia o jogo com o botão esquerdo do mouse
-    if (button == GLUT_LEFT_BUTTON && !inicio) {
+    if (button == GLUT_LEFT_BUTTON)
         inicio = true;
-    }
     if ( button == GLUT_LEFT_BUTTON && state == GLUT_DOWN )
     {
         last_x = x;
@@ -284,23 +268,11 @@ void mouse(int button, int state, int x, int y)
     }
     if(button == 3) // Scroll up
     {
-        // Scroll up rotaciona o cursor para a esquerda
-        if (!inicio) {
-            if (angulo > -60) {
-                angulo = ((int) angulo - 2) % 360;
-                rotacao(cursor_coords, (-2*3.14)/180.0);
-            }
-        }
+        zdist+=1.0f;
     }
     if(button == 4) // Scroll Down
     {
-        // Scroll down rotaciona o cursor para a direita
-        if (!inicio) {
-            if (angulo < 60) {
-                angulo = ((int) angulo + 2) % 360;
-                rotacao(cursor_coords, (2*3.14)/180.0);
-            }
-        }
+        zdist-=1.0f;
     }
 }
 
@@ -325,12 +297,21 @@ void mouseMoveFlipper(int x, int y)
 
     // verifica a movimentação a partir da mudança de direção do mouse
     if (x < mouseX && playerCenter.x-flipperStep > -2.8) {
+
+        if(inicio)
+        {
         playerCenter.x = playerCenter.x-flipperStep;
         player->Setorigem(playerCenter);
+        }
+
     }
     if (mouseX < x && playerCenter.x+flipperStep < 2.8) {
+        if(inicio)
+        {
         playerCenter.x = playerCenter.x+flipperStep;
         player->Setorigem(playerCenter);
+        }
+
     }
     mouseX = x; // atualiza a posição do mouse
 
@@ -361,6 +342,7 @@ int main(int argc, char** argv)
     glutPassiveMotionFunc(mouseMoveFlipper);
     glutSetCursor(GLUT_CURSOR_NONE);
     glutKeyboardFunc(keyboard);
+    glutSpecialFunc(spk);
     glutIdleFunc(idle);
     glutMainLoop();
     return 0;

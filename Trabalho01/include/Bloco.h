@@ -15,14 +15,11 @@ class Bloco
         Bloco(vertice origem, float dim, float cor[]);
 
         vertice Getorigem() { return origem; }
-        bool Getshow() { return show; }
-
         void Setorigem(vertice val) { origem = val; }
-        void Setshow(bool val) { show = val; }
-
         void drawBloco();
         void setColor(float r, float g, float b);
-        bool colisao(vertice centro, float vetor_direcao[], float raio);
+        void colisao(vertice centro, float vetor_direcao[], float raio);
+        void setShow(bool b);
 
     private:
         const float SIZE = 0.25;

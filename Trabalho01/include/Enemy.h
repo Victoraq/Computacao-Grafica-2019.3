@@ -13,7 +13,7 @@ class Enemy
         virtual ~Enemy();
 
         void drawEnemies();
-        void colisao(vertice centro, float vetor_direcao[], float raio);
+        void resetEnemies();
 
     private:
         int quant;
