@@ -53,6 +53,7 @@ void reset()
     ball_coords = {0, 0, 0};
     player->Setorigem({0.0,-0.25,0.0});
     player->drawBloco();
+    enemy->resetEnemies();
     inicio=false;
 }
 
