@@ -29,3 +29,34 @@
 	"Bloco.h"
 	<vector>
 
+1569167627 source:/home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho01/main.cpp
+	<GL/glut.h>
+	<stdlib.h>
+	<stdio.h>
+	<ctype.h>
+	<cstdlib>
+	<time.h>
+	<math.h>
+	"extras.h"
+	"Enemy.h"
+
+1569166457 /home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho01/extras.h
+	<GL/glut.h>
+
+1569167739 /home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho01/include/Enemy.h
+	"Bloco.h"
+	<vector>
+	<iostream>
+
+1569166457 /home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho01/include/Bloco.h
+
+1569166457 source:/home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho01/src/Bloco.cpp
+	"Bloco.h"
+	<GL/glut.h>
+	<stdlib.h>
+	<stdio.h>
+	<math.h>
+
+1569167984 source:/home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho01/src/Enemy.cpp
+	"Enemy.h"
+

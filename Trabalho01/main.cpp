@@ -198,6 +198,11 @@ void display(void)
 
     glPopMatrix();
 
+    if(enemy->getEnemiesOnScreen()==0)
+    {
+        reset(true);
+    }
+
     glutSwapBuffers();
 }
 

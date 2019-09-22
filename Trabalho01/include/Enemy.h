@@ -3,7 +3,7 @@
 
 #include "Bloco.h"
 #include <vector>
-
+#include <iostream>
 using namespace std;
 
 class Enemy
@@ -16,10 +16,13 @@ class Enemy
         void colisao(vertice centro, float vetor_direcao[], float raio);
         void resetEnemies();
         int numberOfEnemies() { return enemies.size(); }
+        void decreaseEnemiesOnScreen();
+        int getEnemiesOnScreen();
 
     private:
         int quant;
         vector<Bloco*> enemies;
+        int enemiesOnScreen;
 
 };
 
