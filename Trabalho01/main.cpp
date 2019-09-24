@@ -127,8 +127,9 @@ void colisaoParedes(void) {
 
 
 /// Desenha cursor de direção da bola
-void drawCursor(void) {
+void drawCursor(float x, float y) {
     // Cursor de direção da bolsa
+    glTranslatef(x, y, 0.0);
     glBegin(GL_QUADS);
         glVertex3f (0.1, 0.0, 0.0);
         glVertex3f (cursor_coords[0]+RAIO, cursor_coords[1], 0.0);
@@ -191,7 +192,7 @@ void display(void)
 
         // Cursor de direção
         if (!inicio)
-            drawCursor();
+            drawCursor(ball_coords.x, ball_coords.y);
 
         // Termina o jogo se terminarem os inimigos
         if (enemy->numberOfEnemies() == 0)
@@ -362,13 +363,17 @@ void mouseMoveFlipper(int x, int y)
     }
 
     // verifica a movimentação a partir da mudança de direção do mouse
-    if (x < mouseX && playerCenter.x-flipperStep > -2.8 && inicio) {
+    if (x < mouseX && playerCenter.x-flipperStep > -2.8 ) {
         playerCenter.x = playerCenter.x-flipperStep;
         player->Setorigem(playerCenter);
+        if (!inicio)
+            ball_coords.x = playerCenter.x;
     }
-    if (mouseX < x && playerCenter.x+flipperStep < 2.8 && inicio) {
+    if (mouseX < x && playerCenter.x+flipperStep < 2.8 ) {
         playerCenter.x = playerCenter.x+flipperStep;
         player->Setorigem(playerCenter);
+        if (!inicio)
+            ball_coords.x = playerCenter.x;
     }
     mouseX = x; // atualiza a posição do mouse
 

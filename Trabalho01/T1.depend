@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1569170305 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/main.cpp
+1569349587 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/main.cpp
 	<GL/glut.h>
 	<stdlib.h>
 	<stdio.h>
@@ -22,7 +22,7 @@
 	<stdio.h>
 	<math.h>
 
-1569164630 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/src/Enemy.cpp
+1569172467 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/src/Enemy.cpp
 	"Enemy.h"
 
 1569170305 /home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho01/include/Enemy.h
