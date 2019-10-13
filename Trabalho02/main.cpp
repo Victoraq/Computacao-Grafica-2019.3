@@ -8,14 +8,15 @@
 
 #include "extras.h"
 #include "Enemy.h"
+#include "Player.h"
 
 /// Estruturas iniciais para armazenar vertices
 //  Você poderá utilizá-las adicionando novos métodos (de acesso por exemplo) ou usar suas próprias estruturas.
 
 /// Constantes
 const int QUANT_ENEMY = 45;        // Quantidade de inimigos a ser mostrado
-const float RAIO = 0.05;            // Raio da bola
-const float VELOCIDADE = 7;      // Velocidade da bola
+const float RAIO = 0.05;           // Raio da bola
+const float VELOCIDADE = 7;        // Velocidade da bola
 
 /// Globals
 float zdist = 5.0;
@@ -24,16 +25,16 @@ int   last_x, last_y;
 int   width, height;
 int mouseX = 500;                  // Posição do mouse
 int proj = 1;                      // Indica em que projeção será exibido
-Bloco *player;                     // Bloco do player
+Player *player;                     // Bloco do player
 Enemy *enemy;                      // Armazena os inimigos
-vertice playerCenter = {0.0,-0.25,0.0}; // Posição do player
+vertice playerCenter = {0.0,-1,0.0}; // Posição do player
 float cursor_coords[] = {0.0, 1};  // Coodenadas do cursor
 float angulo = 0;                  // Angulo em que o cursor está
 bool fullscreen = false;           // Coloca o jogo em fullscreen
 bool pause = false;                // Pausa o jogo
 bool camera = false;               // Libera movimentação da câmera
 bool inicio = false;               // Inicia o jogo
-float flipperStep = 0.25;            // Passo de movimentação do player
+float flipperStep = 0.25;          // Passo de movimentação do player
 vertice ball_coords = {0.0,0.0,0.0};  // Coordenadas da bola
 float *ball_vector = cursor_coords;   // Vetor de direção da bola
 int vidas = 5;                     // Contador de vidas do jogador
@@ -53,7 +54,7 @@ void reset(bool newgame)
     cursor_coords[1] = 1.0;
     ball_coords = {0, 0, 0};
     player->Setorigem({0.0,-0.25,0.0});
-    player->drawBloco();
+    player->drawPlayer();
     if (newgame) {
         enemy->resetEnemies();
         vidas = 5;
@@ -200,11 +201,13 @@ void display(void)
         setMaterials();
         drawCampo(); // Campo
 
-        player->drawBloco(); // Desenha o player
+        player->drawPlayer(); // Desenha o player
 
         enemy->drawEnemies(); // Desenha todos os blocos inimigos
 
         drawVidas();
+
+        player->drawPlayer();
 
         // Esfera
         glPushMatrix();
@@ -259,7 +262,7 @@ void idle ()
         ball_coords.y+=ball_vector[1]/(step/VELOCIDADE);
     }
 
-    player->drawBloco(); // Desenha o player
+    player->drawPlayer(); // Desenha o player
 
     enemy->drawEnemies(); // Desenha todos os blocos inimigos
 
@@ -389,13 +392,13 @@ void mouseMoveFlipper(int x, int y)
     }
 
     // verifica a movimentação a partir da mudança de direção do mouse
-    if (x < mouseX && playerCenter.x-flipperStep > -2.8 ) {
+    if (x < mouseX && playerCenter.x-flipperStep > -2.5 ) {
         playerCenter.x = playerCenter.x-flipperStep;
         player->Setorigem(playerCenter);
         if (!inicio)
             ball_coords.x = playerCenter.x;
     }
-    if (mouseX < x && playerCenter.x+flipperStep < 2.8 ) {
+    if (mouseX < x && playerCenter.x+flipperStep < 2.5 ) {
         playerCenter.x = playerCenter.x+flipperStep;
         player->Setorigem(playerCenter);
         if (!inicio)
@@ -420,7 +423,7 @@ int main(int argc, char** argv)
 
     // Cria bloco do player
     float color[3] = {0.0,1.0,0.0};
-    player = new Bloco(playerCenter,5,color); // inicializa o player
+    player = new Player(playerCenter,color); // inicializa o player
     enemy = new Enemy(QUANT_ENEMY);       // inicializa os inimigos
     glutWarpPointer(mouseX, mouseX);
     glutDisplayFunc(display);
