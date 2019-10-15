@@ -78,7 +78,7 @@
 	<vector>
 	<iostream>
 
-1570981208 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho02/main.cpp
+1571002117 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho02/main.cpp
 	<GL/glut.h>
 	<stdlib.h>
 	<stdio.h>
@@ -93,10 +93,10 @@
 1568681138 /home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho02/extras.h
 	<GL/glut.h>
 
-1570980831 /home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho02/include/Player.h
+1571099813 /home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho02/include/Player.h
 	"Bloco.h"
 
-1570981827 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho02/src/Player.cpp
+1571102041 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho02/src/Player.cpp
 	"Player.h"
 	<GL/glut.h>
 	<stdlib.h>

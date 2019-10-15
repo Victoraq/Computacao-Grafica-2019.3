@@ -53,7 +53,7 @@ void reset(bool newgame)
     cursor_coords[0] = 0.0;
     cursor_coords[1] = 1.0;
     ball_coords = {0, 0, 0};
-    player->Setorigem({0.0,-0.25,0.0});
+    player->Setorigem({0.0,-1,0.0});
     player->drawPlayer();
     if (newgame) {
         enemy->resetEnemies();
@@ -206,8 +206,6 @@ void display(void)
         enemy->drawEnemies(); // Desenha todos os blocos inimigos
 
         drawVidas();
-
-        player->drawPlayer();
 
         // Esfera
         glPushMatrix();
