@@ -81,29 +81,44 @@ void drawCampo(void) {
     // Paredes
     glPushMatrix();
         setColor(0.765, 0.796, 0.851);
-        glTranslatef(-3.5,2.0,0.0);
-        glScalef(1,25.0, 1.0);
+        glTranslatef(-4,2.5,0.0);
+        glScalef(1,30.0, 1.0);
         glutSolidCube(0.25);
     glPopMatrix();
 
     glPushMatrix();
         setColor(0.765, 0.796, 0.851);
-        glTranslatef(3.5,2.0,0.0);
-        glScalef(1,25.0, 1.0);
+        glTranslatef(4,2.5,0.0);
+        glScalef(1,30.0, 1.0);
         glutSolidCube(0.25);
     glPopMatrix();
 
     glPushMatrix();
         setColor(0.765, 0.796, 0.851);
         glTranslatef(0,-1.25,0.0);
-        glScalef(29,1.0, 1.0);
+        glScalef(33,1.0, 1.0);
         glutSolidCube(0.25);
     glPopMatrix();
 
     glPushMatrix();
         setColor(0.765, 0.796, 0.851);
-        glTranslatef(0,5.25,0.0);
-        glScalef(29,1.0, 1.0);
+        glTranslatef(0,6.15,0.0);
+        glScalef(33,1.0, 1.0);
+        glutSolidCube(0.25);
+    glPopMatrix();
+
+    // Saida dos inimigos
+    glPushMatrix();
+        setColor(0.0, 0.0, 0.653);
+        glTranslatef(-2,5.95,0.0);
+        glScalef(10,1.0, 1.0);
+        glutSolidCube(0.25);
+    glPopMatrix();
+
+    glPushMatrix();
+        setColor(0.0, 0.0, 0.653);
+        glTranslatef(2,5.95,0.0);
+        glScalef(10,1.0, 1.0);
         glutSolidCube(0.25);
     glPopMatrix();
 }
@@ -111,11 +126,11 @@ void drawCampo(void) {
 
 void colisaoParedes(void) {
     //Parede superior
-    if (ball_coords.y+0.26 >= 5.25)
+    if (ball_coords.y+0.26 >= 6.15)
         ball_vector[1] *= -1;
 
     // Parede inferior
-    if (ball_coords.y-0.26 <= -1.25) {
+    if (ball_coords.y-0.26 <= -1.0) {
         ball_vector[1] *= -1;
         vidas--;
         if (vidas > 0)
@@ -125,11 +140,11 @@ void colisaoParedes(void) {
     }
 
     // Parede lateral direita
-    if (ball_coords.x+0.26 >= 3.5)
+    if (ball_coords.x+0.26 >= 4.0)
         ball_vector[0] *= -1;
 
     // Parede lateral esquerda
-    if (ball_coords.x-0.26 <= -3.5)
+    if (ball_coords.x-0.26 <= -4.0)
         ball_vector[0] *= -1;
 }
 
