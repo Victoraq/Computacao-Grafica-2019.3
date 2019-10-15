@@ -66,10 +66,26 @@ void Player::drawPlayer() {
         float atual[2] = {-0.1,0.0};
         float ant[2] = {-0.1,0.0};
         rotacao(ant, (-40*3.14)/180.0);
+
+        int index=0;
+        this->pontosDeConstrucao[index].x=atual[0];
+        this->pontosDeConstrucao[index].y=atual[1];
+        this->pontosDeConstrucao[index].z=0.25;
+
         for (int i = 40, j = 0; i <= 140; i+=100/this->NPONTOS, j++) {
             atual[0] = -0.1;
             atual[1] = -0.0;
+
             rotacao(atual, (-i*3.14)/180.0);
+
+            if(index<=20)
+            {
+                this->pontosDeConstrucao[index].x=atual[0];
+                this->pontosDeConstrucao[index].y=atual[1];
+                this->pontosDeConstrucao[index].z=0.25;
+                index++;
+            }
+
 
             glBegin(GL_QUADS);
                 setColor(cor[0],cor[1],cor[2]);
@@ -115,4 +131,12 @@ bool Player::colisao(vertice centro, float vetor_direcao[], float raio) {
 
     }
 
+}
+
+
+void Player::imprimePontosDeConstrucao()
+{
+    for(int i=0; i<=20; i++)
+        printf("[%f][%f][%f]\n", pontosDeConstrucao[i].x, pontosDeConstrucao[i].y, pontosDeConstrucao[i].z);
+    printf("\n");
 }

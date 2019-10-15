@@ -45,6 +45,95 @@ void init(void)
     initLight(width, height); // Função extra para tratar iluminação.
 }
 
+float calculaDistancia(vertice v1, vertice v2)
+{
+    return sqrt(pow(v1.x-v2.x, 2) + pow(v1.y-v2.y, 2) + pow(v1.z-v2.z, 2));
+}
+
+bool colisaoBolaPlayer()
+{
+    ///Se a distancia entre a origem do player e a origem da bola for <= a soma de seus raios
+    ///e a bola esteja acima da parte de baixo do player
+    if((calculaDistancia(player->Getorigem(), ball_coords)<=RAIO+1)&&
+    ((ball_coords.x>(player->Getorigem().x-0.765))&&(ball_coords.x<(player->Getorigem().x+0.765))))
+        return true;
+    else
+        return false;
+}
+
+float calculaNorma(vertice vet)
+{
+    return sqrt(pow(vet.x, 2) + pow(vet.y, 2) + pow(vet.z, 2));
+}
+
+void unitize(vertice vet)
+{
+    float norma=calculaNorma(vet);
+    vet.x/=norma;
+    vet.y/=norma;
+    vet.z/=norma;
+}
+
+float produtoVetorial(vertice v1, vertice v2)
+{
+    return  (v1.x*v2.x)+(v1.y*v2.y)+(v1.z*v2.z);
+}
+
+float calculaAngulo(vertice v1, vertice v2)
+{
+    return 3.14-acos(produtoVetorial(v1, v2)/(calculaNorma(v1)*calculaNorma(v2)));
+}
+
+void rotacao(vertice vet, float angulo)
+{
+    vet.x=(cos(angulo)*vet.x)-(sin(angulo)*vet.y);
+    vet.y=(sin(angulo)*vet.x)+(cos(angulo)*vet.y);
+}
+
+void encontraDoisPontosMaisProximos(vertice* pontos, vertice bola, vertice* p1, vertice* p2)
+{
+    int i;
+    for(i=0; i<=20; i++)
+    {
+        if(bola.x > pontos[i].x)
+            break;
+    }
+    *p1=pontos[i-1];
+    *p2=pontos[i];
+    /*
+    if(calculaDistancia(bola, pontos[0])<=calculaDistancia(bola, pontos[1]))
+    {
+        vertice p1=pontos[0];
+        vertice p2=pontos[1];
+    }
+    else
+    {
+        vertice p1=pontos[1];
+        vertice p2=pontos[0];
+    }
+    for(int i=2; i<=20; i++)
+    {
+        if(calculaDistancia(bola, pontos[i])<=calculaDistancia(bola, *p1))
+        {
+            p2=p1;
+            *p1=pontos[i];
+        }
+        else if(calculaDistancia(bola, pontos[i])<=calculaDistancia(bola, *p2))
+        {
+            *p2=pontos[i];
+        }
+    }
+    */
+}
+
+vertice calculaNormalDeColisao()
+{
+    vertice p1, p2, p3;
+    //encontraDoisPontosMaisProximos()
+}
+
+
+
 
 /// Retorna o jogo para o estado inicial
 void reset(bool newgame)
@@ -81,44 +170,29 @@ void drawCampo(void) {
     // Paredes
     glPushMatrix();
         setColor(0.765, 0.796, 0.851);
-        glTranslatef(-4,2.5,0.0);
-        glScalef(1,30.0, 1.0);
+        glTranslatef(-3.5,2.0,0.0);
+        glScalef(1,25.0, 1.0);
         glutSolidCube(0.25);
     glPopMatrix();
 
     glPushMatrix();
         setColor(0.765, 0.796, 0.851);
-        glTranslatef(4,2.5,0.0);
-        glScalef(1,30.0, 1.0);
+        glTranslatef(3.5,2.0,0.0);
+        glScalef(1,25.0, 1.0);
         glutSolidCube(0.25);
     glPopMatrix();
 
     glPushMatrix();
         setColor(0.765, 0.796, 0.851);
         glTranslatef(0,-1.25,0.0);
-        glScalef(33,1.0, 1.0);
+        glScalef(29,1.0, 1.0);
         glutSolidCube(0.25);
     glPopMatrix();
 
     glPushMatrix();
         setColor(0.765, 0.796, 0.851);
-        glTranslatef(0,6.15,0.0);
-        glScalef(33,1.0, 1.0);
-        glutSolidCube(0.25);
-    glPopMatrix();
-
-    // Saida dos inimigos
-    glPushMatrix();
-        setColor(0.0, 0.0, 0.653);
-        glTranslatef(-2,5.95,0.0);
-        glScalef(10,1.0, 1.0);
-        glutSolidCube(0.25);
-    glPopMatrix();
-
-    glPushMatrix();
-        setColor(0.0, 0.0, 0.653);
-        glTranslatef(2,5.95,0.0);
-        glScalef(10,1.0, 1.0);
+        glTranslatef(0,5.25,0.0);
+        glScalef(29,1.0, 1.0);
         glutSolidCube(0.25);
     glPopMatrix();
 }
@@ -126,11 +200,11 @@ void drawCampo(void) {
 
 void colisaoParedes(void) {
     //Parede superior
-    if (ball_coords.y+0.26 >= 6.15)
+    if (ball_coords.y+0.26 >= 5.25)
         ball_vector[1] *= -1;
 
     // Parede inferior
-    if (ball_coords.y-0.26 <= -1.0) {
+    if (ball_coords.y-0.26 <= -1.25) {
         ball_vector[1] *= -1;
         vidas--;
         if (vidas > 0)
@@ -140,11 +214,11 @@ void colisaoParedes(void) {
     }
 
     // Parede lateral direita
-    if (ball_coords.x+0.26 >= 4.0)
+    if (ball_coords.x+0.26 >= 3.5)
         ball_vector[0] *= -1;
 
     // Parede lateral esquerda
-    if (ball_coords.x-0.26 <= -4.0)
+    if (ball_coords.x-0.26 <= -3.5)
         ball_vector[0] *= -1;
 }
 
@@ -243,6 +317,12 @@ void display(void)
     {
         reset(true);
     }
+
+    ///printf("\nDistancia: %f", calculaDistancia(player->Getorigem(), ball_coords));
+    ///printf("\nBall Y: %f\n", ball_coords.y);
+    player->imprimePontosDeConstrucao();
+    if(colisaoBolaPlayer())
+        reset(false);
 
     glutSwapBuffers();
 }

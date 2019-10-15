@@ -103,3 +103,45 @@
 	<stdio.h>
 	<math.h>
 
+1571178977 source:/home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho02/main.cpp
+	<GL/glut.h>
+	<stdlib.h>
+	<stdio.h>
+	<ctype.h>
+	<cstdlib>
+	<time.h>
+	<math.h>
+	"extras.h"
+	"Enemy.h"
+	"Player.h"
+
+1571102345 /home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho02/extras.h
+	<GL/glut.h>
+
+1571102345 /home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho02/include/Enemy.h
+	"Bloco.h"
+	<vector>
+	<iostream>
+
+1571102345 /home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho02/include/Bloco.h
+
+1571146511 /home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho02/include/Player.h
+	"Bloco.h"
+
+1571102345 source:/home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho02/src/Bloco.cpp
+	"Bloco.h"
+	<GL/glut.h>
+	<stdlib.h>
+	<stdio.h>
+	<math.h>
+
+1571102345 source:/home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho02/src/Enemy.cpp
+	"Enemy.h"
+
+1571146543 source:/home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho02/src/Player.cpp
+	"Player.h"
+	<GL/glut.h>
+	<stdlib.h>
+	<stdio.h>
+	<math.h>
+

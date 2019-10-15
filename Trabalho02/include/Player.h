@@ -16,6 +16,9 @@ class Player
         void setColor(float r, float g, float b);
         bool colisao(vertice centro, float vetor_direcao[], float raio);
 
+        vertice pontosDeConstrucao[21];
+        void imprimePontosDeConstrucao();
+
     private:
         void rotacao(float coords[], float angulo);
 
