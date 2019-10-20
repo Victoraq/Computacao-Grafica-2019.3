@@ -9,6 +9,7 @@
 #include "extras.h"
 #include "Enemy.h"
 #include "Player.h"
+#include "EnemyRandom.h"
 
 /// Estruturas iniciais para armazenar vertices
 //  Você poderá utilizá-las adicionando novos métodos (de acesso por exemplo) ou usar suas próprias estruturas.
@@ -25,8 +26,9 @@ int   last_x, last_y;
 int   width, height;
 int mouseX = 500;                  // Posição do mouse
 int proj = 1;                      // Indica em que projeção será exibido
-Player *player;                     // Bloco do player
-Enemy *enemy;                      // Armazena os inimigos
+Player *player;                    // Bloco do player
+Enemy *enemy;                      // Armazena os inimigos blocos
+EnemyRandom *randomEnemy;          // Inimigo criado com movimentação random
 vertice playerCenter = {0.0,-1,0.0}; // Posição do player
 float cursor_coords[] = {0.0, 1};  // Coodenadas do cursor
 float angulo = 0;                  // Angulo em que o cursor está
@@ -168,7 +170,7 @@ void drawVidas() {
     for (int i = 0; i < vidas; i++) {
         glPushMatrix();
             setColor(1.0, 0.0, 0.0);
-            glTranslatef(4, i*0.5, 0.0); // Posicionamento inicial da esfera
+            glTranslatef(4.5, i*0.5, 0.0); // Posicionamento inicial da esfera
             glutSolidSphere(RAIO*2, 100, 100);
         glPopMatrix();
     }
@@ -244,6 +246,8 @@ void display(void)
         reset(true);
     }
 
+    randomEnemy->drawEnemies(); // desenha inimigos com movimento random
+
     glutSwapBuffers();
 }
 
@@ -273,6 +277,7 @@ void idle ()
     if (inicio && !pause) { // Se foi liberada a movimentação as suas coordenadas serão iteradas com base na velocidade
         ball_coords.x+=ball_vector[0]/(step/VELOCIDADE);
         ball_coords.y+=ball_vector[1]/(step/VELOCIDADE);
+        randomEnemy->movimenta(step/VELOCIDADE);
     }
 
     player->drawPlayer(); // Desenha o player
@@ -284,6 +289,9 @@ void idle ()
     enemy->colisao(ball_coords, ball_vector, RAIO);
 
     colisaoParedes();
+
+
+    randomEnemy->drawEnemies();
 
     //Quantidade de vidas
     drawVidas();
@@ -438,6 +446,7 @@ int main(int argc, char** argv)
     float color[3] = {0.0,1.0,0.0};
     player = new Player(playerCenter,color); // inicializa o player
     enemy = new Enemy(QUANT_ENEMY);       // inicializa os inimigos
+    randomEnemy = new EnemyRandom(2);
     glutWarpPointer(mouseX, mouseX);
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);

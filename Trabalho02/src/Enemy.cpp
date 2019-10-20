@@ -2,10 +2,9 @@
 
 Enemy::Enemy(int quant) {
 
-
     this->quant = quant;
     this->enemiesOnScreen=quant;
-    cout << endl << "EOS " << this->enemiesOnScreen;
+
     vertice origem = {-3.5,4.7,0.0};
 
     for (int i = 0; i < this->quant; i++) {
