@@ -10,8 +10,14 @@ EnemyRandom::EnemyRandom(int quant) {
     vertice origemEsquerda = {-2,5.65,0.0};
     vertice origemDireita = {2,5.65,0.0};
 
-    float direcaoEsquerda[] = {rand() % 10 + 1, -1*(rand() % 10 + 1)};
-    float direcaoDireita[] = {rand() % 10 + 1, -1*(rand() % 10 + 1)};
+    float *direcaoEsquerda = new float[2];
+    float *direcaoDireita = new float[2];
+
+    direcaoEsquerda[0] = rand() % 2 + 0.2;
+    direcaoEsquerda[1] = -1*(rand() % 2 + 0.2);
+    direcaoDireita[0] = rand() % 2 + 0.2;
+    direcaoDireita[1] = -1*(rand() % 2 + 0.2);
+
 
     for (int i = 0; i < quant; i+=2) {
         this->enemies.push_back(origemEsquerda);
@@ -35,6 +41,9 @@ EnemyRandom::EnemyRandom(int quant) {
 }
 
 void EnemyRandom::drawEnemies() {
+for (int i = 0; i < quant; i++) {
+        printf("\n Direcao: %f %f %f \n",this->direcaoEnemies.at(i)[0], this->direcaoEnemies.at(i)[1]);
+    }
     for (int i = 0; i < this->quant; i++) {
         vertice posicao = this->enemies.at(i);
         glPushMatrix();
@@ -42,23 +51,18 @@ void EnemyRandom::drawEnemies() {
             printf("%f %f %f \n",posicao.x, posicao.y);
             glTranslatef(posicao.x, posicao.y, posicao.z);
             objectManager->SelectObject(0);
-    objectManager->SetShadingMode(SMOOTH_SHADING); // Possible values: FLAT_SHADING e SMOOTH_SHADING
-    objectManager->SetRenderMode(USE_MATERIAL);     // Possible values: USE_COLOR, USE_MATERIAL, USE_TEXTURE (not available in this example)
-    objectManager->Unitize();
-    objectManager->Draw();
+            objectManager->SetShadingMode(SMOOTH_SHADING); // Possible values: FLAT_SHADING e SMOOTH_SHADING
+            objectManager->SetRenderMode(USE_MATERIAL);     // Possible values: USE_COLOR, USE_MATERIAL, USE_TEXTURE (not available in this example)
+            objectManager->Unitize();
+            objectManager->Draw();
         glPopMatrix();
     }
-
-    objectManager->SelectObject(0);
-    objectManager->SetShadingMode(SMOOTH_SHADING); // Possible values: FLAT_SHADING e SMOOTH_SHADING
-    objectManager->SetRenderMode(USE_MATERIAL);     // Possible values: USE_COLOR, USE_MATERIAL, USE_TEXTURE (not available in this example)
-    objectManager->Unitize();
-    objectManager->Draw();
 }
 
 void EnemyRandom::movimenta(float step) {
 
     for (int i = 0; i < this->quant; i++) {
+        printf("\n Antes Direcao: %f %f %f \n",this->direcaoEnemies.at(i)[0], this->direcaoEnemies.at(i)[1]);
         this->enemies.at(i).x+=this->direcaoEnemies.at(i)[0]/(step);
         this->enemies.at(i).y+=this->direcaoEnemies.at(i)[1]/(step);
         printf("\n Direcao: %f %f %f \n",this->direcaoEnemies.at(i)[0], this->direcaoEnemies.at(i)[1]);

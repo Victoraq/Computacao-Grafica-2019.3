@@ -39,9 +39,15 @@
 		<Unit filename="extras.h" />
 		<Unit filename="include/Bloco.h" />
 		<Unit filename="include/Enemy.h" />
+		<Unit filename="include/EnemyRandom.h" />
+		<Unit filename="include/Player.h" />
+		<Unit filename="include/glcWavefrontObject.cpp" />
+		<Unit filename="include/glcWavefrontObject.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/Bloco.cpp" />
 		<Unit filename="src/Enemy.cpp" />
+		<Unit filename="src/EnemyRandom.cpp" />
+		<Unit filename="src/Player.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
