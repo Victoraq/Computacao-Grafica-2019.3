@@ -23,6 +23,8 @@ class Bloco
         void drawBloco();
         void setColor(float r, float g, float b);
         bool colisao(vertice centro, float vetor_direcao[], float raio);
+        void changeColor(float cor[3]);
+
 
     private:
         const float SIZE = 0.25;

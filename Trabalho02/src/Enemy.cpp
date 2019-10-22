@@ -4,6 +4,7 @@ Enemy::Enemy(int quant) {
 
     this->quant = quant;
     this->enemiesOnScreen=quant;
+    this->conf = 0;
 
     vertice origem = {-3.5,4.7,0.0};
 
@@ -13,7 +14,8 @@ Enemy::Enemy(int quant) {
             origem.x = -2.8;
             origem.y = origem.y - 0.35;
         }
-        float color[3] = {1.0,0.0,0.0};
+
+        float color[3] = {1.0, 0.0, 0.0};
 
         this->enemies.push_back(new Bloco(origem,2.5,color));
     }
@@ -27,6 +29,10 @@ Enemy::~Enemy()
 
 void Enemy::drawEnemies() {
     for (int i = 0; i < this->quant; i++) {
+        // comparacoes das configuracoes
+        if (this->conf == 0 && i % 2 != 0) continue;
+        if (this->conf == 1 && i % 2 == 0) continue;
+
         this->enemies.at(i)->drawBloco();
     }
 }
@@ -34,6 +40,10 @@ void Enemy::drawEnemies() {
 void Enemy::colisao(vertice centro, float vetor_direcao[], float raio) {
     bool colidiu;
     for (int i = 0; i < this->quant; i++) {
+        // comparacoes das configuracoes
+        if (this->conf == 0 && i % 2 != 0) continue;
+        if (this->conf == 1 && i % 2 == 0) continue;
+
         // Só é verificada a colisão se o inimigo for visualizavel
         if (this->enemies.at(i)->Getshow()) {
 
@@ -63,4 +73,30 @@ void Enemy::decreaseEnemiesOnScreen()
 int Enemy::getEnemiesOnScreen()
 {
     return this->enemiesOnScreen;
+}
+
+void Enemy::setConf(int conf) {
+    this->conf = conf;
+
+    float color[3];
+    if (this->conf == 0) {
+        color[0] = 1.0;
+        color[1] = 0.0;
+        color[2] = 0.0;
+    }
+    if (this->conf == 1) {
+        color[0] = 0.0;
+        color[1] = 0.0;
+        color[2] = 0.8;
+    }
+    if (this->conf == 2) {
+        color[0] = 1.0;
+        color[1] = 0.0;
+        color[2] = 1.0;
+    }
+
+    for (int i = 0; i < this->quant; i++) {
+        this->enemies.at(i)->changeColor(color);
+    }
+
 }

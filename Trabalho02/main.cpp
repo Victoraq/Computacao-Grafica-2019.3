@@ -40,6 +40,7 @@ float flipperStep = 0.25;          // Passo de movimentação do player
 vertice ball_coords = {0.0,0.0,0.0};  // Coordenadas da bola
 float *ball_vector = cursor_coords;   // Vetor de direção da bola
 int vidas = 5;                     // Contador de vidas do jogador
+int fase = 0;                      // determina em que fase o player esta
 
 /// Functions
 void init(void)
@@ -221,6 +222,9 @@ void display(void)
 
     gluLookAt (0.0, proj_vision, zdist, 0.0, 3.0, 0.0, 0.0, 1.0, 0.0);
 
+    // Mudando a configuracao dos inimigos conforme a fase atual
+    enemy->setConf(fase);
+
     glPushMatrix();
         glRotatef( rotationY, 0.0, 1.0, 0.0 );
         glRotatef( rotationX, 1.0, 0.0, 0.0 );
@@ -245,9 +249,16 @@ void display(void)
         if (!inicio)
             drawCursor(ball_coords.x, ball_coords.y);
 
-        // Termina o jogo se terminarem os inimigos
-        if (enemy->numberOfEnemies() == 0)
+        // Incrementa a fase se terminarem os inimigos
+        if (enemy->numberOfEnemies() == 0 && fase < 3) {
             reset(true);
+            fase++;
+            enemy->setConf(fase);
+        } else if (fase >= 3) {
+            reset(true);
+            fase = 0;
+            enemy->setConf(fase);
+        }
 
     glPopMatrix();
 
@@ -294,14 +305,13 @@ void idle ()
 
     enemy->drawEnemies(); // Desenha todos os blocos inimigos
 
+    randomEnemy->drawEnemies();
+
     player->colisao(ball_coords, ball_vector, RAIO);
 
     enemy->colisao(ball_coords, ball_vector, RAIO);
 
     colisaoParedes();
-
-
-    randomEnemy->drawEnemies();
 
     //Quantidade de vidas
     drawVidas();
@@ -423,13 +433,13 @@ void mouseMoveFlipper(int x, int y)
     }
 
     // verifica a movimentação a partir da mudança de direção do mouse
-    if (x < mouseX && playerCenter.x-flipperStep > -2.5 ) {
+    if (x < mouseX && playerCenter.x-flipperStep > -3.2 ) {
         playerCenter.x = playerCenter.x-flipperStep;
         player->Setorigem(playerCenter);
         if (!inicio)
             ball_coords.x = playerCenter.x;
     }
-    if (mouseX < x && playerCenter.x+flipperStep < 2.5 ) {
+    if (mouseX < x && playerCenter.x+flipperStep < 3.2 ) {
         playerCenter.x = playerCenter.x+flipperStep;
         player->Setorigem(playerCenter);
         if (!inicio)

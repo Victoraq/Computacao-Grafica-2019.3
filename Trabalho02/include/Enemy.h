@@ -18,11 +18,13 @@ class Enemy
         int numberOfEnemies() { return enemies.size(); }
         void decreaseEnemiesOnScreen();
         int getEnemiesOnScreen();
+        void setConf(int conf);
 
     private:
         int quant;
         vector<Bloco*> enemies;
         int enemiesOnScreen;
+        int conf;         // Torna configuravel a forma de apresentacao dos blocos
 
 };
 

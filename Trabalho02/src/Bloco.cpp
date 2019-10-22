@@ -173,3 +173,9 @@ void Bloco::setShow(bool b)
     this->show=b;
 }
 
+
+void Bloco::changeColor(float cor[3]) {
+    this->cor[0] = cor[0];
+    this->cor[1] = cor[1];
+    this->cor[2] = cor[2];
+}
