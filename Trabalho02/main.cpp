@@ -57,10 +57,13 @@ void reset(bool newgame)
     ball_coords = {0, 0, 0};
     player->Setorigem({0.0,-1,0.0});
     player->drawPlayer();
+    randomEnemy->resetEnemies();
+
     if (newgame) {
         enemy->resetEnemies();
         vidas = 5;
     }
+
     inicio=false;
 }
 

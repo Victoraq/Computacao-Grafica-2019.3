@@ -101,9 +101,23 @@ void EnemyRandom::colisaoParedes(float coord_sup, float coord_inf, float coord_l
 
 void EnemyRandom::resetEnemies()
 {
-//    for(vector<Bloco*>::iterator p=this->enemies.begin(); p!=this->enemies.end(); p++)
-//        (*p)->setShow(true);
-//    this->enemiesOnScreen=quant;
+    vertice origemEsquerda = {-2,5.65,0.0};
+    vertice origemDireita = {2,5.65,0.0};
+
+    float *direcaoEsquerda = new float[2];
+    float *direcaoDireita = new float[2];
+
+    direcaoEsquerda[0] = rand() % 2 + 0.2;
+    direcaoEsquerda[1] = -1*(rand() % 2 + 0.2);
+    direcaoDireita[0] = rand() % 2 + 0.2;
+    direcaoDireita[1] = -1*(rand() % 2 + 0.2);
+
+    for (int i = 0; i < quant; i+=2) {
+        this->enemies.at(i) = origemEsquerda;
+        this->enemies.at(i+1) = origemDireita;
+        this->direcaoEnemies.at(i) = direcaoEsquerda;
+        this->direcaoEnemies.at(i+1) = direcaoDireita;
+    }
 }
 
 void EnemyRandom::decreaseEnemiesOnScreen()
