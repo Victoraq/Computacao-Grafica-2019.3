@@ -127,12 +127,16 @@ void drawCampo(void) {
 
 
 void colisaoParedes(void) {
+    float coord_sup = 6.15;
+    float coord_inf = -1.0;
+    float coord_lat = 4.0;
+
     //Parede superior
-    if (ball_coords.y+0.26 >= 6.15)
+    if (ball_coords.y+0.26 >= coord_sup)
         ball_vector[1] *= -1;
 
     // Parede inferior
-    if (ball_coords.y-0.26 <= -1.0) {
+    if (ball_coords.y-0.26 <= coord_inf) {
         ball_vector[1] *= -1;
         vidas--;
         if (vidas > 0)
@@ -142,12 +146,15 @@ void colisaoParedes(void) {
     }
 
     // Parede lateral direita
-    if (ball_coords.x+0.26 >= 4.0)
+    if (ball_coords.x+0.26 >= coord_lat)
         ball_vector[0] *= -1;
 
     // Parede lateral esquerda
-    if (ball_coords.x-0.26 <= -4.0)
+    if (ball_coords.x-0.26 <= -coord_lat)
         ball_vector[0] *= -1;
+
+    // verificando colisao para os inimigos que se movimentam
+    randomEnemy->colisaoParedes(coord_sup, coord_inf, coord_lat);
 }
 
 

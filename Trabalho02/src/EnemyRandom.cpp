@@ -71,20 +71,32 @@ void EnemyRandom::movimenta(float step) {
 }
 
 void EnemyRandom::colisao(vertice centro, float vetor_direcao[], float raio) {
-//    bool colidiu;
+
 //    for (int i = 0; i < this->quant; i++) {
-//        // Só é verificada a colisão se o inimigo for visualizavel
-//        if (this->enemies.at(i)->Getshow()) {
-//
-//            colidiu = this->enemies.at(i)->colisao(centro, vetor_direcao, raio);
-//
-//            this->enemies.at(i)->setShow(!colidiu); // Se colidiu, ele não é mais visualizavel
-//            if(!this->enemies.at(i)->Getshow())
-//            {
-//                this->decreaseEnemiesOnScreen();
-//            }
-//        }
 //    }
+}
+
+void EnemyRandom::colisaoParedes(float coord_sup, float coord_inf, float coord_lat) {
+
+    for (int i = 0; i < this->quant; i++) {
+        //Parede superior
+        if (this->enemies.at(i).y+0.26 >= coord_sup)
+            this->direcaoEnemies.at(i)[1] *= -1;
+
+        // Parede inferior
+        if (this->enemies.at(i).y-0.26 <= coord_inf) {
+            this->direcaoEnemies.at(i)[1] *= -1;
+        }
+
+        // Parede lateral direita
+        if (this->enemies.at(i).x+0.26 >= coord_lat)
+            this->direcaoEnemies.at(i)[0] *= -1;
+
+        // Parede lateral esquerda
+        if (this->enemies.at(i).x-0.26 <= -coord_lat)
+            this->direcaoEnemies.at(i)[0] *= -1;
+    }
+
 }
 
 void EnemyRandom::resetEnemies()
