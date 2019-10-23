@@ -32,6 +32,7 @@ class EnemyRandom
         void decreaseEnemiesOnScreen();
         int getEnemiesOnScreen();
 
+
     private:
         int quant;
         vector<vertice> enemies;

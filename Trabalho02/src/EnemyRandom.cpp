@@ -76,7 +76,6 @@ void EnemyRandom::colisaoParedes(float coord_sup, float coord_inf, float coord_l
 
     for (int i = 0; i < this->quant; i++) {
         //Parede superior
-        printf("\n A %f C %f \n",this->enemies.at(i).y, coord_sup);
         if (this->enemies.at(i).y+0.4 >= coord_sup)
             this->direcaoEnemies.at(i)[1] *= -1;
 

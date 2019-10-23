@@ -145,8 +145,11 @@ void colisaoParedes(void) {
         vidas--;
         if (vidas > 0)
             reset(false);  // Se colidir com a inferior o jogo é resetado
-        else
+        else {
+            fase = 0;
+            enemy->setConf(fase);
             reset(true);
+        }
     }
 
     // Parede lateral direita
@@ -236,6 +239,8 @@ void display(void)
 
         enemy->drawEnemies(); // Desenha todos os blocos inimigos
 
+        randomEnemy->drawEnemies(); // desenha inimigos com movimento random
+
         drawVidas();
 
         // Esfera
@@ -249,25 +254,19 @@ void display(void)
         if (!inicio)
             drawCursor(ball_coords.x, ball_coords.y);
 
-        // Incrementa a fase se terminarem os inimigos
+    glPopMatrix();
+
+    // Incrementa a fase se terminarem os inimigos
         if (enemy->numberOfEnemies() == 0 && fase < 3) {
-            reset(true);
             fase++;
             enemy->setConf(fase);
+            reset(true);
+            printf("passou");
         } else if (fase >= 3) {
             reset(true);
             fase = 0;
             enemy->setConf(fase);
         }
-
-    glPopMatrix();
-
-    if(enemy->getEnemiesOnScreen()==0)
-    {
-        reset(true);
-    }
-
-    randomEnemy->drawEnemies(); // desenha inimigos com movimento random
 
     glutSwapBuffers();
 }

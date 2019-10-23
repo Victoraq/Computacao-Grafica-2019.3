@@ -100,3 +100,15 @@ void Enemy::setConf(int conf) {
     }
 
 }
+
+
+int Enemy::numberOfEnemies() {
+    int counter = 0;
+    for (int i = 0; i < this->quant; i++) {
+        if (this->conf == 0 && i % 2 != 0) continue;
+        else if (this->conf == 1 && i % 2 == 0) continue;
+
+        if (this->enemies.at(i)->Getshow()) counter++;
+    }
+    return counter;
+}
