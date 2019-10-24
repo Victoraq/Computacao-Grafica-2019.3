@@ -25,21 +25,23 @@ class EnemyRandom
 
         void drawEnemies();
         void movimenta(float step);
-        void colisao(vertice centro, float vetor_direcao[], float raio);
+        void colisaoBola(vertice centro, float vetor_direcao[], float raio);
         void colisaoParedes(float coord_sup, float coord_inf, float coord_lat);
         void resetEnemies();
         int numberOfEnemies() { return enemies.size(); }
-        void decreaseEnemiesOnScreen();
-        int getEnemiesOnScreen();
+        void removeEnemy(int index);
 
 
     private:
         int quant;
         vector<vertice> enemies;
         vector<float*> direcaoEnemies;
-        int enemiesOnScreen;
+        float escala = 0.7;                      // escala do objeto
+        vector<float> colidiu;
+        int regressao = 10;
         char objFile[200] = "/home/victor/Documentos/UFJF/CG/aula01ex01/data/obj/soccerball.obj";
         glcWavefrontObject *objectManager = NULL;
+
 };
 
 #endif // ENEMYRANDOM_H
