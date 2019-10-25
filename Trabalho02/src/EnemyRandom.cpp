@@ -2,7 +2,7 @@
 
 EnemyRandom::EnemyRandom(int quant) {
 
-    //srand (time(NULL));
+    srand (time(NULL));
 
     this->quant = quant;
 
@@ -64,6 +64,7 @@ void EnemyRandom::drawEnemies() {
     }
 }
 
+/// incrementa a posicao do objeto pelo passo passado por parametro
 void EnemyRandom::movimenta(float step) {
 
     for (int i = 0; i < this->quant; i++) {
@@ -229,6 +230,13 @@ void EnemyRandom::colisaoParedes(float coord_sup, float coord_inf, float coord_l
 
 }
 
+void EnemyRandom::colisaoBloco(Enemy* blocos) {
+    float raio_obj = 0.35;
+    for (int i = 0; i < this->quant; i++) {
+        blocos->colisaoComEnemy(this->enemies.at(i), this->direcaoEnemies.at(i), raio_obj);
+    }
+}
+
 void EnemyRandom::resetEnemies()
 {
     vertice origemEsquerda = {-2,5.65,0.0};
@@ -262,7 +270,7 @@ void EnemyRandom::removeEnemy(int index) {
     }
 
     vertice posicao = this->enemies.at(index);
-    this->colidiu.at(index)-=0.005;  // variavel de colisao diminui a escala do objeto passo a passo
+    this->colidiu.at(index)-=0.01;  // variavel de colisao diminui a escala do objeto passo a passo
 
     glPushMatrix();
         glTranslatef(posicao.x, posicao.y, posicao.z);

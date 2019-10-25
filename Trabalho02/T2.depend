@@ -115,7 +115,7 @@
 	<GL/glut.h>
 	<Bloco.h>
 
-1571940785 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/main.cpp
+1571965159 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/main.cpp
 	<GL/glut.h>
 	<stdlib.h>
 	<stdio.h>
@@ -131,7 +131,7 @@
 1568681138 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/extras.h
 	<GL/glut.h>
 
-1571793673 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/include/Enemy.h
+1571965286 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/include/Enemy.h
 	"Bloco.h"
 	<vector>
 	<iostream>
@@ -141,13 +141,14 @@
 1571099813 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/include/Player.h
 	"Bloco.h"
 
-1571942701 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/include/EnemyRandom.h
+1571965176 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/include/EnemyRandom.h
 	<vector>
 	<iostream>
 	<stdlib.h>
 	<time.h>
 	<GL/glut.h>
 	<Bloco.h>
+	<Enemy.h>
 	<glcWavefrontObject.h>
 
 1571782356 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/src/Bloco.cpp
@@ -172,7 +173,7 @@
 	<stdio.h>
 	<GL/gl.h>
 
-1571947115 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/src/EnemyRandom.cpp
+1571965184 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/src/EnemyRandom.cpp
 	"EnemyRandom.h"
 
 1535591434 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/include/glcWavefrontObject.cpp

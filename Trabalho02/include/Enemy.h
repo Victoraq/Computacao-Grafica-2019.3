@@ -14,6 +14,7 @@ class Enemy
 
         void drawEnemies();
         void colisao(vertice centro, float vetor_direcao[], float raio);
+        void colisaoComEnemy(vertice centro, float vetor_direcao[], float raio);
         void resetEnemies();
         int numberOfEnemies();
         void decreaseEnemiesOnScreen();

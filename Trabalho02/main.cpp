@@ -312,6 +312,8 @@ void idle ()
 
     randomEnemy->colisaoBola(ball_coords, ball_vector, RAIO);
 
+    randomEnemy->colisaoBloco(enemy);
+
     colisaoParedes();
 
     //Quantidade de vidas

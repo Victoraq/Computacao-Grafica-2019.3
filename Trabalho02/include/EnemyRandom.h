@@ -7,6 +7,7 @@
 #include <time.h>
 #include <GL/glut.h>
 #include <Bloco.h>
+#include <Enemy.h>
 #include <glcWavefrontObject.h>
 
 using namespace std;
@@ -27,6 +28,7 @@ class EnemyRandom
         void movimenta(float step);
         void colisaoBola(vertice centro, float vetor_direcao[], float raio);
         void colisaoParedes(float coord_sup, float coord_inf, float coord_lat);
+        void colisaoBloco(Enemy* blocos);
         void resetEnemies();
         int numberOfEnemies() { return enemies.size(); }
         void removeEnemy(int index);
