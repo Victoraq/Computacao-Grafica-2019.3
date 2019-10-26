@@ -39,10 +39,16 @@ class EnemyRandom
         vector<vertice> enemies;
         vector<float*> direcaoEnemies;
         float escala = 0.7;                      // escala do objeto
-        vector<float> colidiu;
+        // indica o status do objeto.
+        // status == 0 -> rederizavel
+        // status < 0 -> nao renderizavel
+        // status > 0 -> colisao
+        vector<float> status;
         int regressao = 10;
         char objFile[200] = "/home/victor/Documentos/UFJF/CG/aula01ex01/data/obj/soccerball.obj";
         glcWavefrontObject *objectManager = NULL;
+        float XPOS = 2;
+        float YPOS = 5.65;
 
 };
 

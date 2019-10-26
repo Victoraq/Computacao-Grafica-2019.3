@@ -6,8 +6,8 @@ EnemyRandom::EnemyRandom(int quant) {
 
     this->quant = quant;
 
-    vertice origemEsquerda = {-2,5.3,0.0};
-    vertice origemDireita = {2,5.3,0.0};
+    vertice origemEsquerda = {-XPOS,YPOS,0.0};
+    vertice origemDireita = {XPOS,YPOS,0.0};
 
     float *direcaoEsquerda = new float[2];
     float *direcaoDireita = new float[2];
@@ -18,13 +18,15 @@ EnemyRandom::EnemyRandom(int quant) {
     direcaoDireita[1] = -1*(rand() % 2 + 0.2);
 
 
-    for (int i = 0; i < quant; i+=2) {
-        this->enemies.push_back(origemEsquerda);
-        this->enemies.push_back(origemDireita);
-        this->direcaoEnemies.push_back(direcaoEsquerda);
-        this->direcaoEnemies.push_back(direcaoDireita);
-        this->colidiu.push_back(0);
-        this->colidiu.push_back(0);
+    for (int i = 0; i < quant; i++) {
+        if (i % 2 == 0) {
+            this->enemies.push_back(origemEsquerda);
+            this->direcaoEnemies.push_back(direcaoEsquerda);
+        } else {
+            this->enemies.push_back(origemDireita);
+            this->direcaoEnemies.push_back(direcaoDireita);
+        }
+        this->status.push_back(-1); // negativo o objeto não é renderizado
     }
 
     // LOAD OBJECT
@@ -44,9 +46,27 @@ EnemyRandom::EnemyRandom(int quant) {
 void EnemyRandom::drawEnemies() {
     for (int i = 0; i < this->quant; i++) {
         // se o objeto esta em processo de colisao nao ira desenhado normalmente
-        if (this->colidiu.at(i) != 0) {
+        if (this->status.at(i) > 0) {
             this->removeEnemy(i);
             continue;
+        }
+        // se o objeto esta escondido ira ser analisado se ele ira voltar a ser renderizado
+        if (this->status.at(i) < 0) {
+
+            // voltando a desenhar o objeto se o random sortiar um multiplo de um primo especifico
+            int desenha = rand() % 1000 + 2;
+
+            if (desenha % 439 == 0) {
+                this->status.at(i) = 0.0;
+
+                // se o indice for par aparece na esquerda, se nao, na direita
+                if (i % 2 == 0) this->enemies.at(i).x = -XPOS;
+                else this->enemies.at(i).x = XPOS;
+
+                this->enemies.at(i).y = YPOS;
+
+            } else
+                continue;
         }
 
         vertice posicao = this->enemies.at(i);
@@ -78,15 +98,15 @@ void EnemyRandom::colisaoBola(vertice centro, float vetor_direcao[], float raio)
 
     for (int i = 0; i < this->quant; i++) {
 
-        if (this->colidiu.at(i) != 0) continue; // se o objeto esta em processo de colisao nao ira colidir
+        if (this->status.at(i) != 0) continue; // se o objeto esta em processo de colisao nao ira colidir
 
         // Variaveis para calculo de distancia entre paredes
 
         float x_obj = this->enemies.at(i).x;
         float y_obj = this->enemies.at(i).y;
         float raio_obj = 0.35;
-        bool colidiu_inf = false; // verifica em que parede colidiu
-        bool colidiu_sup = false;
+        bool status_inf = false; // verifica em que parede status
+        bool status_sup = false;
 
         // considerando que o objeto esta em uma hitbox cubica simples
 
@@ -100,12 +120,12 @@ void EnemyRandom::colisaoBola(vertice centro, float vetor_direcao[], float raio)
                 // Parede inferior
                 if (centro.y+raio < y_obj) {
                     vetor_direcao[1] *= -1;
-                    colidiu_inf = true;
+                    status_inf = true;
                 }
                 // Parede superior
                 if (centro.y-raio > y_obj) {
                     vetor_direcao[1] *= -1;
-                    colidiu_sup = true;
+                    status_sup = true;
                 }
             }
 
@@ -119,7 +139,7 @@ void EnemyRandom::colisaoBola(vertice centro, float vetor_direcao[], float raio)
                 if (centro.x+raio < x_obj) {
                     vetor_direcao[0] *= -1;
 
-                    if (colidiu_inf) {
+                    if (status_inf) {
                         // distancia da parede inferior
                         deltaX = x_obj - centro.x;
                         deltaY = y_obj - raio_obj - centro.y;
@@ -136,7 +156,7 @@ void EnemyRandom::colisaoBola(vertice centro, float vetor_direcao[], float raio)
                             vetor_direcao[0] *= -1;
                         }
 
-                    } else if (colidiu_sup) {
+                    } else if (status_sup) {
                         // distancia da parede superior
                         deltaX = x_obj - centro.x;
                         deltaY = y_obj + raio_obj - centro.y;
@@ -159,7 +179,7 @@ void EnemyRandom::colisaoBola(vertice centro, float vetor_direcao[], float raio)
                 if (centro.x-raio > x_obj) {
                     vetor_direcao[0] *= -1;
 
-                    if (colidiu_inf) {
+                    if (status_inf) {
                         // distancia da parede inferior
                         deltaX = x_obj - centro.x;
                         deltaY = y_obj - raio_obj - centro.y;
@@ -176,7 +196,7 @@ void EnemyRandom::colisaoBola(vertice centro, float vetor_direcao[], float raio)
                             vetor_direcao[0] *= -1;
                         }
 
-                    } else if (colidiu_sup) {
+                    } else if (status_sup) {
                         // distancia da parede superior
                         deltaX = x_obj - centro.x;
                         deltaY = y_obj + raio_obj - centro.y;
@@ -198,8 +218,8 @@ void EnemyRandom::colisaoBola(vertice centro, float vetor_direcao[], float raio)
             }
         }
 
-        if (colidiu_inf || colidiu_sup) {
-            this->colidiu.at(i) = this->escala; // se ocorreu a colisao o objeto comeca a animacao de colisao
+        if (status_inf || status_sup) {
+            this->status.at(i) = this->escala; // se ocorreu a colisao o objeto comeca a animacao de colisao
             this->removeEnemy(i);
         }
 
@@ -239,8 +259,8 @@ void EnemyRandom::colisaoBloco(Enemy* blocos) {
 
 void EnemyRandom::resetEnemies()
 {
-    vertice origemEsquerda = {-2,5.65,0.0};
-    vertice origemDireita = {2,5.65,0.0};
+    vertice origemEsquerda = {-XPOS,YPOS,0.0};
+    vertice origemDireita = {XPOS,YPOS,0.0};
 
     float *direcaoEsquerda = new float[2];
     float *direcaoDireita = new float[2];
@@ -250,13 +270,15 @@ void EnemyRandom::resetEnemies()
     direcaoDireita[0] = rand() % 2 + 0.2;
     direcaoDireita[1] = -1*(rand() % 2 + 0.2);
 
-    for (int i = 0; i < quant; i+=2) {
-        this->enemies.at(i) = origemEsquerda;
-        this->enemies.at(i+1) = origemDireita;
-        this->direcaoEnemies.at(i) = direcaoEsquerda;
-        this->direcaoEnemies.at(i+1) = direcaoDireita;
-        this->colidiu.at(i) = 0;
-        this->colidiu.at(i+1) = 0;
+    for (int i = 0; i < quant; i++) {
+        if (i % 2 == 0) {
+            this->enemies.at(i) = origemEsquerda;
+            this->direcaoEnemies.at(i) = direcaoEsquerda;
+        } else {
+            this->enemies.at(i) = origemDireita;
+            this->direcaoEnemies.at(i) = direcaoDireita;
+        }
+        this->status.at(i) = -1;
     }
 }
 
@@ -265,17 +287,17 @@ void EnemyRandom::removeEnemy(int index) {
 
     // a partir do momento em que o objeto esta com escala menor ou igual a zero
     // as colisoes nao serao computadas nem sera desenhado
-    if (this->colidiu.at(index) <= 0.0) {
+    if (this->status.at(index) <= 0.0) {
         return;
     }
 
     vertice posicao = this->enemies.at(index);
-    this->colidiu.at(index)-=0.01;  // variavel de colisao diminui a escala do objeto passo a passo
+    this->status.at(index)-=0.01;  // variavel de colisao diminui a escala do objeto passo a passo
 
     glPushMatrix();
         glTranslatef(posicao.x, posicao.y, posicao.z);
         glTranslatef(0.0, 0.0, 0.0);
-        glScalef(this->colidiu.at(index),this->colidiu.at(index),this->colidiu.at(index));
+        glScalef(this->status.at(index),this->status.at(index),this->status.at(index));
         glTranslatef(0.0, 0.0, 0.0);
         objectManager->SelectObject(0);
         objectManager->SetShadingMode(SMOOTH_SHADING);
@@ -284,12 +306,12 @@ void EnemyRandom::removeEnemy(int index) {
         objectManager->Draw();
     glPopMatrix();
 
-//    if (this->colidiu.at(index) <= 0.0) {
+//    if (this->status.at(index) <= 0.0) {
 //        // removendo posicao o vetor de colisao
-//        vector<float>::iterator posC = this->colidiu.begin();
+//        vector<float>::iterator posC = this->status.begin();
 //        posC+=1.0;
 //
-//        //this->colidiu.erase(posC);
+//        //this->status.erase(posC);
 //
 //        vector<vertice>::iterator posE = this->enemies.end();
 //        //posE+=index-1;
