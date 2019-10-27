@@ -43,7 +43,11 @@ EnemyRandom::EnemyRandom(int quant) {
     }
 }
 
-void EnemyRandom::drawEnemies() {
+/*
+    Desenha os inimigos na tela
+    parametro newEnemy: permite ou não a criação de novos inimigos
+*/
+void EnemyRandom::drawEnemies(bool newEnemy) {
     for (int i = 0; i < this->quant; i++) {
         // se o objeto esta em processo de colisao nao ira desenhado normalmente
         if (this->status.at(i) > 0) {
@@ -52,6 +56,9 @@ void EnemyRandom::drawEnemies() {
         }
         // se o objeto esta escondido ira ser analisado se ele ira voltar a ser renderizado
         if (this->status.at(i) < 0) {
+
+            // se estiver desabilitado a gerar novos inimigos continuamos o loop renderizando somente quem está visivel
+            if (!newEnemy) continue;
 
             // voltando a desenhar o objeto se o random sortiar um multiplo de um primo especifico
             int desenha = rand() % 1000 + 2;

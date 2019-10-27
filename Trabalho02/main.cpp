@@ -239,8 +239,6 @@ void display(void)
 
         enemy->drawEnemies(); // Desenha todos os blocos inimigos
 
-        randomEnemy->drawEnemies(); // desenha inimigos com movimento random
-
         drawVidas();
 
         // Esfera
@@ -253,6 +251,8 @@ void display(void)
         // Cursor de direção
         if (!inicio)
             drawCursor(ball_coords.x, ball_coords.y);
+        else
+            randomEnemy->drawEnemies(true);
 
     glPopMatrix();
 
@@ -261,7 +261,6 @@ void display(void)
             fase++;
             enemy->setConf(fase);
             reset(true);
-            printf("passou");
         } else if (fase >= 3) {
             reset(true);
             fase = 0;
@@ -304,7 +303,7 @@ void idle ()
 
     enemy->drawEnemies(); // Desenha todos os blocos inimigos
 
-    randomEnemy->drawEnemies();
+    randomEnemy->drawEnemies(!pause); // Desenha novos inimigos se o jogo não estiver pausado
 
     player->colisao(ball_coords, ball_vector, RAIO);
 

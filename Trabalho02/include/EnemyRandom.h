@@ -24,7 +24,7 @@ class EnemyRandom
     public:
         EnemyRandom(int quant);
 
-        void drawEnemies();
+        void drawEnemies(bool newEnemy);
         void movimenta(float step);
         void colisaoBola(vertice centro, float vetor_direcao[], float raio);
         void colisaoParedes(float coord_sup, float coord_inf, float coord_lat);
