@@ -116,14 +116,14 @@ void drawCampo(void) {
     // Saida dos inimigos
     glPushMatrix();
         setColor(0.0, 0.0, 0.653);
-        glTranslatef(-2,5.95,0.0);
+        glTranslatef(-2,6.05,0.0);
         glScalef(10,1.0, 1.0);
         glutSolidCube(0.25);
     glPopMatrix();
 
     glPushMatrix();
         setColor(0.0, 0.0, 0.653);
-        glTranslatef(2,5.95,0.0);
+        glTranslatef(2,6.05,0.0);
         glScalef(10,1.0, 1.0);
         glutSolidCube(0.25);
     glPopMatrix();

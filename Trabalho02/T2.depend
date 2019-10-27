@@ -115,7 +115,7 @@
 	<GL/glut.h>
 	<Bloco.h>
 
-1572131067 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/main.cpp
+1572131679 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/main.cpp
 	<GL/glut.h>
 	<stdlib.h>
 	<stdio.h>
@@ -131,12 +131,14 @@
 1568681138 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/extras.h
 	<GL/glut.h>
 
-1571965286 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/include/Enemy.h
+1572135234 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/include/Enemy.h
 	"Bloco.h"
 	<vector>
 	<iostream>
+	<string>
 
-1571782359 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/include/Bloco.h
+1572135358 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/include/Bloco.h
+	<string>
 
 1571099813 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/include/Player.h
 	"Bloco.h"
@@ -151,7 +153,7 @@
 	<Enemy.h>
 	<glcWavefrontObject.h>
 
-1571782356 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/src/Bloco.cpp
+1572135358 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/src/Bloco.cpp
 	"Bloco.h"
 	<GL/glut.h>
 	<stdlib.h>

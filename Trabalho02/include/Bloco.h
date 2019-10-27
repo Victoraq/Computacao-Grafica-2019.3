@@ -2,6 +2,8 @@
 #ifndef BLOCO_H
 #define BLOCO_H
 
+#include <string>
+using namespace std;
 
 class vertice
 {
@@ -13,6 +15,7 @@ class Bloco
 {
     public:
         Bloco(vertice origem, float dim, float cor[]);
+        Bloco(vertice origem, float dim);
 
         vertice Getorigem() { return origem; }
         bool Getshow() { return show; }
@@ -21,7 +24,9 @@ class Bloco
         void setShow(bool b);
 
         void drawBloco();
+        void drawBloco(string material);
         void setColor(float r, float g, float b);
+        void setColorByMaterial(string material);
         bool colisao(vertice centro, float vetor_direcao[], float raio);
         void changeColor(float cor[3]);
 

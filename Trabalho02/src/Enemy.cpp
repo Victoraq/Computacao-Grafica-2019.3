@@ -15,9 +15,7 @@ Enemy::Enemy(int quant) {
             origem.y = origem.y - 0.35;
         }
 
-        float color[3] = {1.0, 0.0, 0.0};
-
-        this->enemies.push_back(new Bloco(origem,2.5,color));
+        this->enemies.push_back(new Bloco(origem,2.5));
     }
 
 }
@@ -33,7 +31,11 @@ void Enemy::drawEnemies() {
         if (this->conf == 0 && i % 2 != 0) continue;
         if (this->conf == 1 && i % 2 == 0) continue;
 
-        this->enemies.at(i)->drawBloco();
+        string material = "gold";
+        if (this->conf == 0) material = "bronze";
+        if (this->conf == 1) material = "silver";
+
+        this->enemies.at(i)->drawBloco(material);
     }
 }
 
