@@ -14,6 +14,7 @@ class Player
 
         void drawPlayer();
         void setColor(float r, float g, float b);
+        void setMaterial();
         bool colisao(vertice centro, float vetor_direcao[], float raio);
 
     private:

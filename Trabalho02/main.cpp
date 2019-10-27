@@ -36,7 +36,7 @@ bool fullscreen = false;           // Coloca o jogo em fullscreen
 bool pause = false;                // Pausa o jogo
 bool camera = false;               // Libera movimentação da câmera
 bool inicio = false;               // Inicia o jogo
-float flipperStep = 0.25;          // Passo de movimentação do player
+float flipperStep = 0.2;          // Passo de movimentação do player
 vertice ball_coords = {0.0,0.0,0.0};  // Coordenadas da bola
 float *ball_vector = cursor_coords;   // Vetor de direção da bola
 int vidas = 5;                     // Contador de vidas do jogador
@@ -45,7 +45,7 @@ int fase = 0;                      // determina em que fase o player esta
 /// Functions
 void init(void)
 {
-    initLight(width, height); // Função extra para tratar iluminação.
+    initLight(rotationX, rotationY); // Função extra para tratar iluminação.
 }
 
 
@@ -222,6 +222,10 @@ void display(void)
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+
+    // mudando a posicao da luz em relacao a posicao da camera
+    GLfloat posicao_luz[] = { (float) rotationX, (float)rotationY, 1000.0, 1.0};
+    glLightfv(GL_LIGHT0, GL_POSITION, posicao_luz);
 
     gluLookAt (0.0, proj_vision, zdist, 0.0, 3.0, 0.0, 0.0, 1.0, 0.0);
 

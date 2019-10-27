@@ -9,7 +9,6 @@
 #include <Bloco.h>
 #include <Enemy.h>
 #include <glcWavefrontObject.h>
-
 using namespace std;
 
 typedef struct
@@ -32,6 +31,7 @@ class EnemyRandom
         void resetEnemies();
         int numberOfEnemies() { return enemies.size(); }
         void removeEnemy(int index);
+        void setMaterial();
 
 
     private:
@@ -45,7 +45,7 @@ class EnemyRandom
         // status > 0 -> colisao
         vector<float> status;
         int regressao = 10;
-        char objFile[200] = "/home/victor/Documentos/UFJF/CG/aula01ex01/data/obj/soccerball.obj";
+        char objFile[200] = "/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/modelo3D/ARV_Craft_Low_Poly.obj";
         glcWavefrontObject *objectManager = NULL;
         float XPOS = 2;
         float YPOS = 5.65;

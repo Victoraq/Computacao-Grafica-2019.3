@@ -26,7 +26,7 @@ class Bloco
         void drawBloco();
         void drawBloco(string material);
         void setColor(float r, float g, float b);
-        void setColorByMaterial(string material);
+        void setMaterial(string material);
         bool colisao(vertice centro, float vetor_direcao[], float raio);
         void changeColor(float cor[3]);
 

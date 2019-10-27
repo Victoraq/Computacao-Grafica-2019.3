@@ -43,6 +43,22 @@ EnemyRandom::EnemyRandom(int quant) {
     }
 }
 
+void EnemyRandom::setMaterial()
+{
+    // Material utilizado: obsidian
+    // Parametros comuns para os dois lados da superfície
+    GLfloat objeto_especular[] = { 0.332741, 0.328634, 0.346435, 1.0 };
+    GLfloat objeto_brilho[]    = { 0.3f };
+    GLfloat objeto_ambient[]   = { 0.05375, 0.05, 0.06625, 1.0 };
+
+    GLfloat objeto_difusa[]    = { 0.18275, 0.17, 0.22525, 1.0 };
+
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, objeto_ambient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, objeto_difusa);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, objeto_especular);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, objeto_brilho);
+}
+
 /*
     Desenha os inimigos na tela
     parametro newEnemy: permite ou não a criação de novos inimigos
@@ -78,13 +94,14 @@ void EnemyRandom::drawEnemies(bool newEnemy) {
 
         vertice posicao = this->enemies.at(i);
         glPushMatrix();
+            setMaterial();
             glTranslatef(posicao.x, posicao.y, posicao.z);
             glTranslatef(0.0, 0.0, 0.0);
             glScalef(this->escala,this->escala,this->escala);
             glTranslatef(0.0, 0.0, 0.0);
             objectManager->SelectObject(0);
             objectManager->SetShadingMode(SMOOTH_SHADING); // Possible values: FLAT_SHADING e SMOOTH_SHADING
-            objectManager->SetRenderMode(USE_MATERIAL);     // Possible values: USE_COLOR, USE_MATERIAL, USE_TEXTURE (not available in this example)
+            objectManager->SetRenderMode(USE_TEXTURE);     // Possible values: USE_COLOR, USE_MATERIAL, USE_TEXTURE (not available in this example)
             objectManager->Unitize();
             objectManager->Draw();
         glPopMatrix();
@@ -302,6 +319,7 @@ void EnemyRandom::removeEnemy(int index) {
     this->status.at(index)-=0.01;  // variavel de colisao diminui a escala do objeto passo a passo
 
     glPushMatrix();
+        setMaterial();
         glTranslatef(posicao.x, posicao.y, posicao.z);
         glTranslatef(0.0, 0.0, 0.0);
         glScalef(this->status.at(index),this->status.at(index),this->status.at(index));

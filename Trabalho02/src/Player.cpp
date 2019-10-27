@@ -47,6 +47,22 @@ void Player::setColor(float r, float g, float b)
 }
 
 
+void Player::setMaterial() {
+    // Material utilizado: esmeralda
+    // Parametros comuns para os dois lados da superfície
+    GLfloat objeto_especular[] = { 0.633, 0.727811,	0.633, 1.0 };
+    GLfloat objeto_brilho[]    = { 60.0f };
+    GLfloat objeto_ambient[]   = { 0.0215,	0.1745,	0.0215, 1.0 };
+
+    GLfloat objeto_difusa[]    = { 0.07568,	0.61424, 0.07568, 1.0 };
+
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, objeto_ambient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, objeto_difusa);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, objeto_especular);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, objeto_brilho);
+}
+
+
 /// Desenha player
 void Player::drawPlayer() {
 
@@ -55,7 +71,7 @@ void Player::drawPlayer() {
         glTranslatef(origem.x, origem.y, origem.z);
         glPushMatrix();
             glBegin(GL_QUADS);
-                setColor(cor[0],cor[1],cor[2]);
+                setMaterial();
                 glVertex3f(0.7652,0.6437,-0.25);
                 glVertex3f(-0.7652,0.6437,-0.25);
                 glVertex3f(-0.7652,0.6437,0.25);
@@ -72,7 +88,7 @@ void Player::drawPlayer() {
             rotacao(atual, (-i*3.14)/180.0);
 
             glBegin(GL_QUADS);
-                setColor(cor[0],cor[1],cor[2]);
+                setMaterial();
                 glVertex3f(ant[0],ant[1], 0.25);
                 glVertex3f(ant[0],ant[1], -0.25);
                 glVertex3f(atual[0],atual[1], -0.25);

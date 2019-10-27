@@ -39,7 +39,7 @@ void Bloco::setColor(float r, float g, float b)
 }
 
 /// Seleciona o material do bloco a partir da string de parâmetro
-void Bloco::setColorByMaterial(string material) {
+void Bloco::setMaterial(string material) {
 
     // para qualquer material diferente das opcaoes essa será a configuração
 
@@ -115,7 +115,7 @@ void Bloco::drawBloco() {
 void Bloco::drawBloco(string material) {
     if (show) {
         glPushMatrix();
-            setColorByMaterial(material);
+            setMaterial(material);
             glTranslatef(origem.x, origem.y, origem.z);
             glScalef(dim,1.0, 1.0);
             glutSolidCube(SIZE);
