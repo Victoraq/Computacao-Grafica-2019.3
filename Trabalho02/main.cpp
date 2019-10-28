@@ -5,11 +5,11 @@
 #include <cstdlib>
 #include <time.h>
 #include <math.h>
+#include <iostream>
 
 #include "extras.h"
 #include "Enemy.h"
 #include "Player.h"
-#include "EnemyRandom.h"
 
 /// Estruturas iniciais para armazenar vertices
 //  Você poderá utilizá-las adicionando novos métodos (de acesso por exemplo) ou usar suas próprias estruturas.
@@ -26,9 +26,8 @@ int   last_x, last_y;
 int   width, height;
 int mouseX = 500;                  // Posição do mouse
 int proj = 1;                      // Indica em que projeção será exibido
-Player *player;                    // Bloco do player
-Enemy *enemy;                      // Armazena os inimigos blocos
-EnemyRandom *randomEnemy;          // Inimigo criado com movimentação random
+Player *player;                     // Bloco do player
+Enemy *enemy;                      // Armazena os inimigos
 vertice playerCenter = {0.0,-1,0.0}; // Posição do player
 float cursor_coords[] = {0.0, 1};  // Coodenadas do cursor
 float angulo = 0;                  // Angulo em que o cursor está
@@ -36,17 +35,133 @@ bool fullscreen = false;           // Coloca o jogo em fullscreen
 bool pause = false;                // Pausa o jogo
 bool camera = false;               // Libera movimentação da câmera
 bool inicio = false;               // Inicia o jogo
-float flipperStep = 0.2;          // Passo de movimentação do player
+float flipperStep = 0.25;          // Passo de movimentação do player
 vertice ball_coords = {0.0,0.0,0.0};  // Coordenadas da bola
 float *ball_vector = cursor_coords;   // Vetor de direção da bola
 int vidas = 5;                     // Contador de vidas do jogador
-int fase = 0;                      // determina em que fase o player esta
 
 /// Functions
 void init(void)
 {
-    initLight(rotationX, rotationY); // Função extra para tratar iluminação.
+    initLight(width, height); // Função extra para tratar iluminação.
 }
+
+float calculaDistancia(vertice v1, vertice v2)
+{
+    return sqrt(pow(v1.x-v2.x, 2) + pow(v1.y-v2.y, 2) + pow(v1.z-v2.z, 2));
+}
+
+bool checaColisaoBolaPlayer()
+{
+    ///Se a distancia entre a origem do player e a origem da bola for <= a soma de seus raios
+    ///e a bola esteja acima da parte de baixo do player
+    if((calculaDistancia(player->Getorigem(), ball_coords)<=RAIO+1)&&
+    ((ball_coords.x>(player->Getorigem().x-0.765))&&(true)))
+        return true;
+    else
+        return false;
+}
+
+void encontraDoisPontosMaisProximos(vertice* p1, vertice* p2)
+{
+    int i;
+    player->atualizaPontosDeConstrucao();
+    //player->imprimePontosDeConstrucao();
+    *p1=player->pontosDeConstrucao[0];
+    *p2=player->pontosDeConstrucao[1];
+    for(i=2; i<=20; i++)
+    {
+        if(calculaDistancia(ball_coords, player->pontosDeConstrucao[i])<calculaDistancia(ball_coords, *p1));
+        {
+            p2=p1;
+            *p1=player->pontosDeConstrucao[i];
+        }
+
+        if(ball_coords.x > player->pontosDeConstrucao[i].x)
+            break;
+
+    }
+    *p1=player->pontosDeConstrucao[i-1];
+    *p2=player->pontosDeConstrucao[i];
+}
+
+vertice* iniciaVetor(float x, float y, float z)
+{
+    vertice* vet=new vertice;
+    vet->x=x;
+    vet->y=y;
+    vet->z=z;
+
+    return vet;
+}
+
+void imprimeVetor(vertice* vet)
+{
+    printf("[%f][%f][%f]\n", vet->x, vet->y, vet->z);
+}
+
+vertice* produtoVetorial(vertice* v1, vertice* v2)
+{
+    vertice* vet=new vertice;
+    vet->x=((v1->y*v2->z)-(v2->y*v1->z));
+    vet->y=((v1->x*v2->z)-(v2->x*v1->z));
+    if(vet->y!=0)
+        vet->y*=-1;
+    vet->z=((v1->x*v2->y)-(v2->x*v1->y));
+    return vet;
+}
+
+vertice* calculaNormal(vertice* v1, vertice* v2, vertice* v3)
+{
+
+    vertice* vetA=new vertice;
+    vertice* vetB=new vertice;
+
+    vetA->x = v1->x-v2->x;
+    vetA->y = v1->y-v2->y;
+    vetA->z = v1->z-v2->z;
+
+    vetB->x = v3->x-v2->x;
+    vetB->y = v3->y-v2->y;
+    vetB->z = v3->z-v2->z;
+
+    return produtoVetorial(vetA, vetB);
+}
+
+float RadianosParaGraus(float valor)
+{
+    return (valor*180)/3.14;
+}
+
+float produtoEscalar(vertice* v1, vertice* v2)
+{
+    return ((v1->x*v2->x)+(v1->y*v2->y)+(v1->z*v2->z));
+}
+
+float norma(vertice* vet)
+{
+    return sqrt(pow(vet->x, 2) + pow(vet->y, 2) + pow(vet->z, 2));
+}
+
+void unitiza(vertice* vet)
+{
+    float n=norma(vet);
+    vet->x/=n;
+    vet->y/=n;
+    vet->z/=n;
+}
+
+
+float calculaAngulo(vertice* v1, vertice* v2)
+{
+    float v =(produtoEscalar(v1, v2))/(norma(v1)*norma(v2));
+    float a = RadianosParaGraus(acos(v));
+    if(a<90)
+        return a;
+    else
+        (180-a);
+}
+
 
 
 /// Retorna o jogo para o estado inicial
@@ -58,14 +173,64 @@ void reset(bool newgame)
     ball_coords = {0, 0, 0};
     player->Setorigem({0.0,-1,0.0});
     player->drawPlayer();
-    randomEnemy->resetEnemies();
-
     if (newgame) {
         enemy->resetEnemies();
         vidas = 5;
     }
-
     inicio=false;
+}
+
+vertice* rotaciona(vertice* vet, float angulo)
+{
+    float a, b;
+    vertice* vet2;
+
+    a = (vet->x*cos(angulo) - vet->y*sin(angulo));
+    b = (vet->x*sin(angulo) - vet->y*cos(angulo));
+
+    vet2=iniciaVetor(a, b, 0);
+    return vet2;
+}
+
+void colisaoBolaPlayer()
+{
+    vertice p1, p2, p3;
+    vertice* normal;
+    vertice* bola=new vertice;
+    float angulo;
+
+    encontraDoisPontosMaisProximos(&p2, &p1); ///pega os pontos e calcula a normal
+    p3=p2;
+    p3.z*=-1;
+
+    //cout << endl << "Pontos Mais Proximos:" << endl;
+    imprimeVetor(&p1);
+    imprimeVetor(&p2);
+    imprimeVetor(&p3);
+
+    normal=calculaNormal(&p1, &p2, &p3);
+    //cout << endl << "NORMAL" << endl;
+    //imprimeVetor(normal);
+
+    bola->x=ball_vector[0]; ///copia ball_vector para bola
+    bola->y=ball_vector[1];
+    bola->z=ball_vector[2];
+
+    //cout << endl << "Bola:" << endl;
+    //imprimeVetor(bola);
+
+    angulo=calculaAngulo(bola, normal); ///calcula o angulo e gira o vetor
+    rotaciona(bola, angulo);
+
+    //cout << endl << "Bola atualizado:" << endl;
+    //imprimeVetor(bola);
+
+    ball_vector[0]=bola->x; ///copia bola atualizado para ball_vector
+    ball_vector[1]=bola->y;
+    ball_vector[2]=bola->z;
+
+    delete bola; ///desaloca os dinamicos
+    delete normal;
 }
 
 
@@ -87,81 +252,56 @@ void drawCampo(void) {
     // Paredes
     glPushMatrix();
         setColor(0.765, 0.796, 0.851);
-        glTranslatef(-4,2.5,0.0);
-        glScalef(1,30.0, 1.0);
+        glTranslatef(-3.5,2.0,0.0);
+        glScalef(1,25.0, 1.0);
         glutSolidCube(0.25);
     glPopMatrix();
 
     glPushMatrix();
         setColor(0.765, 0.796, 0.851);
-        glTranslatef(4,2.5,0.0);
-        glScalef(1,30.0, 1.0);
+        glTranslatef(3.5,2.0,0.0);
+        glScalef(1,25.0, 1.0);
         glutSolidCube(0.25);
     glPopMatrix();
 
     glPushMatrix();
         setColor(0.765, 0.796, 0.851);
         glTranslatef(0,-1.25,0.0);
-        glScalef(33,1.0, 1.0);
+        glScalef(29,1.0, 1.0);
         glutSolidCube(0.25);
     glPopMatrix();
 
     glPushMatrix();
         setColor(0.765, 0.796, 0.851);
-        glTranslatef(0,6.15,0.0);
-        glScalef(33,1.0, 1.0);
-        glutSolidCube(0.25);
-    glPopMatrix();
-
-    // Saida dos inimigos
-    glPushMatrix();
-        setColor(0.0, 0.0, 0.653);
-        glTranslatef(-2,6.05,0.0);
-        glScalef(10,1.0, 1.0);
-        glutSolidCube(0.25);
-    glPopMatrix();
-
-    glPushMatrix();
-        setColor(0.0, 0.0, 0.653);
-        glTranslatef(2,6.05,0.0);
-        glScalef(10,1.0, 1.0);
+        glTranslatef(0,5.25,0.0);
+        glScalef(29,1.0, 1.0);
         glutSolidCube(0.25);
     glPopMatrix();
 }
 
 
 void colisaoParedes(void) {
-    float coord_sup = 6.15;
-    float coord_inf = -1.0;
-    float coord_lat = 4.0;
-
     //Parede superior
-    if (ball_coords.y+0.26 >= coord_sup)
+    if (ball_coords.y+0.26 >= 5.25)
         ball_vector[1] *= -1;
 
     // Parede inferior
-    if (ball_coords.y-0.26 <= coord_inf) {
+    if (ball_coords.y-0.26 <= -1.25) {
         ball_vector[1] *= -1;
         vidas--;
         if (vidas > 0)
             reset(false);  // Se colidir com a inferior o jogo é resetado
-        else {
-            fase = 0;
-            enemy->setConf(fase);
+        else
             reset(true);
-        }
     }
 
     // Parede lateral direita
-    if (ball_coords.x+0.26 >= coord_lat)
+    if (ball_coords.x+0.26 >= 3.5)
         ball_vector[0] *= -1;
 
     // Parede lateral esquerda
-    if (ball_coords.x-0.26 <= -coord_lat)
+    if (ball_coords.x-0.26 <= -3.5)
         ball_vector[0] *= -1;
-
-    // verificando colisao para os inimigos que se movimentam
-    randomEnemy->colisaoParedes(coord_sup, coord_inf, coord_lat);
 }
 
 
@@ -184,7 +324,7 @@ void drawVidas() {
     for (int i = 0; i < vidas; i++) {
         glPushMatrix();
             setColor(1.0, 0.0, 0.0);
-            glTranslatef(4.5, i*0.5, 0.0); // Posicionamento inicial da esfera
+            glTranslatef(4, i*0.5, 0.0); // Posicionamento inicial da esfera
             glutSolidSphere(RAIO*2, 100, 100);
         glPopMatrix();
     }
@@ -223,14 +363,7 @@ void display(void)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    // mudando a posicao da luz em relacao a posicao da camera
-    GLfloat posicao_luz[] = { (float) rotationX, (float)rotationY, 1000.0, 1.0};
-    glLightfv(GL_LIGHT0, GL_POSITION, posicao_luz);
-
     gluLookAt (0.0, proj_vision, zdist, 0.0, 3.0, 0.0, 0.0, 1.0, 0.0);
-
-    // Mudando a configuracao dos inimigos conforme a fase atual
-    enemy->setConf(fase);
 
     glPushMatrix();
         glRotatef( rotationY, 0.0, 1.0, 0.0 );
@@ -240,6 +373,8 @@ void display(void)
         drawCampo(); // Campo
 
         player->drawPlayer(); // Desenha o player
+        player->atualizaPontosDeConstrucao();
+        //player->imprimePontosDeConstrucao();
 
         enemy->drawEnemies(); // Desenha todos os blocos inimigos
 
@@ -255,21 +390,27 @@ void display(void)
         // Cursor de direção
         if (!inicio)
             drawCursor(ball_coords.x, ball_coords.y);
-        else
-            randomEnemy->drawEnemies(true);
+
+        // Termina o jogo se terminarem os inimigos
+        if (enemy->numberOfEnemies() == 0)
+            reset(true);
 
     glPopMatrix();
 
-    // Incrementa a fase se terminarem os inimigos
-        if (enemy->numberOfEnemies() == 0 && fase < 3) {
-            fase++;
-            enemy->setConf(fase);
-            reset(true);
-        } else if (fase >= 3) {
-            reset(true);
-            fase = 0;
-            enemy->setConf(fase);
-        }
+    if(enemy->getEnemiesOnScreen()==0)
+    {
+        reset(true);
+    }
+
+    ///printf("\nDistancia: %f", calculaDistancia(player->Getorigem(), ball_coords));
+    ///printf("\nBall Y: %f\n", ball_coords.y);
+
+    //printf("ballVector: [%d][%d][%d]\n", ball_vector[0], ball_vector[0], ball_vector[0]);
+    //printf("ballCoords: [%d][%d][%d]\n", ball_coords.x, ball_coords.y, ball_coords.z);
+
+    if(checaColisaoBolaPlayer())
+        colisaoBolaPlayer();
+
 
     glutSwapBuffers();
 }
@@ -300,22 +441,15 @@ void idle ()
     if (inicio && !pause) { // Se foi liberada a movimentação as suas coordenadas serão iteradas com base na velocidade
         ball_coords.x+=ball_vector[0]/(step/VELOCIDADE);
         ball_coords.y+=ball_vector[1]/(step/VELOCIDADE);
-        randomEnemy->movimenta(step/VELOCIDADE);
     }
 
     player->drawPlayer(); // Desenha o player
 
     enemy->drawEnemies(); // Desenha todos os blocos inimigos
 
-    randomEnemy->drawEnemies(!pause); // Desenha novos inimigos se o jogo não estiver pausado
-
     player->colisao(ball_coords, ball_vector, RAIO);
 
     enemy->colisao(ball_coords, ball_vector, RAIO);
-
-    randomEnemy->colisaoBola(ball_coords, ball_vector, RAIO);
-
-    randomEnemy->colisaoBloco(enemy);
 
     colisaoParedes();
 
@@ -426,6 +560,7 @@ void mouseMoveFlipper(int x, int y)
         return;
 
     // Retorna o mouse para uma posição, assim o travando
+    /*
     if(x>550)
     {
         glutWarpPointer(500, 500);
@@ -436,16 +571,16 @@ void mouseMoveFlipper(int x, int y)
     }
     if (y != 500) {
         glutWarpPointer(x, 500);
-    }
+    }*/
 
     // verifica a movimentação a partir da mudança de direção do mouse
-    if (x < mouseX && playerCenter.x-flipperStep > -3.2 ) {
+    if (x < mouseX && playerCenter.x-flipperStep > -2.5 ) {
         playerCenter.x = playerCenter.x-flipperStep;
         player->Setorigem(playerCenter);
         if (!inicio)
             ball_coords.x = playerCenter.x;
     }
-    if (mouseX < x && playerCenter.x+flipperStep < 3.2 ) {
+    if (mouseX < x && playerCenter.x+flipperStep < 2.5 ) {
         playerCenter.x = playerCenter.x+flipperStep;
         player->Setorigem(playerCenter);
         if (!inicio)
@@ -461,6 +596,8 @@ int main(int argc, char** argv)
     // Mudando random seed
     srand(time(NULL));
 
+    //buildPlayerNormals();
+
     glutInit(&argc, argv);
     glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize (1000, 600);
@@ -472,7 +609,6 @@ int main(int argc, char** argv)
     float color[3] = {0.0,1.0,0.0};
     player = new Player(playerCenter,color); // inicializa o player
     enemy = new Enemy(QUANT_ENEMY);       // inicializa os inimigos
-    randomEnemy = new EnemyRandom(2);
     glutWarpPointer(mouseX, mouseX);
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);

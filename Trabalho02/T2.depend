@@ -70,7 +70,7 @@
 
 1569164370 /home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho02/include/Bloco.h
 
-1571181593 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho02/src/Enemy.cpp
+1569172467 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho02/src/Enemy.cpp
 	"Enemy.h"
 
 1569170305 /home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho02/include/Enemy.h
@@ -78,7 +78,7 @@
 	<vector>
 	<iostream>
 
-1571182742 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho02/main.cpp
+1571002117 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho02/main.cpp
 	<GL/glut.h>
 	<stdlib.h>
 	<stdio.h>
@@ -89,7 +89,6 @@
 	"extras.h"
 	"Enemy.h"
 	"Player.h"
-	"EnemyRandom.h"
 
 1568681138 /home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho02/extras.h
 	<GL/glut.h>
@@ -97,25 +96,14 @@
 1571099813 /home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho02/include/Player.h
 	"Bloco.h"
 
-1571102230 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho02/src/Player.cpp
+1571102041 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho02/src/Player.cpp
 	"Player.h"
 	<GL/glut.h>
 	<stdlib.h>
 	<stdio.h>
 	<math.h>
 
-1571182976 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho02/src/EnemyRandom.cpp
-	"EnemyRandom.h"
-
-1571183217 /home/victor/Documentos/CG/Computacao-Grafica-2019.3/Trabalho02/include/EnemyRandom.h
-	<vector>
-	<iostream>
-	<stdlib.h>
-	<time.h>
-	<GL/glut.h>
-	<Bloco.h>
-
-1572204111 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/main.cpp
+1572010847 source:/home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho02/main.cpp
 	<GL/glut.h>
 	<stdlib.h>
 	<stdio.h>
@@ -123,66 +111,38 @@
 	<cstdlib>
 	<time.h>
 	<math.h>
+	<iostream>
 	"extras.h"
 	"Enemy.h"
 	"Player.h"
-	"EnemyRandom.h"
 
-1568681138 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/extras.h
+1571102345 /home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho02/extras.h
 	<GL/glut.h>
 
-1572135234 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/include/Enemy.h
+1571102345 /home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho02/include/Enemy.h
 	"Bloco.h"
 	<vector>
 	<iostream>
-	<string>
 
-1572183513 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/include/Bloco.h
-	<string>
+1571102345 /home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho02/include/Bloco.h
 
-1572206302 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/include/Player.h
+1572008169 /home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho02/include/Player.h
 	"Bloco.h"
 
-1572205753 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/include/EnemyRandom.h
-	<vector>
-	<iostream>
-	<stdlib.h>
-	<time.h>
-	<GL/glut.h>
-	<Bloco.h>
-	<Enemy.h>
-	<glcWavefrontObject.h>
-
-1572183528 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/src/Bloco.cpp
+1571102345 source:/home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho02/src/Bloco.cpp
 	"Bloco.h"
 	<GL/glut.h>
 	<stdlib.h>
 	<stdio.h>
 	<math.h>
 
-1572135399 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/src/Enemy.cpp
+1571102345 source:/home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho02/src/Enemy.cpp
 	"Enemy.h"
 
-1571102230 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/src/Player.cpp
+1572008194 source:/home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho02/src/Player.cpp
 	"Player.h"
 	<GL/glut.h>
 	<stdlib.h>
 	<stdio.h>
 	<math.h>
-
-1535591436 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/include/glcWavefrontObject.h
-	<math.h>
-	<stdio.h>
-	<GL/gl.h>
-
-1572206009 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/src/EnemyRandom.cpp
-	"EnemyRandom.h"
-
-1535591434 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/include/glcWavefrontObject.cpp
-	"glcWavefrontObject.h"
-	<math.h>
-	<stdio.h>
-	<stdlib.h>
-	<string.h>
-	<assert.h>
 

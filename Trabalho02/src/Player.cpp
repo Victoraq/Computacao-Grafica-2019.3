@@ -47,22 +47,6 @@ void Player::setColor(float r, float g, float b)
 }
 
 
-void Player::setMaterial() {
-    // Material utilizado: esmeralda
-    // Parametros comuns para os dois lados da superfície
-    GLfloat objeto_especular[] = { 0.633, 0.727811,	0.633, 1.0 };
-    GLfloat objeto_brilho[]    = { 60.0f };
-    GLfloat objeto_ambient[]   = { 0.0215,	0.1745,	0.0215, 1.0 };
-
-    GLfloat objeto_difusa[]    = { 0.07568,	0.61424, 0.07568, 1.0 };
-
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, objeto_ambient);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, objeto_difusa);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, objeto_especular);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, objeto_brilho);
-}
-
-
 /// Desenha player
 void Player::drawPlayer() {
 
@@ -71,7 +55,7 @@ void Player::drawPlayer() {
         glTranslatef(origem.x, origem.y, origem.z);
         glPushMatrix();
             glBegin(GL_QUADS);
-                setMaterial();
+                setColor(cor[0],cor[1],cor[2]);
                 glVertex3f(0.7652,0.6437,-0.25);
                 glVertex3f(-0.7652,0.6437,-0.25);
                 glVertex3f(-0.7652,0.6437,0.25);
@@ -82,13 +66,29 @@ void Player::drawPlayer() {
         float atual[2] = {-0.1,0.0};
         float ant[2] = {-0.1,0.0};
         rotacao(ant, (-40*3.14)/180.0);
+
+        int index=0;
+        this->pontosDeConstrucao[index].x=atual[0];
+        this->pontosDeConstrucao[index].y=atual[1];
+        this->pontosDeConstrucao[index].z=0.25;
+
         for (int i = 40, j = 0; i <= 140; i+=100/this->NPONTOS, j++) {
             atual[0] = -0.1;
             atual[1] = -0.0;
+
             rotacao(atual, (-i*3.14)/180.0);
 
+            if(index<=20)
+            {
+                this->pontosDeConstrucao[index].x=atual[0];
+                this->pontosDeConstrucao[index].y=atual[1];
+                this->pontosDeConstrucao[index].z=0.25;
+                index++;
+            }
+
+
             glBegin(GL_QUADS);
-                setMaterial();
+                setColor(cor[0],cor[1],cor[2]);
                 glVertex3f(ant[0],ant[1], 0.25);
                 glVertex3f(ant[0],ant[1], -0.25);
                 glVertex3f(atual[0],atual[1], -0.25);
@@ -132,3 +132,21 @@ bool Player::colisao(vertice centro, float vetor_direcao[], float raio) {
     }
 
 }
+
+void Player::atualizaPontosDeConstrucao()
+{
+    for(int i=0; i<=20; i++)
+    {
+        pontosDeConstrucao[i].x-=origem.x;
+        pontosDeConstrucao[i].y-=origem.y;
+        pontosDeConstrucao[i].z-=origem.z;
+    }
+}
+
+void Player::imprimePontosDeConstrucao()
+{
+    for(int i=0; i<=20; i++)
+        printf("[%f][%f][%f]\n", pontosDeConstrucao[i].x, pontosDeConstrucao[i].y, pontosDeConstrucao[i].z);
+    printf("\n");
+}
+
