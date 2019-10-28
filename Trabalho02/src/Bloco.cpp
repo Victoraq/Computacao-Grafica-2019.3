@@ -14,14 +14,6 @@ Bloco::Bloco(vertice origem, float dim, float cor[])
     this->show = true;
 }
 
-/// Construtor para utilização de materiais
-Bloco::Bloco(vertice origem, float dim)
-{
-    this->origem = origem;
-    this->dim = dim;
-    this->show = true;
-}
-
 void Bloco::setColor(float r, float g, float b)
 {
     // Parametros comuns para os dois lados da superfície
@@ -38,84 +30,11 @@ void Bloco::setColor(float r, float g, float b)
     glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, objeto_brilho);
 }
 
-/// Seleciona o material do bloco a partir da string de parâmetro
-void Bloco::setMaterial(string material) {
-
-    // para qualquer material diferente das opcaoes essa será a configuração
-
-    GLfloat objeto_especular[] = { 0.626, 0.626, 0.626, 1.0 };
-    GLfloat objeto_brilho[]    = { 90.0f };
-    GLfloat objeto_ambient[]   = { 0.1, 0.1, 0.1, 1.0 };
-
-    GLfloat objeto_difusa[]    = { 1.0, 0.0, 0.0, 1.0 };
-
-    if (material == "bronze") {
-        objeto_especular[0] = 0.393548;
-        objeto_especular[1] = 0.271906;
-        objeto_especular[2] = 0.166721;
-
-        objeto_brilho[0] = 20.0f;
-
-        objeto_ambient[0] = 0.2125;
-        objeto_ambient[1] = 0.1275;
-        objeto_ambient[2] = 0.054;
-
-        objeto_difusa[0] = 0.714;
-        objeto_difusa[1] = 0.4284;
-        objeto_difusa[2] = 0.18144;
-    } else if (material == "silver") {
-        objeto_especular[0] = 0.508273;
-        objeto_especular[1] = 0.508273;
-        objeto_especular[2] = 0.508273;
-
-        objeto_brilho[0] = 4.0f;
-
-        objeto_ambient[0] = 0.19225;
-        objeto_ambient[1] = 0.19225;
-        objeto_ambient[2] = 0.19225;
-
-        objeto_difusa[0] = 0.50754;
-        objeto_difusa[1] = 0.50754;
-        objeto_difusa[2] = 0.50754;
-    } else if (material == "gold") {
-        objeto_especular[0] = 0.628281;
-        objeto_especular[1] = 0.555802;
-        objeto_especular[2] = 0.366065;
-
-        objeto_brilho[0] = 4.0f;
-
-        objeto_ambient[0] = 0.24725;
-        objeto_ambient[1] = 0.1995;
-        objeto_ambient[2] = 0.0745;
-
-        objeto_difusa[0] = 0.75164;
-        objeto_difusa[1] = 0.60648;
-        objeto_difusa[2] = 0.22648;
-    }
-
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, objeto_ambient);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, objeto_difusa);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, objeto_especular);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, objeto_brilho);
-}
-
 /// Desenha o bloco com base na sua cor, dimensão e origem
 void Bloco::drawBloco() {
     if (show) {
         glPushMatrix();
-            setColor(cor[0], cor[1], cor[2]);
-            glTranslatef(origem.x, origem.y, origem.z);
-            glScalef(dim,1.0, 1.0);
-            glutSolidCube(SIZE);
-        glPopMatrix();
-    }
-}
-
-/// Desenha o bloco com base no seu material, dimensão e origem
-void Bloco::drawBloco(string material) {
-    if (show) {
-        glPushMatrix();
-            setMaterial(material);
+            setColor(cor[0],cor[1],cor[2]);
             glTranslatef(origem.x, origem.y, origem.z);
             glScalef(dim,1.0, 1.0);
             glutSolidCube(SIZE);
@@ -254,9 +173,3 @@ void Bloco::setShow(bool b)
     this->show=b;
 }
 
-
-void Bloco::changeColor(float cor[3]) {
-    this->cor[0] = cor[0];
-    this->cor[1] = cor[1];
-    this->cor[2] = cor[2];
-}
