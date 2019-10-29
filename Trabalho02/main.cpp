@@ -80,17 +80,6 @@ void encontraDoisPontosMaisProximos(vertice* p1, vertice* p2)
         if(ball_coords.x < player->pontosDeConstrucao[i].x)
             break;
     }
-    if(false)
-    {
-        cout << "P1";
-        imprimeVetor(&player->pontosDeConstrucao[i]);
-        cout << "P2";
-        imprimeVetor(&player->pontosDeConstrucao[i-1]);
-        cout << "BallCoords";
-        imprimeVetor(&ball_coords);
-    }
-
-
 }
 
 vertice* iniciaVetor(float x, float y, float z)
@@ -130,8 +119,8 @@ vertice* calculaNormal(vertice* v1, vertice* v2, vertice* v3)
 
     vertice*c=produtoVetorial(vetA, vetB);
 
-    if(c->y<0)
-        c->y*=-1;
+    //if(c->y<0)
+        //c->y*=-1;
 
     return c;
 }
@@ -169,6 +158,7 @@ void unitiza(vertice* vet)
 float calculaAngulo(vertice* v1, vertice* v2)
 {
     float v =(produtoEscalar(v1, v2))/(norma(v1)*norma(v2));
+    v=3.14-v;
     float a = RadianosParaGraus(acos(v));
     if(a<90)
         return a;
@@ -192,12 +182,12 @@ void reset(bool newgame)
         vidas = 5;
     }
     inicio=false;
+    ball_vector=cursor_coords;
 }
 
 vertice* rotaciona(vertice* vet, float angulo)
 {
     float a, b;
-    vertice* vet2;
 
     a = (vet->x*cos(angulo) - vet->y*sin(angulo));
     b = (vet->x*sin(angulo) - vet->y*cos(angulo));
@@ -219,8 +209,23 @@ void rotacao(float coords[], float angulo) {
     coords[1] = y/norma;
 }
 
+void normalTest()
+{
+    vertice p1, p2, p3, pn;
+    for(int i=1; i<21; i++)
+    {
+        p1=player->pontosDeConstrucao[i];
+        p2=player->pontosDeConstrucao[i-1];
+        p3=p2;
+        p3.z*=-1;
+        pn=*calculaNormal(&p1, &p2, &p3);
+        imprimeVetor(&pn);
+    }
+}
+
 void colisaoBolaPlayer()
 {
+    //normalTest();
     vertice p1, p2, p3;
     vertice* normal;
     vertice* bola=new vertice;
@@ -229,6 +234,7 @@ void colisaoBolaPlayer()
     bola->x=ball_vector[0]; ///copia ball_vector para bola
     bola->y=ball_vector[1];
     bola->z=ball_vector[2];
+    unitiza(bola);
 
     encontraDoisPontosMaisProximos(&p2, &p1); ///pega os pontos e calcula a normal
     p3=p2;
@@ -257,12 +263,14 @@ void colisaoBolaPlayer()
         angulo=calculaAngulo(bola, normal); ///calcula o angulo e gira o vetor
         cout << endl << "Angulo:" << angulo << endl;
         rotaciona(bola, angulo);
+        bola->z=0.25;
         unitiza(bola);
     }
     if(inicio)
     {
         cout << endl << "Bola atualizado:" << endl;
         imprimeVetor(bola);
+        cout << endl << "Norma:" << norma(bola);
     }
 
     ball_vector[0]=bola->x; ///copia bola atualizado para ball_vector
@@ -430,8 +438,12 @@ void display(void)
         reset(true);
     }
 
-    vertice pa, pb;
-    encontraDoisPontosMaisProximos(&pa, &pb);
+    vertice pa, pb, pc, *pn;
+    encontraDoisPontosMaisProximos(&pb, &pa);
+    pc=pb;
+    pc.z*=-1;
+    pn=calculaNormal(&pa, &pb, &pc);
+
     glBegin(GL_LINES);
         glColor3f(1, 0, 0);
         glVertex2f(ball_coords.x, ball_coords.y);
@@ -440,7 +452,7 @@ void display(void)
         glVertex2f(ball_coords.x, ball_coords.y);
         glVertex2f(pb.x, pb.y);
 
-        glVertex2f(ball_coords.x, ball_coords.y);
+        glVertex2f(pn->x-player->Getorigem().x, pn->y);
         glVertex2f(player->Getorigem().x, player->Getorigem().y);
     glEnd();
 
@@ -610,13 +622,13 @@ void mouseMoveFlipper(int x, int y)
     }*/
 
     // verifica a movimentação a partir da mudança de direção do mouse
-    if (x < mouseX && playerCenter.x-flipperStep > -2.5 ) {
+    if (x < mouseX && playerCenter.x-flipperStep > -2.665 ) {
         playerCenter.x = playerCenter.x-flipperStep;
         player->Setorigem(playerCenter);
         if (!inicio)
             ball_coords.x = playerCenter.x;
     }
-    if (mouseX < x && playerCenter.x+flipperStep < 2.5 ) {
+    if (mouseX < x && playerCenter.x+flipperStep < 2.665 ) {
         playerCenter.x = playerCenter.x+flipperStep;
         player->Setorigem(playerCenter);
         if (!inicio)

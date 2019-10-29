@@ -103,7 +103,7 @@
 	<stdio.h>
 	<math.h>
 
-1572294452 source:/home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho02/main.cpp
+1572309931 source:/home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho02/main.cpp
 	<GL/glut.h>
 	<stdlib.h>
 	<stdio.h>
@@ -139,7 +139,7 @@
 1571102345 source:/home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho02/src/Enemy.cpp
 	"Enemy.h"
 
-1572288610 source:/home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho02/src/Player.cpp
+1572306110 source:/home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho02/src/Player.cpp
 	"Player.h"
 	<GL/glut.h>
 	<stdlib.h>
