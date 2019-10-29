@@ -67,7 +67,7 @@ void Player::setMaterial() {
 void Player::drawPlayer() {
 
     glPushMatrix();
-        setColor(cor[0],cor[1],cor[2]);
+        setMaterial();
         glTranslatef(origem.x, origem.y, origem.z);
         glPushMatrix();
             glBegin(GL_QUADS);
@@ -99,6 +99,8 @@ void Player::drawPlayer() {
             ant[1] = atual[1];
             this->pontos[j][0] = atual[0];
             this->pontos[j][1] = atual[1];
+
+            this->pontosDeConstrucao[j]=*iniciaVetor(atual[0]+origem.x, atual[1]+origem.y, 0.25);
         }
 
         glBegin(GL_POLYGON);

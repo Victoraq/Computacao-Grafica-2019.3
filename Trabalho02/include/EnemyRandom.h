@@ -32,6 +32,7 @@ class EnemyRandom
         int numberOfEnemies() { return enemies.size(); }
         void removeEnemy(int index);
         void setMaterial();
+        vector<vertice> getPosicoes() { return this->enemies; }
 
 
     private:

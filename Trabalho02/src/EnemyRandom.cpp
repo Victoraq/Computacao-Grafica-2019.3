@@ -243,7 +243,7 @@ void EnemyRandom::colisaoBola(vertice centro, float vetor_direcao[], float raio)
         }
 
         if (status_inf || status_sup) {
-            this->status.at(i) = this->escala; // se ocorreu a colisao o objeto comeca a animacao de colisao
+            // se ocorreu a colisao o objeto comeca a animacao de colisao
             this->removeEnemy(i);
         }
 
@@ -309,6 +309,8 @@ void EnemyRandom::resetEnemies()
 /// Irá realizar a animação da colisão e mudar pararâmetro para que eles não sejam mais visíveis
 void EnemyRandom::removeEnemy(int index) {
 
+    if (this->status.at(index) == 0.0)
+        this->status.at(index) = this->escala;
     // a partir do momento em que o objeto esta com escala menor ou igual a zero
     // as colisoes nao serao computadas nem sera desenhado
     if (this->status.at(index) <= 0.0) {

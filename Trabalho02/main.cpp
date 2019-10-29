@@ -29,7 +29,7 @@ int proj = 1;                      // Indica em que projeção será exibido
 Player *player;                    // Bloco do player
 Enemy *enemy;                      // Armazena os inimigos blocos
 EnemyRandom *randomEnemy;          // Inimigo criado com movimentação random
-vertice playerCenter = {0.0,-1,0.0}; // Posição do player
+vertice playerCenter = {0.0,-1.1,0.0}; // Posição do player
 float cursor_coords[] = {0.0, 1};  // Coodenadas do cursor
 float angulo = 0;                  // Angulo em que o cursor está
 bool fullscreen = false;           // Coloca o jogo em fullscreen
@@ -48,6 +48,129 @@ void init(void)
     initLight(rotationX, rotationY); // Função extra para tratar iluminação.
 }
 
+float calculaDistancia(vertice v1, vertice v2)
+{
+    return sqrt(pow(v1.x-v2.x, 2) + pow(v1.y-v2.y, 2) + pow(v1.z-v2.z, 2));
+}
+
+bool checaColisaoPlayer(vertice origem)
+{
+    ///Se a distancia entre a origem do player e a origem da bola for <= a soma de seus raios
+    ///e a bola esteja acima da parte de baixo do player
+    if((calculaDistancia(player->Getorigem(), origem)<=RAIO+1)&&
+    ((origem.x>(player->Getorigem().x-0.765))&&(true)))
+        return true;
+    else
+        return false;
+}
+
+void encontraDoisPontosMaisProximos(vertice* p1, vertice* p2)
+{
+    int i;
+    *p1=player->pontosDeConstrucao[1];
+    *p2=player->pontosDeConstrucao[0];
+    for(int i=1; i<21; i++)
+    {
+        *p1=player->pontosDeConstrucao[i-1];
+        *p2=player->pontosDeConstrucao[i];
+        if(ball_coords.x < player->pontosDeConstrucao[i].x)
+            break;
+    }
+}
+
+vertice* iniciaVetor(float x, float y, float z)
+{
+    vertice* vet=new vertice;
+    vet->x=x;
+    vet->y=y;
+    vet->z=z;
+
+    return vet;
+}
+
+vertice* produtoVetorial(vertice* v1, vertice* v2)
+{
+    vertice* vet=new vertice;
+    vet->x=((v1->y*v2->z)-(v2->y*v1->z));
+    vet->y=((v1->x*v2->z)-(v2->x*v1->z));
+    if(vet->y!=0)
+        vet->y*=-1;
+    vet->z=((v1->x*v2->y)-(v2->x*v1->y));
+    return vet;
+}
+
+vertice* calculaNormal(vertice* v1, vertice* v2, vertice* v3)
+{
+
+    vertice* vetA=new vertice;
+    vertice* vetB=new vertice;
+
+    vetA->x = v1->x-v2->x;
+    vetA->y = v1->y-v2->y;
+    vetA->z = v1->z-v2->z;
+
+    vetB->x = v3->x-v2->x;
+    vetB->y = v3->y-v2->y;
+    vetB->z = v3->z-v2->z;
+
+    vertice*c=produtoVetorial(vetA, vetB);
+
+    return c;
+}
+
+float RadianosParaGraus(float valor)
+{
+    return (valor*180)/3.14;
+}
+
+float produtoEscalar(vertice* v1, vertice* v2)
+{
+    return ((v1->x*v2->x)+(v1->y*v2->y)+(v1->z*v2->z));
+}
+
+float norma(vertice* vet)
+{
+    return sqrt(pow(vet->x, 2) + pow(vet->y, 2) + pow(vet->z, 2));
+}
+
+void unitiza(vertice* vet)
+{
+    int vel=1;
+    float n=norma(vet);
+    vet->x/=n;
+    vet->y/=n;
+    vet->z/=n;
+
+    vet->x*=vel;
+    vet->y*=vel;
+    vet->z*=vel;
+
+}
+
+
+float calculaAngulo(vertice* v1, vertice* v2)
+{
+    float v =(produtoEscalar(v1, v2))/(norma(v1)*norma(v2));
+    v=3.14-v;
+    float a = RadianosParaGraus(acos(v));
+    if(a<90)
+        return a;
+    else
+        (180-a);
+}
+
+vertice* rotaciona(vertice* vet, float angulo)
+{
+    float a, b;
+
+    a = (vet->x*cos(angulo) - vet->y*sin(angulo));
+    b = (vet->x*sin(angulo) - vet->y*cos(angulo));
+
+    vet->x=a;
+    vet->y=b;
+
+    return vet;
+}
 
 /// Retorna o jogo para o estado inicial
 void reset(bool newgame)
@@ -164,6 +287,42 @@ void colisaoParedes(void) {
     randomEnemy->colisaoParedes(coord_sup, coord_inf, coord_lat);
 }
 
+void colisaoBolaPlayer(float direction[])
+{
+    //normalTest();
+    vertice p1, p2, p3;
+    vertice* normal;
+    vertice* obj_direction=new vertice;
+    float angulo;
+
+    obj_direction->x=direction[0]; ///copia ball_vector para bola
+    obj_direction->y=direction[1];
+    obj_direction->z=direction[2];
+    unitiza(obj_direction);
+
+    encontraDoisPontosMaisProximos(&p2, &p1); ///pega os pontos e calcula a normal
+    p3=p2;
+    p3.z*=-1;
+
+    normal=calculaNormal(&p1, &p2, &p3);
+    unitiza(normal);
+
+
+    if(inicio)
+    {
+        angulo=calculaAngulo(obj_direction, normal); ///calcula o angulo e gira o vetor
+        rotaciona(obj_direction, angulo);
+        obj_direction->z=0.25;
+        unitiza(obj_direction);
+    }
+
+    direction[0]=obj_direction->x; ///copia bola atualizado para ball_vector
+    direction[1]=obj_direction->y;
+    direction[2]=obj_direction->z;
+
+    //delete bola; ///desaloca os dinamicos
+    //delete normal;
+}
 
 /// Desenha cursor de direção da bola
 void drawCursor(float x, float y) {
@@ -271,6 +430,11 @@ void display(void)
             enemy->setConf(fase);
         }
 
+        // colisao do player com bola
+        if(checaColisaoPlayer(ball_coords))
+            colisaoBolaPlayer(ball_vector);
+
+
     glutSwapBuffers();
 }
 
@@ -316,6 +480,15 @@ void idle ()
     randomEnemy->colisaoBola(ball_coords, ball_vector, RAIO);
 
     randomEnemy->colisaoBloco(enemy);
+
+    // colisao do player com inimigos que se movimentam
+        vector<vertice> enemies_pos = randomEnemy->getPosicoes();
+        for (int i = 0; i < enemies_pos.size() ; i++) {
+
+            if (checaColisaoPlayer(enemies_pos.at(i))) {
+                randomEnemy->removeEnemy(i);
+            }
+        }
 
     colisaoParedes();
 

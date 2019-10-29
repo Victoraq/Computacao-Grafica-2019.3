@@ -17,6 +17,21 @@ class Player
         void setMaterial();
         bool colisao(vertice centro, float vetor_direcao[], float raio);
 
+        vertice pontosDeConstrucao[21];
+        vertice normaisDasFaces[20];
+        void atualizaPontosDeConstrucao();
+        void imprimePontosDeConstrucao();
+
+        vertice* iniciaVetor(float x, float y, float z)
+        {
+            vertice* vet=new vertice;
+            vet->x=x;
+            vet->y=y;
+            vet->z=z;
+
+            return vet;
+        }
+
     private:
         void rotacao(float coords[], float angulo);
 
