@@ -1,0 +1,39 @@
+# depslib dependency file v1.0
+1566914312 source:/home/victor/Documentos/CG/D1_20193_Base/main.cpp
+	<GL/glut.h>
+	<stdlib.h>
+	<stdio.h>
+	<ctype.h>
+	<cstdlib>
+	<time.h>
+	<math.h>
+	"extras.h"
+
+1566867385 /home/victor/Documentos/CG/D1_20193_Base/extras.h
+
+1567545607 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Desenvolvimento01/main.cpp
+	<GL/glut.h>
+	<stdlib.h>
+	<stdio.h>
+	<ctype.h>
+	<cstdlib>
+	<time.h>
+	<math.h>
+	"extras.h"
+	"Prisma.h"
+
+1566948584 /home/victor/Documentos/CG/Computacao-Grafica-2019.3/Desenvolvimento01/extras.h
+
+1566944395 /home/victor/Documentos/CG/Computacao-Grafica-2019.3/Desenvolvimento01/include/Prisma.h
+
+1566944395 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Desenvolvimento01/src/Prisma.cpp
+	"Prisma.h"
+
+1566947013 /home/victor/Documentos/CG/Computacao-Grafica-2019.3/Desenvolvimento01/Prisma.h
+
+1567441848 source:/home/victor/Documentos/CG/Computacao-Grafica-2019.3/Desenvolvimento01/Prisma.cpp
+	"Prisma.h"
+	<math.h>
+	<GL/glut.h>
+	<stdlib.h>
+
