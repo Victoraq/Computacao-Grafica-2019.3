@@ -614,15 +614,17 @@ void mouseMoveFlipper(int x, int y)
     // verifica a movimentação a partir da mudança de direção do mouse
     if (x < mouseX && playerCenter.x-flipperStep > -3.2 ) {
         playerCenter.x = playerCenter.x-flipperStep;
+        //playerCenter.x = cos((playerCenter.x+90)*3.14/180);
         player->Setorigem(playerCenter);
         if (!inicio)
-            ball_coords.x = cos((playerCenter.x+90)*3.14/180);
+            ball_coords.x = playerCenter.x;
     }
     if (mouseX < x && playerCenter.x+flipperStep < 3.2 ) {
         playerCenter.x = playerCenter.x+flipperStep;
+        //playerCenter.x = cos((playerCenter.x+90)*3.14/180);
         player->Setorigem(playerCenter);
         if (!inicio)
-            ball_coords.x = cos((playerCenter.x+90)*3.14/180);
+            ball_coords.x = playerCenter.x;
     }
     mouseX = x; // atualiza a posição do mouse
 

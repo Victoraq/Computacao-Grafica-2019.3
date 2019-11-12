@@ -16,6 +16,7 @@ class Player
         void setColor(float r, float g, float b);
         void setMaterial();
         bool colisao(vertice centro, float vetor_direcao[], float raio);
+        vertice* calculaNormal(vertice* v1, vertice* v2, vertice* v3);
 
         vertice pontosDeConstrucao[21];
         vertice normaisDasFaces[20];

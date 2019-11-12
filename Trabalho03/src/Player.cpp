@@ -63,6 +63,31 @@ void Player::setMaterial() {
 }
 
 
+vertice* Player::calculaNormal(vertice* v1, vertice* v2, vertice* v3)
+{
+
+    vertice* vetA=new vertice;
+    vertice* vetB=new vertice;
+
+    vetA->x = v1->x-v2->x;
+    vetA->y = v1->y-v2->y;
+    vetA->z = v1->z-v2->z;
+
+    vetB->x = v3->x-v2->x;
+    vetB->y = v3->y-v2->y;
+    vetB->z = v3->z-v2->z;
+
+    vertice* vet=new vertice;
+    vet->x=((v1->y*v2->z)-(v2->y*v1->z));
+    vet->y=((v1->x*v2->z)-(v2->x*v1->z));
+    if(vet->y!=0)
+        vet->y*=-1;
+    vet->z=((v1->x*v2->y)-(v2->x*v1->y));
+
+    return vet;
+}
+
+
 /// Desenha player
 void Player::drawPlayer() {
 
@@ -72,6 +97,7 @@ void Player::drawPlayer() {
         glPushMatrix();
             glBegin(GL_QUADS);
                 setMaterial();
+                glNormal3f(0.0,1.0,0.0);
                 glVertex3f(0.7652,0.6437,-0.25);
                 glVertex3f(-0.7652,0.6437,-0.25);
                 glVertex3f(-0.7652,0.6437,0.25);
@@ -89,6 +115,13 @@ void Player::drawPlayer() {
 
             glBegin(GL_QUADS);
                 setMaterial();
+
+                vertice v1 = {ant[0],ant[1], 0.25};
+                vertice v2 = {atual[0],atual[1], 0.25};
+                vertice v3 = {atual[0],atual[1], -0.25};
+                vertice* normal = calculaNormal(&v1,&v2,&v3);
+                glNormal3f(normal->x, -1.0, 0.0);
+
                 glVertex3f(ant[0],ant[1], 0.25);
                 glVertex3f(ant[0],ant[1], -0.25);
                 glVertex3f(atual[0],atual[1], -0.25);
@@ -104,7 +137,7 @@ void Player::drawPlayer() {
         }
 
         glBegin(GL_POLYGON);
-
+            glNormal3f(0.0,0.0,-1.0);
             for(int i = 0; i <= this->NPONTOS; i++) {
                 glVertex3f(this->pontos[i][0], this->pontos[i][1], 0.25); // tampa superior
             }
@@ -112,7 +145,7 @@ void Player::drawPlayer() {
         glEnd();
 
         glBegin(GL_POLYGON);
-
+            glNormal3f(0.0,0.0,-1.0);
             for(int i = 0; i <= this->NPONTOS; i++) {
                 glVertex3f(this->pontos[i][0], this->pontos[i][1], -0.25);// tampa inferior
             }

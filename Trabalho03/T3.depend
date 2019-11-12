@@ -224,7 +224,7 @@
 1572183513 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/include/Bloco.h
 	<string>
 
-1572304618 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/include/Player.h
+1573600552 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/include/Player.h
 	"Bloco.h"
 
 1572314234 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/include/EnemyRandom.h
@@ -250,7 +250,7 @@
 1572313376 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/src/EnemyRandom.cpp
 	"EnemyRandom.h"
 
-1572304635 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/src/Player.cpp
+1573600944 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/src/Player.cpp
 	"Player.h"
 	<GL/glut.h>
 	<stdlib.h>
