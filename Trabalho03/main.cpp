@@ -41,12 +41,86 @@ vertice ball_coords = {0.0,0.0,0.0};  // Coordenadas da bola
 float *ball_vector = cursor_coords;   // Vetor de direção da bola
 int vidas = 5;                     // Contador de vidas do jogador
 int fase = 0;                      // determina em que fase o player esta
+bool telaInicial = true;           // Determina se ira desenhar a tela inicial ou não
+glcTexture *textureManager;        // manager das texturas
 
 /// Functions
 void init(void)
 {
     initLight(rotationX, rotationY); // Função extra para tratar iluminação.
+
+    glEnable(GL_ALPHA_TEST);      // O alpha test descarta fragmentos dependendo de uma comparação (abaixo)
+    glAlphaFunc(GL_GREATER, 0.1); // Info: https://www.opengl.org/sdk/docs/man2/xhtml/glAlphaFunc.xml
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // https://www.opengl.org/sdk/docs/man/html/glBlendFunc.xhtml
+
+    textureManager = new glcTexture();            // Criação do arquivo que irá gerenciar as texturas
+    textureManager->SetNumberOfTextures(1);       // Estabelece o número de texturas que será utilizado
+    textureManager->CreateTexture("textures/telaInicialTexto.png", 0); // Para testar magnificação, usar a imagem marble128
+
 }
+
+
+void drawTelaInicial() {
+    float aspectRatio = textureManager->GetAspectRatio(0);
+
+    // Calculo abaixo funciona apenas se textura estiver centralizada na origem
+    int h = height/100;
+    int w = width/100;
+
+//    if( aspectRatio > 1.0f) h  = h/aspectRatio;
+//    else                    w  = w*aspectRatio;
+
+    glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    /* Mudando projeção */
+    glMatrixMode (GL_PROJECTION);
+    glLoadIdentity ();
+
+    // Mudança entre visão perspectiva e ortogonal
+    int ortho = 5;
+    int proj_vision; // muda o y para ajustar a camera durante a mudança de perspectiva
+
+    if (width <= height)
+        glOrtho (-ortho, ortho, -ortho*h/w, ortho*h/w, -100.0, 100.0);
+    else
+        glOrtho (-ortho*w/h, ortho*w/h, -ortho, ortho, -100.0, 100.0);
+    proj_vision = 3.5;
+
+    /* Camera e desenhos */
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    // mudando a posicao da luz em relacao a posicao da camera
+
+    GLfloat posicao_luz[] = { (float) 0, (float)0, 1000.0, 1.0};
+    GLfloat cor_luz[]     = { 1.0, 1.0, 1.0, 1.0};
+
+    // Define parametros da luz
+    glLightfv(GL_LIGHT0, GL_AMBIENT, cor_luz);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, cor_luz);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, cor_luz);
+    glLightfv(GL_LIGHT0, GL_POSITION, posicao_luz);
+
+    gluLookAt (0.0, proj_vision, zdist, 0.0, 3.0, 0.0, 0.0, 1.0, 0.0);
+
+    textureManager->Bind(0);
+    glBegin(GL_QUADS);
+        glNormal3f(0,0,1);
+        glTexCoord2f(0,0);
+        glVertex3f(-w,-h+3,-1);
+        glTexCoord2f(1, 0);
+        glVertex3f(w, -h+3, -1);
+        glTexCoord2f(1,1);
+        glVertex3f(w,h+3,-1);
+        glTexCoord2f(0,1);
+        glVertex3f(-w,h+3,-1);
+    glEnd();
+    textureManager->Disable();
+}
+
 
 float calculaDistancia(vertice v1, vertice v2)
 {
@@ -390,50 +464,52 @@ void display(void)
 
     // Mudando a configuracao dos inimigos conforme a fase atual
     enemy->setConf(fase);
-
-    glPushMatrix();
-        glRotatef( rotationY, 0.0, 1.0, 0.0 );
-        glRotatef( rotationX, 1.0, 0.0, 0.0 );
-
-        setMaterials();
-        drawCampo(); // Campo
-
-        player->drawPlayer(); // Desenha o player
-
-        enemy->drawEnemies(); // Desenha todos os blocos inimigos
-
-        drawVidas();
-
-        // Esfera
+    if (telaInicial)
+        drawTelaInicial();
+    else {
         glPushMatrix();
-            setColor(1.0, 1.0, 1.0);
-            glTranslatef(ball_coords.x, ball_coords.y, 0.0); // Posicionamento inicial da esfera
-            glutSolidSphere(RAIO*2, 100, 100);
+            glRotatef( rotationY, 0.0, 1.0, 0.0 );
+            glRotatef( rotationX, 1.0, 0.0, 0.0 );
+
+            setMaterials();
+            drawCampo(); // Campo
+
+            player->drawPlayer(); // Desenha o player
+
+            enemy->drawEnemies(); // Desenha todos os blocos inimigos
+
+            drawVidas();
+
+            // Esfera
+            glPushMatrix();
+                setColor(1.0, 1.0, 1.0);
+                glTranslatef(ball_coords.x, ball_coords.y, 0.0); // Posicionamento inicial da esfera
+                glutSolidSphere(RAIO*2, 100, 100);
+            glPopMatrix();
+
+            // Cursor de direção
+            if (!inicio)
+                drawCursor(ball_coords.x, ball_coords.y);
+            else
+                randomEnemy->drawEnemies(true);
+
         glPopMatrix();
 
-        // Cursor de direção
-        if (!inicio)
-            drawCursor(ball_coords.x, ball_coords.y);
-        else
-            randomEnemy->drawEnemies(true);
+        // Incrementa a fase se terminarem os inimigos
+            if (enemy->numberOfEnemies() == 0 && fase < 3) {
+                fase++;
+                enemy->setConf(fase);
+                reset(true);
+            } else if (fase >= 3) {
+                reset(true);
+                fase = 0;
+                enemy->setConf(fase);
+            }
 
-    glPopMatrix();
-
-    // Incrementa a fase se terminarem os inimigos
-        if (enemy->numberOfEnemies() == 0 && fase < 3) {
-            fase++;
-            enemy->setConf(fase);
-            reset(true);
-        } else if (fase >= 3) {
-            reset(true);
-            fase = 0;
-            enemy->setConf(fase);
-        }
-
-        // colisao do player com bola
-        if(checaColisaoPlayer(ball_coords))
-            colisaoBolaPlayer(ball_vector);
-
+            // colisao do player com bola
+            if(checaColisaoPlayer(ball_coords))
+                colisaoBolaPlayer(ball_vector);
+    }
 
     glutSwapBuffers();
 }
@@ -511,24 +587,36 @@ void reshape (int w, int h)
 
 void keyboard (unsigned char key, int x, int y)
 {
-    switch (tolower(key))
-    {
-        case 'p': // Mudança de perspectiva
-            proj *= -1;
-            break;
-        case 'r': // Reseta o jogo
-            reset(true);
-            break;
-        case ' ': // Pausa o jogo
-            pause = !pause;
-            break;
-        case 'c': // Libera movimentação da câmera
-            camera = !camera;
-            pause = camera;
-            break;
-        case 27:
-            exit(0);
-            break;
+    if (!telaInicial) {
+        switch (tolower(key))
+        {
+            case 'p': // Mudança de perspectiva
+                proj *= -1;
+                break;
+            case 'r': // Reseta o jogo
+                reset(true);
+                break;
+            case ' ': // Pausa o jogo
+                pause = !pause;
+                break;
+            case 'c': // Libera movimentação da câmera
+                camera = !camera;
+                pause = camera;
+                break;
+            case 27:
+                exit(0);
+                break;
+        }
+    } else {
+        switch (tolower(key))
+        {
+            case ' ': // Pausa o jogo
+                telaInicial = !telaInicial;
+                break;
+            case 27:
+                exit(0);
+                break;
+        }
     }
 }
 
@@ -539,9 +627,9 @@ void spk(int key, int x, int y)
     switch(key)
     {
     case GLUT_KEY_F12:
-    //do something here
-    glutFullScreen();
-    break;
+        //do something here
+        glutFullScreen();
+        break;
     }
 }
 
@@ -550,11 +638,36 @@ void spk(int key, int x, int y)
 void motion(int x, int y )
 {
     if (camera) {
+
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
         rotationX += (float) (y - last_y);
         rotationY += (float) (x - last_x);
 
         last_x = x;
         last_y = y;
+
+        // mudanco posicao da luz em relacao a rotacao
+        glDisable(GL_LIGHTING);                 // Habilita luz
+        glDisable(GL_LIGHT0);                   // habilita luz 0
+        glDisable(GL_DEPTH_TEST);
+
+        // mudando a posicao da luz em relacao a posicao da camera
+        GLfloat posicao_luz[] = { (float) rotationX, (float)rotationY, 1000.0, 1.0};
+        GLfloat cor_luz[]     = { 1.0, 1.0, 1.0, 1.0};
+
+        // Define parametros da luz
+        glLightfv(GL_LIGHT0, GL_AMBIENT, cor_luz);
+        glLightfv(GL_LIGHT0, GL_DIFFUSE, cor_luz);
+        glLightfv(GL_LIGHT0, GL_SPECULAR, cor_luz);
+        glLightfv(GL_LIGHT0, GL_POSITION, posicao_luz);
+
+        glEnable(GL_LIGHTING);                 // Habilita luz
+        glEnable(GL_LIGHT0);                   // habilita luz 0
+        glEnable(GL_DEPTH_TEST);
+
+        glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+
     }
 }
 
@@ -562,32 +675,38 @@ void motion(int x, int y )
 void mouse(int button, int state, int x, int y)
 {
     // inicia o jogo com o botão esquerdo do mouse
-    if (button == GLUT_LEFT_BUTTON && !inicio) {
-        inicio = true;
-    }
-    if ( button == GLUT_LEFT_BUTTON && state == GLUT_DOWN )
-    {
-        last_x = x;
-        last_y = y;
-    }
-    if(button == 3) // Scroll up
-    {
-        // Scroll up rotaciona o cursor para a esquerda
-        if (!inicio) {
-            if (angulo > -60) {
-                angulo = ((int) angulo - 2) % 360;
-                rotacao(cursor_coords, (-2*3.14)/180.0);
+    if (!telaInicial) {
+        if (button == GLUT_LEFT_BUTTON && !inicio) {
+            inicio = true;
+        }
+        if ( button == GLUT_LEFT_BUTTON && state == GLUT_DOWN )
+        {
+            last_x = x;
+            last_y = y;
+        }
+        if(button == 3) // Scroll up
+        {
+            // Scroll up rotaciona o cursor para a esquerda
+            if (!inicio) {
+                if (angulo > -60) {
+                    angulo = ((int) angulo - 2) % 360;
+                    rotacao(cursor_coords, (-2*3.14)/180.0);
+                }
             }
         }
-    }
-    if(button == 4) // Scroll Down
-    {
-        // Scroll down rotaciona o cursor para a direita
-        if (!inicio) {
-            if (angulo < 60) {
-                angulo = ((int) angulo + 2) % 360;
-                rotacao(cursor_coords, (2*3.14)/180.0);
+        if(button == 4) // Scroll Down
+        {
+            // Scroll down rotaciona o cursor para a direita
+            if (!inicio) {
+                if (angulo < 60) {
+                    angulo = ((int) angulo + 2) % 360;
+                    rotacao(cursor_coords, (2*3.14)/180.0);
+                }
             }
+        }
+    } else {
+        if (button == GLUT_LEFT_BUTTON) {
+            telaInicial = false;
         }
     }
 }
@@ -612,14 +731,14 @@ void mouseMoveFlipper(int x, int y)
     }
 
     // verifica a movimentação a partir da mudança de direção do mouse
-    if (x < mouseX && playerCenter.x-flipperStep > -3.2 ) {
+    if (x < mouseX && playerCenter.x-flipperStep > -3.1 ) {
         playerCenter.x = playerCenter.x-flipperStep;
         //playerCenter.x = cos((playerCenter.x+90)*3.14/180);
         player->Setorigem(playerCenter);
         if (!inicio)
             ball_coords.x = playerCenter.x;
     }
-    if (mouseX < x && playerCenter.x+flipperStep < 3.2 ) {
+    if (mouseX < x && playerCenter.x+flipperStep < 3.1 ) {
         playerCenter.x = playerCenter.x+flipperStep;
         //playerCenter.x = cos((playerCenter.x+90)*3.14/180);
         player->Setorigem(playerCenter);
@@ -657,6 +776,8 @@ int main(int argc, char** argv)
     glutSetCursor(GLUT_CURSOR_NONE);
     glutKeyboardFunc(keyboard);
     glutSpecialFunc(spk);
+    glShadeModel(GL_SMOOTH);
+    glEnable(GL_DEPTH_TEST);
     glutIdleFunc(idle);
     glutMainLoop();
     return 0;
