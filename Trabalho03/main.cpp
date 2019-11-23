@@ -56,13 +56,20 @@ void init(void)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // https://www.opengl.org/sdk/docs/man/html/glBlendFunc.xhtml
 
     textureManager = new glcTexture();            // Criação do arquivo que irá gerenciar as texturas
-    textureManager->SetNumberOfTextures(1);       // Estabelece o número de texturas que será utilizado
+    textureManager->SetNumberOfTextures(7);       // Estabelece o número de texturas que será utilizado
     textureManager->CreateTexture("textures/telaInicialTexto.png", 0); // Para testar magnificação, usar a imagem marble128
-
+    textureManager->CreateTexture("textures/skybox/cwd_bk.png", 1);
+    textureManager->CreateTexture("textures/skybox/cwd_dn.png", 2);
+    textureManager->CreateTexture("textures/skybox/cwd_ft.png", 3);
+    textureManager->CreateTexture("textures/skybox/cwd_lf.png", 4);
+    textureManager->CreateTexture("textures/skybox/cwd_rt.png", 5);
+    textureManager->CreateTexture("textures/skybox/cwd_up.png", 6);
 }
 
 
 void drawTelaInicial() {
+
+    glPushMatrix();
     float aspectRatio = textureManager->GetAspectRatio(0);
 
     // Calculo abaixo funciona apenas se textura estiver centralizada na origem
@@ -99,15 +106,21 @@ void drawTelaInicial() {
     GLfloat cor_luz[]     = { 1.0, 1.0, 1.0, 1.0};
 
     // Define parametros da luz
-    glLightfv(GL_LIGHT0, GL_AMBIENT, cor_luz);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, cor_luz);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, cor_luz);
-    glLightfv(GL_LIGHT0, GL_POSITION, posicao_luz);
+    // Enable/Disable features
+    glPushAttrib(GL_ENABLE_BIT);
+    glEnable(GL_TEXTURE_2D);
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
+    glDisable(GL_BLEND);
+
+    // Just in case we set all vertices to white.
+    glColor4f(1,1,1,1);
 
     gluLookAt (0.0, proj_vision, zdist, 0.0, 3.0, 0.0, 0.0, 1.0, 0.0);
 
     textureManager->Bind(0);
     glBegin(GL_QUADS);
+        glColor4f(1,1,1,1);
         glNormal3f(0,0,1);
         glTexCoord2f(0,0);
         glVertex3f(-w,-h+3,-1);
@@ -119,6 +132,91 @@ void drawTelaInicial() {
         glVertex3f(-w,h+3,-1);
     glEnd();
     textureManager->Disable();
+    glPopAttrib();
+    glPopMatrix();
+}
+
+
+void drawSkyBox() {
+    // Store the current matrix
+    glPushMatrix();
+
+    // Reset and transform the matrix.
+//    glLoadIdentity();
+//    gluLookAt(
+//        0,0,0,
+//        0,0,0,
+//        0,1,0);
+//
+    // Enable/Disable features
+    glPushAttrib(GL_ENABLE_BIT);
+    glEnable(GL_TEXTURE_2D);
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
+    glDisable(GL_BLEND);
+
+    // Just in case we set all vertices to white.
+    glColor4f(1,1,1,1);
+
+    // Render the front quad
+    textureManager->Bind(3);
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex3f(  10, -10, -10 );
+        glTexCoord2f(1, 0); glVertex3f(  10,  10, -10 );
+        glTexCoord2f(1, 1); glVertex3f( -10,  10, -10 );
+
+        glTexCoord2f(0, 1); glVertex3f( -10, -10, -10);
+    glEnd();
+
+    // Render the left quad
+    textureManager->Bind(4);
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex3f(  10, -10,  10 );
+        glTexCoord2f(1, 0); glVertex3f(  10, -10, -10 );
+        glTexCoord2f(1, 1); glVertex3f(  10,  10, -10 );
+        glTexCoord2f(0, 1); glVertex3f(  10,  10,  10 );
+    glEnd();
+
+    // Render the back quad
+    textureManager->Bind(1);
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex3f( -10, -10,  10 );
+        glTexCoord2f(1, 0); glVertex3f(  10, -10,  10 );
+        glTexCoord2f(1, 1); glVertex3f(  10,  10,  10 );
+        glTexCoord2f(0, 1); glVertex3f( -10,  10,  10 );
+
+    glEnd();
+
+    // Render the right quad
+    textureManager->Bind(5);
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex3f( -10, -10, -10 );
+        glTexCoord2f(1, 0); glVertex3f( -10, -10,  10 );
+        glTexCoord2f(1, 1); glVertex3f( -10,  10,  10 );
+        glTexCoord2f(0, 1); glVertex3f( -10,  10, -10 );
+    glEnd();
+
+    // Render the top quad
+    textureManager->Bind(6);
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 1); glVertex3f( -10,  10, -10 );
+        glTexCoord2f(0, 0); glVertex3f( -10,  10,  10 );
+        glTexCoord2f(1, 0); glVertex3f(  10,  10,  10 );
+        glTexCoord2f(1, 1); glVertex3f(  10,  10, -10 );
+    glEnd();
+
+    // Render the bottom quad
+    textureManager->Bind(2);
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 0); glVertex3f( -10, -10, -10 );
+        glTexCoord2f(0, 1); glVertex3f( -10, -10,  10 );
+        glTexCoord2f(1, 1); glVertex3f(  10, -10,  10 );
+        glTexCoord2f(1, 0); glVertex3f(  10, -10, -10 );
+    glEnd();
+
+    // Restore enable bits and matrix
+    glPopAttrib();
+    glPopMatrix();
 }
 
 
@@ -472,6 +570,7 @@ void display(void)
             glRotatef( rotationX, 1.0, 0.0, 0.0 );
 
             setMaterials();
+            drawSkyBox();
             drawCampo(); // Campo
 
             player->drawPlayer(); // Desenha o player
