@@ -46,7 +46,7 @@ class EnemyRandom
         // status > 0 -> colisao
         vector<float> status;
         int regressao = 10;
-        char objFile[200] = "/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/modelo3D/ARV_Craft_Low_Poly.obj";
+        char objFile[200] = "/home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho03/modelo3D";
         glcWavefrontObject *objectManager = NULL;
         float XPOS = 2;
         float YPOS = 5.65;

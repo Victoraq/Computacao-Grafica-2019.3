@@ -10,8 +10,6 @@
 #include "Enemy.h"
 #include "Player.h"
 #include "EnemyRandom.h"
-#include "CurvaEsquerda.h"
-#include "Utils.h"
 
 /// Estruturas iniciais para armazenar vertices
 //  Você poderá utilizá-las adicionando novos métodos (de acesso por exemplo) ou usar suas próprias estruturas.
@@ -43,81 +41,27 @@ vertice ball_coords = {0.0,0.0,0.0};  // Coordenadas da bola
 float *ball_vector = cursor_coords;   // Vetor de direção da bola
 int vidas = 5;                     // Contador de vidas do jogador
 int fase = 0;                      // determina em que fase o player esta
-CurvaEsquerda curva;
-Utils utility;
 
 /// Functions
 void init(void)
 {
     initLight(rotationX, rotationY); // Função extra para tratar iluminação.
 }
-/*
+
 float calculaDistancia(vertice v1, vertice v2)
 {
     return sqrt(pow(v1.x-v2.x, 2) + pow(v1.y-v2.y, 2) + pow(v1.z-v2.z, 2));
-}*/
+}
 
 bool checaColisaoPlayer(vertice origem)
 {
     ///Se a distancia entre a origem do player e a origem da bola for <= a soma de seus raios
     ///e a bola esteja acima da parte de baixo do player
-    if((utility.calculaDistancia(player->Getorigem(), origem)<=RAIO+1)&&
+    if((calculaDistancia(player->Getorigem(), origem)<=RAIO+1)&&
     ((origem.x>(player->Getorigem().x-0.765))&&(true)))
         return true;
     else
         return false;
-}
-
-bool checaColisaoCurvaEsquerda()
-{
-    if(utility.calculaDistancia(ball_coords, curva.getOrigemE())<=RAIO+curva.getRaio())
-        return true;
-    else
-        return false;
-}
-
-bool checaColisaoCurvaDireita()
-{
-    if(utility.calculaDistancia(ball_coords, curva.getOrigemD())<=RAIO+curva.getRaio())
-        return true;
-    else
-        return false;
-}
-
-void colisaoCurvas()
-{
-    vertice p1, p2, p3, normal, ball={ball_vector[0], ball_vector[1], ball_vector[2]};
-    float angulo;
-    if(checaColisaoCurvaEsquerda())
-    {
-        curva.encontraDoisPontosMaisProximosE(ball, &p1, &p2);
-        p3=p2;
-        p3.z*=-1;
-        normal=*utility.calculaNormal(&p1, &p2, &p3);
-        utility.unitiza(&normal);
-
-        angulo=utility.calculaAngulo(&ball, &normal);
-        utility.rotaciona(&ball, angulo);
-
-        ball_vector[0]=ball.x;
-        ball_vector[1]=ball.y;
-        ball_vector[2]=ball.z;
-    }
-    else if(checaColisaoCurvaDireita())
-    {
-        curva.encontraDoisPontosMaisProximosD(ball, &p1, &p2);
-        p3=p2;
-        p3.z*=-1;
-        normal=*utility.calculaNormal(&p1, &p2, &p3);
-        utility.unitiza(&normal);
-
-        angulo=utility.calculaAngulo(&ball, &normal);
-        utility.rotaciona(&ball, angulo);
-
-        ball_vector[0]=ball.x;
-        ball_vector[1]=ball.y;
-        ball_vector[2]=ball.z;
-    }
 }
 
 void encontraDoisPontosMaisProximos(vertice* p1, vertice* p2)
@@ -133,7 +77,7 @@ void encontraDoisPontosMaisProximos(vertice* p1, vertice* p2)
             break;
     }
 }
-/*
+
 vertice* iniciaVetor(float x, float y, float z)
 {
     vertice* vet=new vertice;
@@ -218,7 +162,7 @@ float calculaAngulo(vertice* v1, vertice* v2)
     if(a<90)
         return a;
     else
-        (180-a);
+        return (180-a);
 }
 
 vertice* rotaciona(vertice* vet, float angulo)
@@ -226,13 +170,13 @@ vertice* rotaciona(vertice* vet, float angulo)
     float a, b;
 
     a = (vet->x*cos(angulo) - vet->y*sin(angulo));
-    b = (vet->x*sin(angulo) + vet->y*cos(angulo));
+    b = (vet->x*sin(angulo) - vet->y*cos(angulo));
 
     vet->x=a;
     vet->y=b;
 
     return vet;
-}*/
+}
 
 /// Retorna o jogo para o estado inicial
 void reset(bool newgame)
@@ -361,22 +305,22 @@ void colisaoBolaPlayer(float direction[])
     obj_direction->x=direction[0]; ///copia ball_vector para bola
     obj_direction->y=direction[1];
     obj_direction->z=direction[2];
-    utility.unitiza(obj_direction);
+    unitiza(obj_direction);
 
     encontraDoisPontosMaisProximos(&p2, &p1); ///pega os pontos e calcula a normal
     p3=p2;
     p3.z*=-1;
 
-    normal=utility.calculaNormal(&p1, &p2, &p3);
-    utility.unitiza(normal);
+    normal=calculaNormal(&p1, &p2, &p3);
+    unitiza(normal);
 
 
     if(inicio)
     {
-        angulo=utility.calculaAngulo(obj_direction, normal); ///calcula o angulo e gira o vetor
-        utility.rotaciona(obj_direction, angulo);
+        angulo=calculaAngulo(obj_direction, normal); ///calcula o angulo e gira o vetor
+        rotaciona(obj_direction, angulo);
         obj_direction->z=0.25;
-        utility.unitiza(obj_direction);
+        unitiza(obj_direction);
     }
 
     direction[0]=obj_direction->x; ///copia bola atualizado para ball_vector
@@ -412,96 +356,6 @@ void drawVidas() {
     }
 
 }
-
-/*
-void drawCurvaEsquerda()
-{
-    float raio=5;
-    vertice origem={-8.4, 2, 0.1};
-    vertice *p=new vertice{raio, 0, 0};
-    p=rotaciona(p, GrausParaRadianos(-25));
-    vertice pontosConstrucao[11];
-    pontosConstrucao[0]=*p;
-    for(int i=1; i<11; i++)
-    {
-        pontosConstrucao[i]=*rotaciona(p, GrausParaRadianos(5));
-        printf("[%f][%f][%f]\n", pontosConstrucao[i].x, pontosConstrucao[i].y,  pontosConstrucao[i].z);
-    }
-
-    for(int i=0; i<11; i++)
-    {
-        pontosConstrucao[i].x+=origem.x;
-        pontosConstrucao[i].y+=origem.y;
-        pontosConstrucao[i].z+=origem.z;
-    }
-
-    for(int i=0; i<10; i++)
-    {
-        glBegin(GL_QUADS);
-            glVertex3f(pontosConstrucao[i].x, pontosConstrucao[i].y, -1*pontosConstrucao[i].z);
-            glVertex3f(pontosConstrucao[i+1].x, pontosConstrucao[i+1].y, -1*pontosConstrucao[i].z);
-            glVertex3f(pontosConstrucao[i+1].x, pontosConstrucao[i+1].y, pontosConstrucao[i].z);
-            glVertex3f(pontosConstrucao[i].x, pontosConstrucao[i].y, pontosConstrucao[i].z);
-        glEnd();
-
-        glBegin(GL_POLYGON);
-            for(int i=0; i<11; i++)
-                glVertex3f(pontosConstrucao[i].x, pontosConstrucao[i].y, pontosConstrucao[i].z);
-        glEnd();
-
-        glBegin(GL_POLYGON);
-            for(int i=0; i<11; i++)
-                glVertex3f(pontosConstrucao[i].x, pontosConstrucao[i].y, -1*pontosConstrucao[i].z);
-        glEnd();
-    }
-
-}
-
-
-void drawCurvaDireita()
-{
-    float raio=5;
-    vertice origem={8.4, 2, 0.1};
-    vertice *p=new vertice{raio, 0, 0};
-    p=rotaciona(p, GrausParaRadianos(-25));
-    vertice pontosConstrucao[11];
-    pontosConstrucao[0]=*p;
-    for(int i=1; i<11; i++)
-    {
-        pontosConstrucao[i]=*rotaciona(p, GrausParaRadianos(5));
-    }
-
-    for(int i=0; i<11; i++)
-        pontosConstrucao[i].x*=-1;
-
-    for(int i=0; i<11; i++)
-    {
-        pontosConstrucao[i].x+=origem.x;
-        pontosConstrucao[i].y+=origem.y;
-        pontosConstrucao[i].z+=origem.z;
-    }
-
-    for(int i=0; i<10; i++)
-    {
-        glBegin(GL_QUADS);
-            glVertex3f(pontosConstrucao[i].x, pontosConstrucao[i].y, -1*pontosConstrucao[i].z);
-            glVertex3f(pontosConstrucao[i+1].x, pontosConstrucao[i+1].y, -1*pontosConstrucao[i].z);
-            glVertex3f(pontosConstrucao[i+1].x, pontosConstrucao[i+1].y, pontosConstrucao[i].z);
-            glVertex3f(pontosConstrucao[i].x, pontosConstrucao[i].y, pontosConstrucao[i].z);
-        glEnd();
-
-        glBegin(GL_POLYGON);
-            for(int i=0; i<11; i++)
-                glVertex3f(pontosConstrucao[i].x, pontosConstrucao[i].y, pontosConstrucao[i].z);
-        glEnd();
-
-        glBegin(GL_POLYGON);
-            for(int i=0; i<11; i++)
-                glVertex3f(pontosConstrucao[i].x, pontosConstrucao[i].y, -1*pontosConstrucao[i].z);
-        glEnd();
-    }
-
-}*/
 
 
 void display(void)
@@ -551,14 +405,9 @@ void display(void)
         setMaterials();
         drawCampo(); // Campo
 
-        //curva.drawCurvaEsquerda();
-        curva.drawCurvaEsquerda();
-        curva.drawCurvaDireita();
-
         player->drawPlayer(); // Desenha o player
 
         enemy->drawEnemies(); // Desenha todos os blocos inimigos
-
 
         drawVidas();
 
@@ -576,7 +425,6 @@ void display(void)
             randomEnemy->drawEnemies(true);
 
     glPopMatrix();
-
 
     // Incrementa a fase se terminarem os inimigos
         if (enemy->numberOfEnemies() == 0 && fase < 3) {
@@ -650,7 +498,6 @@ void idle ()
         }
 
     colisaoParedes();
-    colisaoCurvas();
 
     //Quantidade de vidas
     drawVidas();

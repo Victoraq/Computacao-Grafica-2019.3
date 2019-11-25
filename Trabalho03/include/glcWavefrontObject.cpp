@@ -628,12 +628,12 @@ void glcWavefrontObject::Draw()
     }
     if ( (this->render == USE_TEXTURE || this->render == USE_TEXTURE_AND_MATERIAL) && !model->texcoords)
     {
-        printf("glcWavefrontObject::Draw() warning: texture render mode requested with no texture coordinates defined.\nChanging to Color Rendering.\n");
+        //printf("glcWavefrontObject::Draw() warning: texture render mode requested with no texture coordinates defined.\nChanging to Color Rendering.\n");
         this->render = USE_COLOR;
     }
     if (this->render == USE_MATERIAL && !model->materials)
     {
-        printf("glcWavefrontObject::Draw() warning: material render mode requested with no materials defined.\nChanging to Color Rendering.\n");
+        //printf("glcWavefrontObject::Draw() warning: material render mode requested with no materials defined.\nChanging to Color Rendering.\n");
         this->render = USE_COLOR;
     }
 

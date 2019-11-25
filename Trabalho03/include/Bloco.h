@@ -3,14 +3,15 @@
 #define BLOCO_H
 
 #include <string>
+#include "Utils.h"
 using namespace std;
-
+/*
 class vertice
 {
     public:
         float x,y,z;
-};
-
+}
+*/
 class Bloco
 {
     public:

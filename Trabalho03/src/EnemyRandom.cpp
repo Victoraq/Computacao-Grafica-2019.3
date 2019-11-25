@@ -36,8 +36,8 @@ EnemyRandom::EnemyRandom(int quant) {
     {
         objectManager->SelectObject(i);
         objectManager->ReadObject(this->objFile);
-        objectManager->SetShadingMode(SMOOTH_SHADING); // Possible values: FLAT_SHADING e SMOOTH_SHADING
-        objectManager->SetRenderMode(USE_TEXTURE);     // Possible values: USE_COLOR, USE_MATERIAL, USE_TEXTURE (not available in this example)
+        objectManager->SetShadingMode(SMOOTH_SHADING);
+        objectManager->SetRenderMode(USE_TEXTURE);
         objectManager->Unitize();
         objectManager->FacetNormal();
         objectManager->VertexNormals(90.0);

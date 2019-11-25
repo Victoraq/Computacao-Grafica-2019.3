@@ -15,11 +15,6 @@ Player::Player(vertice origem, float cor[])
     for (int i = 0; i < NPONTOS+1; i++) {
         this->pontos[i] = new float[2];
     }
-
-    textureManager = new glcTexture();            // Criação do arquivo que irá gerenciar as texturas
-    textureManager->SetNumberOfTextures(2);       // Estabelece o número de texturas que será utilizado
-    textureManager->CreateTexture("textures/wood.png", 0); // Para testar magnificação, usar a imagem marble128
-    textureManager->CreateTexture("textures/woodtop.png", 1); // Textura transparente, não sendo múltipla de zero
 }
 
 
@@ -52,29 +47,19 @@ void Player::setColor(float r, float g, float b)
 }
 
 
-void Player::setMaterial(int material) {
+void Player::setMaterial() {
     // Material utilizado: esmeralda
     // Parametros comuns para os dois lados da superfície
-    if (material == 1) {
-        GLfloat objeto_especular[] = { 0.633, 0.727811,	0.633, 1.0 };
-        GLfloat objeto_brilho[]    = { 60.0f };
-        GLfloat objeto_ambient[]   = { 0.0215,	0.1745,	0.0215, 1.0 };
+    GLfloat objeto_especular[] = { 0.633, 0.727811,	0.633, 1.0 };
+    GLfloat objeto_brilho[]    = { 60.0f };
+    GLfloat objeto_ambient[]   = { 0.0215,	0.1745,	0.0215, 1.0 };
 
-        GLfloat objeto_difusa[]    = { 0.07568,	0.61424, 0.07568, 1.0 };
+    GLfloat objeto_difusa[]    = { 0.07568,	0.61424, 0.07568, 1.0 };
 
-        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, objeto_ambient);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, objeto_difusa);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, objeto_especular);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, objeto_brilho);
-    } else {
-        GLfloat objeto_ambient[]   = { 0.2, 0.2, 0.2, 1.0 };
-        GLfloat objeto_difusa[]    = { 0.8, 0.8, 0.8, 1.0 };
-        GLfloat objeto_especular[] = { 0.0, 0.0, 0.0, 1.0 };
-
-        glMaterialfv(GL_FRONT, GL_AMBIENT, objeto_ambient);
-        glMaterialfv(GL_FRONT, GL_DIFFUSE, objeto_difusa);
-        glMaterialfv(GL_FRONT, GL_SPECULAR, objeto_especular);
-    }
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, objeto_ambient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, objeto_difusa);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, objeto_especular);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, objeto_brilho);
 }
 
 
@@ -107,54 +92,39 @@ vertice* Player::calculaNormal(vertice* v1, vertice* v2, vertice* v3)
 void Player::drawPlayer() {
 
     glPushMatrix();
-        textureManager->Bind(1);
-        setMaterial(0);
+        setMaterial();
         glTranslatef(origem.x, origem.y, origem.z);
         glPushMatrix();
             glBegin(GL_QUADS);
-                setMaterial(0);
-                glNormal3f(0.0,-1.0,0.0);
-                glTexCoord2f(0.0, 0.35);
+                setMaterial();
+                glNormal3f(0.0,1.0,0.0);
                 glVertex3f(0.7652,0.6437,-0.25);
-                glTexCoord2f(0.0, 0.65);
-                glVertex3f(0.7652,0.6437,0.25);
-                glTexCoord2f(1.0, 0.65);
-                glVertex3f(-0.7652,0.6437,0.25);
-                glTexCoord2f(1.0, 0.35);
                 glVertex3f(-0.7652,0.6437,-0.25);
+                glVertex3f(-0.7652,0.6437,0.25);
+                glVertex3f(0.7652,0.6437,0.25);
             glEnd();
 
         // Desenhando curvas como um conjunto de quadrados
         float atual[2] = {-0.1,0.0};
         float ant[2] = {-0.1,0.0};
         rotacao(ant, (-40*3.14)/180.0);
-
-        float passoText = 1.0/this->NPONTOS;
-        float texture_pos = 0;
-
-        textureManager->Bind(0);
         for (int i = 40, j = 0; i <= 140; i+=100/this->NPONTOS, j++) {
             atual[0] = -0.1;
             atual[1] = -0.0;
-
             rotacao(atual, (-i*3.14)/180.0);
+
             glBegin(GL_QUADS);
-                setMaterial(0);
+                setMaterial();
 
                 vertice v1 = {ant[0],ant[1], 0.25};
                 vertice v2 = {atual[0],atual[1], 0.25};
                 vertice v3 = {atual[0],atual[1], -0.25};
                 vertice* normal = calculaNormal(&v1,&v2,&v3);
-                glNormal3f(normal->x, 1.0, 0.0);
+                glNormal3f(normal->x, -1.0, 0.0);
 
-
-                glTexCoord2f(texture_pos,texture_pos);
-                glVertex3f(atual[0],atual[1], -0.25);
-                glTexCoord2f(texture_pos+passoText,texture_pos);
-                glVertex3f(ant[0],ant[1], -0.25);
-                glTexCoord2f(texture_pos+passoText,texture_pos+passoText);
                 glVertex3f(ant[0],ant[1], 0.25);
-                glTexCoord2f(texture_pos,texture_pos+passoText);
+                glVertex3f(ant[0],ant[1], -0.25);
+                glVertex3f(atual[0],atual[1], -0.25);
                 glVertex3f(atual[0],atual[1], 0.25);
             glEnd();
 
@@ -164,23 +134,19 @@ void Player::drawPlayer() {
             this->pontos[j][1] = atual[1];
 
             this->pontosDeConstrucao[j]=*iniciaVetor(atual[0]+origem.x, atual[1]+origem.y, 0.25);
-            texture_pos += passoText;
         }
 
-        textureManager->Bind(1);
         glBegin(GL_POLYGON);
-            glNormal3f(0.0,0.0,1.0);
-            for(int i = this->NPONTOS; i >= 0; i--) {
-                glTexCoord2f((this->pontos[i][0]+1)/2, this->pontos[i][1]);
+            glNormal3f(0.0,0.0,-1.0);
+            for(int i = 0; i <= this->NPONTOS; i++) {
                 glVertex3f(this->pontos[i][0], this->pontos[i][1], 0.25); // tampa superior
             }
-            printf("\n");
+
         glEnd();
 
         glBegin(GL_POLYGON);
             glNormal3f(0.0,0.0,-1.0);
             for(int i = 0; i <= this->NPONTOS; i++) {
-                glTexCoord2f((this->pontos[i][0]+1)/2, this->pontos[i][1]);
                 glVertex3f(this->pontos[i][0], this->pontos[i][1], -0.25);// tampa inferior
             }
 
@@ -188,7 +154,6 @@ void Player::drawPlayer() {
 
         glPopMatrix();
     glPopMatrix();
-    textureManager->Disable();
 }
 
 
