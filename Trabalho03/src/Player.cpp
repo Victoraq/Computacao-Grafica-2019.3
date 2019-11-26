@@ -18,8 +18,8 @@ Player::Player(vertice origem, float cor[])
 
     textureManager = new glcTexture();            // Criação do arquivo que irá gerenciar as texturas
     textureManager->SetNumberOfTextures(2);       // Estabelece o número de texturas que será utilizado
-    textureManager->CreateTexture("textures/wood.png", 0); // Para testar magnificação, usar a imagem marble128
-    textureManager->CreateTexture("textures/woodtop.png", 1); // Textura transparente, não sendo múltipla de zero
+    textureManager->CreateTexture("textures/metalWave.png", 0); // Para testar magnificação, usar a imagem marble128
+    textureManager->CreateTexture("textures/metalFurado.png", 1); // Textura transparente, não sendo múltipla de zero
 }
 
 
@@ -107,7 +107,7 @@ vertice* Player::calculaNormal(vertice* v1, vertice* v2, vertice* v3)
 void Player::drawPlayer() {
 
     glPushMatrix();
-        textureManager->Bind(1);
+        textureManager->Bind(0);
         setMaterial(0);
         glTranslatef(origem.x, origem.y, origem.z);
         glPushMatrix();
@@ -129,7 +129,7 @@ void Player::drawPlayer() {
         float ant[2] = {-0.1,0.0};
         rotacao(ant, (-40*3.14)/180.0);
 
-        float passoText = 1.0/this->NPONTOS;
+        float passoText = 1.0/(this->NPONTOS-4);
         float texture_pos = 0;
 
         textureManager->Bind(0);

@@ -10,6 +10,8 @@
 #include "Enemy.h"
 #include "Player.h"
 #include "EnemyRandom.h"
+#include "Utils.h"
+#include "CurvaLateral.h"
 
 /// Estruturas iniciais para armazenar vertices
 //  Você poderá utilizá-las adicionando novos métodos (de acesso por exemplo) ou usar suas próprias estruturas.
@@ -43,6 +45,8 @@ int vidas = 5;                     // Contador de vidas do jogador
 int fase = 0;                      // determina em que fase o player esta
 bool telaInicial = true;           // Determina se ira desenhar a tela inicial ou não
 glcTexture *textureManager;        // manager das texturas
+CurvaLateral curva;
+Utils utility;
 
 /// Functions
 void init(void)
@@ -225,6 +229,61 @@ float calculaDistancia(vertice v1, vertice v2)
     return sqrt(pow(v1.x-v2.x, 2) + pow(v1.y-v2.y, 2) + pow(v1.z-v2.z, 2));
 }
 
+
+bool checaColisaoCurvaEsquerda()
+{
+    if(utility.calculaDistancia(ball_coords, curva.getOrigemE())<=RAIO+curva.getRaio())
+        return true;
+    else
+        return false;
+}
+
+bool checaColisaoCurvaDireita()
+{
+    if(utility.calculaDistancia(ball_coords, curva.getOrigemD())<=RAIO+curva.getRaio())
+        return true;
+    else
+        return false;
+}
+
+
+void colisaoCurvas()
+{
+    vertice p1, p2, p3, normal, ball={ball_vector[0], ball_vector[1], ball_vector[2]};
+    float angulo;
+    if(checaColisaoCurvaEsquerda())
+    {
+        curva.encontraDoisPontosMaisProximosE(ball, &p1, &p2);
+        p3=p2;
+        p3.z*=-1;
+        normal=*utility.calculaNormal(&p1, &p2, &p3);
+        utility.unitiza(&normal);
+
+        angulo=utility.calculaAngulo(&ball, &normal);
+        utility.rotaciona(&ball, angulo);
+
+        ball_vector[0]=ball.x;
+        ball_vector[1]=ball.y;
+        ball_vector[2]=ball.z;
+    }
+    else if(checaColisaoCurvaDireita())
+    {
+        curva.encontraDoisPontosMaisProximosD(ball, &p1, &p2);
+        p3=p2;
+        p3.z*=-1;
+        normal=*utility.calculaNormal(&p1, &p2, &p3);
+        utility.unitiza(&normal);
+
+        angulo=utility.calculaAngulo(&ball, &normal);
+        utility.rotaciona(&ball, angulo);
+
+        ball_vector[0]=ball.x;
+        ball_vector[1]=ball.y;
+        ball_vector[2]=ball.z;
+    }
+}
+
+
 bool checaColisaoPlayer(vertice origem)
 {
     ///Se a distancia entre a origem do player e a origem da bola for <= a soma de seus raios
@@ -248,100 +307,6 @@ void encontraDoisPontosMaisProximos(vertice* p1, vertice* p2)
         if(ball_coords.x < player->pontosDeConstrucao[i].x)
             break;
     }
-}
-
-vertice* iniciaVetor(float x, float y, float z)
-{
-    vertice* vet=new vertice;
-    vet->x=x;
-    vet->y=y;
-    vet->z=z;
-
-    return vet;
-}
-
-vertice* produtoVetorial(vertice* v1, vertice* v2)
-{
-    vertice* vet=new vertice;
-    vet->x=((v1->y*v2->z)-(v2->y*v1->z));
-    vet->y=((v1->x*v2->z)-(v2->x*v1->z));
-    if(vet->y!=0)
-        vet->y*=-1;
-    vet->z=((v1->x*v2->y)-(v2->x*v1->y));
-    return vet;
-}
-
-vertice* calculaNormal(vertice* v1, vertice* v2, vertice* v3)
-{
-
-    vertice* vetA=new vertice;
-    vertice* vetB=new vertice;
-
-    vetA->x = v1->x-v2->x;
-    vetA->y = v1->y-v2->y;
-    vetA->z = v1->z-v2->z;
-
-    vetB->x = v3->x-v2->x;
-    vetB->y = v3->y-v2->y;
-    vetB->z = v3->z-v2->z;
-
-    vertice*c=produtoVetorial(vetA, vetB);
-
-    return c;
-}
-
-float RadianosParaGraus(float valor)
-{
-    return (valor*180)/3.14;
-}
-
-float produtoEscalar(vertice* v1, vertice* v2)
-{
-    return ((v1->x*v2->x)+(v1->y*v2->y)+(v1->z*v2->z));
-}
-
-float norma(vertice* vet)
-{
-    return sqrt(pow(vet->x, 2) + pow(vet->y, 2) + pow(vet->z, 2));
-}
-
-void unitiza(vertice* vet)
-{
-    int vel=1;
-    float n=norma(vet);
-    vet->x/=n;
-    vet->y/=n;
-    vet->z/=n;
-
-    vet->x*=vel;
-    vet->y*=vel;
-    vet->z*=vel;
-
-}
-
-
-float calculaAngulo(vertice* v1, vertice* v2)
-{
-    float v =(produtoEscalar(v1, v2))/(norma(v1)*norma(v2));
-    v=3.14-v;
-    float a = RadianosParaGraus(acos(v));
-    if(a<90)
-        return a;
-    else
-        (180-a);
-}
-
-vertice* rotaciona(vertice* vet, float angulo)
-{
-    float a, b;
-
-    a = (vet->x*cos(angulo) - vet->y*sin(angulo));
-    b = (vet->x*sin(angulo) - vet->y*cos(angulo));
-
-    vet->x=a;
-    vet->y=b;
-
-    return vet;
 }
 
 /// Retorna o jogo para o estado inicial
@@ -470,22 +435,22 @@ void colisaoBolaPlayer(float direction[])
     obj_direction->x=direction[0]; ///copia ball_vector para bola
     obj_direction->y=direction[1];
     obj_direction->z=direction[2];
-    unitiza(obj_direction);
+    utility.unitiza(obj_direction);
 
     encontraDoisPontosMaisProximos(&p2, &p1); ///pega os pontos e calcula a normal
     p3=p2;
     p3.z*=-1;
 
-    normal=calculaNormal(&p1, &p2, &p3);
-    unitiza(normal);
+    normal=utility.calculaNormal(&p1, &p2, &p3);
+    utility.unitiza(normal);
 
 
     if(inicio)
     {
-        angulo=calculaAngulo(obj_direction, normal); ///calcula o angulo e gira o vetor
-        rotaciona(obj_direction, angulo);
+        angulo=utility.calculaAngulo(obj_direction, normal); ///calcula o angulo e gira o vetor
+        utility.rotaciona(obj_direction, angulo);
         obj_direction->z=0.25;
-        unitiza(obj_direction);
+        utility.unitiza(obj_direction);
     }
 
     direction[0]=obj_direction->x; ///copia bola atualizado para ball_vector
@@ -572,6 +537,9 @@ void display(void)
             setMaterials();
             drawSkyBox();
             drawCampo(); // Campo
+
+            curva.drawCurvaEsquerda();
+            curva.drawCurvaDireita();
 
             player->drawPlayer(); // Desenha o player
 
@@ -666,6 +634,7 @@ void idle ()
         }
 
     colisaoParedes();
+    colisaoCurvas();
 
     //Quantidade de vidas
     drawVidas();
@@ -830,22 +799,25 @@ void mouseMoveFlipper(int x, int y)
     }
 
     // verifica a movimentação a partir da mudança de direção do mouse
-    if (x < mouseX && playerCenter.x-flipperStep > -3.1 ) {
-        playerCenter.x = playerCenter.x-flipperStep;
-        //playerCenter.x = cos((playerCenter.x+90)*3.14/180);
-        player->Setorigem(playerCenter);
-        if (!inicio)
-            ball_coords.x = playerCenter.x;
-    }
-    if (mouseX < x && playerCenter.x+flipperStep < 3.1 ) {
-        playerCenter.x = playerCenter.x+flipperStep;
-        //playerCenter.x = cos((playerCenter.x+90)*3.14/180);
-        player->Setorigem(playerCenter);
-        if (!inicio)
-            ball_coords.x = playerCenter.x;
-    }
-    mouseX = x; // atualiza a posição do mouse
-
+//    if (x < mouseX && playerCenter.x-flipperStep > -3.1 ) {
+//        playerCenter.x = playerCenter.x-flipperStep;
+//        //playerCenter.x = cos((playerCenter.x+90)*3.14/180);
+//        player->Setorigem(playerCenter);
+//        if (!inicio)
+//            ball_coords.x = playerCenter.x;
+//    }
+//    if (mouseX < x && playerCenter.x+flipperStep < 3.1 ) {
+//        playerCenter.x = playerCenter.x+flipperStep;
+//        //playerCenter.x = cos((playerCenter.x+90)*3.14/180);
+//        player->Setorigem(playerCenter);
+//        if (!inicio)
+//            ball_coords.x = playerCenter.x;
+//    }
+//    mouseX = x; // atualiza a posição do mouse
+playerCenter.x=(x/156.25)-3.2;
+    player->Setorigem(playerCenter);
+    if (!inicio)
+    ball_coords.x = playerCenter.x;
 }
 
 /// Main

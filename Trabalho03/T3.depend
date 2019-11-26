@@ -186,7 +186,7 @@
 	<string.h>
 	<assert.h>
 
-1535591434 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/include/glcWavefrontObject.cpp
+1574730241 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/include/glcWavefrontObject.cpp
 	"glcWavefrontObject.h"
 	<math.h>
 	<stdio.h>
@@ -199,7 +199,7 @@
 	<stdio.h>
 	<GL/gl.h>
 
-1574550332 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/main.cpp
+1574731519 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/main.cpp
 	<GL/glut.h>
 	<stdlib.h>
 	<stdio.h>
@@ -211,20 +211,23 @@
 	"Enemy.h"
 	"Player.h"
 	"EnemyRandom.h"
+	"Utils.h"
+	"CurvaLateral.h"
 
 1568681138 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/extras.h
 	<GL/glut.h>
 
-1572135234 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/include/Enemy.h
+1574730241 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/include/Enemy.h
 	"Bloco.h"
 	<vector>
 	<iostream>
 	<string>
 
-1572183513 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/include/Bloco.h
+1574730533 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/include/Bloco.h
 	<string>
+	"Utils.h"
 
-1574366066 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/include/Player.h
+1574730241 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/include/Player.h
 	"Bloco.h"
 	<iostream>
 	"glcTexture.h"
@@ -252,7 +255,7 @@
 1574206457 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/src/EnemyRandom.cpp
 	"EnemyRandom.h"
 
-1574512296 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/src/Player.cpp
+1574730303 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/src/Player.cpp
 	"Player.h"
 	<GL/glut.h>
 	<stdlib.h>
@@ -267,7 +270,7 @@
 
 1535591428 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/include/glcText.h
 
-1535591430 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/include/glcTexture.cpp
+1574730241 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/include/glcTexture.cpp
 	<string>
 	<stdio.h>
 	<malloc.h>
@@ -278,4 +281,22 @@
 1574124024 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/include/glcTexture.h
 	<GL/glut.h>
 	<string>
+
+1574730934 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/src/CurvaLateral.cpp
+	"CurvaLateral.h"
+
+1574730934 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/include/CurvaLateral.h
+	"Bloco.h"
+	<GL/glut.h>
+	<cmath>
+	<iostream>
+	<cstdio>
+	"Utils.h"
+
+1574729731 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/include/Utils.h
+	<iostream>
+	<cmath>
+
+1574728405 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/src/Utils.cpp
+	"Utils.h"
 
