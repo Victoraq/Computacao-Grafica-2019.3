@@ -45,7 +45,7 @@ int vidas = 5;                     // Contador de vidas do jogador
 int fase = 0;                      // determina em que fase o player esta
 bool telaInicial = true;           // Determina se ira desenhar a tela inicial ou não
 glcTexture *textureManager;        // manager das texturas
-CurvaLateral curva;
+CurvaLateral *curva;
 Utils utility;
 
 /// Functions
@@ -230,17 +230,17 @@ float calculaDistancia(vertice v1, vertice v2)
 }
 
 
-bool checaColisaoCurvaEsquerda()
+bool checaColisaoCurvaEsquerda(vertice coords, float raio)
 {
-    if(utility.calculaDistancia(ball_coords, curva.getOrigemE())<=RAIO+curva.getRaio())
+    if(utility.calculaDistancia(coords, curva->getOrigemE())<=raio+curva->getRaio())
         return true;
     else
         return false;
 }
 
-bool checaColisaoCurvaDireita()
+bool checaColisaoCurvaDireita(vertice coords, float raio)
 {
-    if(utility.calculaDistancia(ball_coords, curva.getOrigemD())<=RAIO+curva.getRaio())
+    if(utility.calculaDistancia(coords, curva->getOrigemD())<=raio+curva->getRaio())
         return true;
     else
         return false;
@@ -251,9 +251,9 @@ void colisaoCurvas()
 {
     vertice p1, p2, p3, normal, ball={ball_vector[0], ball_vector[1], ball_vector[2]};
     float angulo;
-    if(checaColisaoCurvaEsquerda())
+    if(checaColisaoCurvaEsquerda(ball_coords, RAIO))
     {
-        curva.encontraDoisPontosMaisProximosE(ball, &p1, &p2);
+        curva->encontraDoisPontosMaisProximosE(ball, &p1, &p2);
         p3=p2;
         p3.z*=-1;
         normal=*utility.calculaNormal(&p1, &p2, &p3);
@@ -266,9 +266,9 @@ void colisaoCurvas()
         ball_vector[1]=ball.y;
         ball_vector[2]=ball.z;
     }
-    else if(checaColisaoCurvaDireita())
+    else if(checaColisaoCurvaDireita(ball_coords, RAIO))
     {
-        curva.encontraDoisPontosMaisProximosD(ball, &p1, &p2);
+        curva->encontraDoisPontosMaisProximosD(ball, &p1, &p2);
         p3=p2;
         p3.z*=-1;
         normal=*utility.calculaNormal(&p1, &p2, &p3);
@@ -343,7 +343,6 @@ void rotacao(float coords[], float angulo) {
 
 /// Desenha o as paredes que delimitam o campo
 void drawCampo(void) {
-
     // Paredes
     glPushMatrix();
         setColor(0.765, 0.796, 0.851);
@@ -538,8 +537,8 @@ void display(void)
             drawSkyBox();
             drawCampo(); // Campo
 
-            curva.drawCurvaEsquerda();
-            curva.drawCurvaDireita();
+            curva->drawCurvaEsquerda();
+            curva->drawCurvaDireita();
 
             player->drawPlayer(); // Desenha o player
 
@@ -625,13 +624,13 @@ void idle ()
     randomEnemy->colisaoBloco(enemy);
 
     // colisao do player com inimigos que se movimentam
-        vector<vertice> enemies_pos = randomEnemy->getPosicoes();
-        for (int i = 0; i < enemies_pos.size() ; i++) {
+    vector<vertice> enemies_pos = randomEnemy->getPosicoes();
+    for (int i = 0; i < enemies_pos.size() ; i++) {
 
-            if (checaColisaoPlayer(enemies_pos.at(i))) {
-                randomEnemy->removeEnemy(i);
-            }
+        if (checaColisaoPlayer(enemies_pos.at(i))) {
+            randomEnemy->removeEnemy(i);
         }
+    }
 
     colisaoParedes();
     colisaoCurvas();
@@ -799,25 +798,25 @@ void mouseMoveFlipper(int x, int y)
     }
 
     // verifica a movimentação a partir da mudança de direção do mouse
-//    if (x < mouseX && playerCenter.x-flipperStep > -3.1 ) {
-//        playerCenter.x = playerCenter.x-flipperStep;
-//        //playerCenter.x = cos((playerCenter.x+90)*3.14/180);
-//        player->Setorigem(playerCenter);
-//        if (!inicio)
-//            ball_coords.x = playerCenter.x;
-//    }
-//    if (mouseX < x && playerCenter.x+flipperStep < 3.1 ) {
-//        playerCenter.x = playerCenter.x+flipperStep;
-//        //playerCenter.x = cos((playerCenter.x+90)*3.14/180);
-//        player->Setorigem(playerCenter);
-//        if (!inicio)
-//            ball_coords.x = playerCenter.x;
-//    }
-//    mouseX = x; // atualiza a posição do mouse
-playerCenter.x=(x/156.25)-3.2;
-    player->Setorigem(playerCenter);
-    if (!inicio)
-    ball_coords.x = playerCenter.x;
+    if (x < mouseX && playerCenter.x-flipperStep > -3.1 ) {
+        playerCenter.x = playerCenter.x-flipperStep;
+        //playerCenter.x = cos((playerCenter.x+90)*3.14/180);
+        player->Setorigem(playerCenter);
+        if (!inicio)
+            ball_coords.x = playerCenter.x;
+    }
+    if (mouseX < x && playerCenter.x+flipperStep < 3.1 ) {
+        playerCenter.x = playerCenter.x+flipperStep;
+        //playerCenter.x = cos((playerCenter.x+90)*3.14/180);
+        player->Setorigem(playerCenter);
+        if (!inicio)
+            ball_coords.x = playerCenter.x;
+    }
+    mouseX = x; // atualiza a posição do mouse
+//playerCenter.x=(x/156.25)-3.2;
+//    player->Setorigem(playerCenter);
+//    if (!inicio)
+//    ball_coords.x = playerCenter.x;
 }
 
 /// Main
@@ -838,6 +837,7 @@ int main(int argc, char** argv)
     player = new Player(playerCenter,color); // inicializa o player
     enemy = new Enemy(QUANT_ENEMY);       // inicializa os inimigos
     randomEnemy = new EnemyRandom(2);
+    curva = new CurvaLateral();
     glutWarpPointer(mouseX, mouseX);
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);

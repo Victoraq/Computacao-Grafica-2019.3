@@ -199,7 +199,7 @@
 	<stdio.h>
 	<GL/gl.h>
 
-1574731519 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/main.cpp
+1574897012 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/main.cpp
 	<GL/glut.h>
 	<stdlib.h>
 	<stdio.h>
@@ -255,7 +255,7 @@
 1574206457 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/src/EnemyRandom.cpp
 	"EnemyRandom.h"
 
-1574730303 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/src/Player.cpp
+1574811909 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/src/Player.cpp
 	"Player.h"
 	<GL/glut.h>
 	<stdlib.h>
@@ -282,16 +282,17 @@
 	<GL/glut.h>
 	<string>
 
-1574730934 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/src/CurvaLateral.cpp
+1574896608 source:/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/src/CurvaLateral.cpp
 	"CurvaLateral.h"
 
-1574730934 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/include/CurvaLateral.h
+1574812717 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/include/CurvaLateral.h
 	"Bloco.h"
 	<GL/glut.h>
 	<cmath>
 	<iostream>
 	<cstdio>
 	"Utils.h"
+	"glcTexture.h"
 
 1574729731 /home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho03/include/Utils.h
 	<iostream>

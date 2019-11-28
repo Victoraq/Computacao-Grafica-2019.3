@@ -18,8 +18,8 @@ Player::Player(vertice origem, float cor[])
 
     textureManager = new glcTexture();            // Criação do arquivo que irá gerenciar as texturas
     textureManager->SetNumberOfTextures(2);       // Estabelece o número de texturas que será utilizado
-    textureManager->CreateTexture("textures/metalWave.png", 0); // Para testar magnificação, usar a imagem marble128
-    textureManager->CreateTexture("textures/metalFurado.png", 1); // Textura transparente, não sendo múltipla de zero
+    textureManager->CreateTexture("textures/metalWave.png", 0);
+    textureManager->CreateTexture("textures/metalFurado.png", 1);
 }
 
 
@@ -174,7 +174,6 @@ void Player::drawPlayer() {
                 glTexCoord2f((this->pontos[i][0]+1)/2, this->pontos[i][1]);
                 glVertex3f(this->pontos[i][0], this->pontos[i][1], 0.25); // tampa superior
             }
-            printf("\n");
         glEnd();
 
         glBegin(GL_POLYGON);

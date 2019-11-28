@@ -7,6 +7,7 @@
 #include <iostream>
 #include <cstdio>
 #include "Utils.h"
+#include "glcTexture.h"
 
 
 using namespace std;
@@ -29,6 +30,7 @@ class CurvaLateral
         vertice getNormal(vertice v);
         void encontraDoisPontosMaisProximosE(vertice p, vertice* v1, vertice* v2);
         void encontraDoisPontosMaisProximosD(vertice p, vertice* v1, vertice* v2);
+        void setMaterial(int material);
 
 
     protected:
@@ -40,6 +42,7 @@ class CurvaLateral
         vertice origemD={8.4, 2, 0.1};
         float raio=5;
         Utils utility;
+        glcTexture *textureManager;
 };
 
 #endif // CURVALATERAL_H
