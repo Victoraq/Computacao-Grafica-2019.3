@@ -68,6 +68,8 @@ void init(void)
     textureManager->CreateTexture("textures/skybox/cwd_lf.png", 4);
     textureManager->CreateTexture("textures/skybox/cwd_rt.png", 5);
     textureManager->CreateTexture("textures/skybox/cwd_up.png", 6);
+    textureManager->CreateTexture("textures/cinza.png", 7);
+    textureManager->CreateTexture("textures/roxo.png", 8);
 }
 
 
@@ -290,33 +292,294 @@ void rotacao(float coords[], float angulo) {
 
 /// Desenha o as paredes que delimitam o campo
 void drawCampo(void) {
+
     // Paredes
+    // esquerda superior
     glPushMatrix();
         setColor(0.765, 0.796, 0.851);
-        glTranslatef(-4,2.5,0.0);
-        glScalef(1,30.0, 1.0);
-        glutSolidCube(0.25);
+        textureManager->Bind(7);
+        glBegin(GL_QUADS);
+            glNormal3f(0.0,0.0,1.0);
+            glTexCoord2f(0,0.0);
+            glVertex3f(-4.15,-1.12,0.13);
+            glTexCoord2f(0.08,0.0);
+            glVertex3f(-3.865,-1.12,0.13);
+            glTexCoord2f(0.08,1.0);
+            glVertex3f(-3.865,6.04,0.13);
+            glTexCoord2f(0,1.0);
+            glVertex3f(-4.15,6.04,0.13);
+        glEnd();
+        textureManager->Disable();
     glPopMatrix();
 
+    // direita superior
     glPushMatrix();
         setColor(0.765, 0.796, 0.851);
-        glTranslatef(4,2.5,0.0);
-        glScalef(1,30.0, 1.0);
-        glutSolidCube(0.25);
+        textureManager->Bind(7);
+        glBegin(GL_QUADS);
+            glNormal3f(0.0,0.0,1.0);
+            glTexCoord2f(0,0.0);
+            glVertex3f(3.865,-1.12,0.13);
+            glTexCoord2f(0.08,0.0);
+            glVertex3f(4.15,-1.12,0.13);
+            glTexCoord2f(0.08,1.0);
+            glVertex3f(4.15,6.04,0.13);
+            glTexCoord2f(0,1.0);
+            glVertex3f(3.865,6.04,0.13);
+        glEnd();
+        textureManager->Disable();
     glPopMatrix();
 
+    // esquerda inferior
     glPushMatrix();
         setColor(0.765, 0.796, 0.851);
-        glTranslatef(0,-1.25,0.0);
-        glScalef(33,1.0, 1.0);
-        glutSolidCube(0.25);
+        textureManager->Bind(7);
+        glBegin(GL_QUADS);
+            glNormal3f(0.0,0.0,-1.0);
+            glTexCoord2f(0,0.0);
+            glVertex3f(-4.15,-1.12,-0.13);
+            glTexCoord2f(0,1.0);
+            glVertex3f(-4.15,6.04,-0.13);
+            glTexCoord2f(0.08,1.0);
+            glVertex3f(-3.865,6.04,-0.13);
+            glTexCoord2f(0.08,0.0);
+            glVertex3f(-3.865,-1.12,-0.13);
+        glEnd();
+        textureManager->Disable();
     glPopMatrix();
 
+    //direita inferior
     glPushMatrix();
         setColor(0.765, 0.796, 0.851);
-        glTranslatef(0,6.15,0.0);
-        glScalef(33,1.0, 1.0);
-        glutSolidCube(0.25);
+        textureManager->Bind(7);
+        glBegin(GL_QUADS);
+            glNormal3f(0.0,0.0,-1.0);
+            glTexCoord2f(0,0.0);
+            glVertex3f(4.15,-1.12,-0.13);
+            glTexCoord2f(0.08,0.0);
+            glVertex3f(3.865,-1.12,-0.13);
+            glTexCoord2f(0.08,1.0);
+            glVertex3f(3.865,6.04,-0.13);
+            glTexCoord2f(0,1.0);
+            glVertex3f(4.15,6.04,-0.13);
+        glEnd();
+        textureManager->Disable();
+    glPopMatrix();
+
+    //esquerda lateral externa
+    glPushMatrix();
+        setColor(0.765, 0.796, 0.851);
+        textureManager->Bind(7);
+        glBegin(GL_QUADS);
+            glNormal3f(-1.0,0.0,0.0);
+            glTexCoord2f(0.08,0.0);
+            glVertex3f(-4.15,-1.12,0.13);
+            glTexCoord2f(0.08,1.0);
+            glVertex3f(-4.15,6.04,0.13);
+            glTexCoord2f(0.0,1.0);
+            glVertex3f(-4.15,6.04,-0.13);
+            glTexCoord2f(0.0,0.0);
+            glVertex3f(-4.15,-1.12,-0.13);
+        glEnd();
+        textureManager->Disable();
+    glPopMatrix();
+
+    //direita lateral externa
+    glPushMatrix();
+        setColor(0.765, 0.796, 0.851);
+        textureManager->Bind(7);
+        glBegin(GL_QUADS);
+            glNormal3f(1.0,0.0,0.0);
+            glTexCoord2f(0.08,0.0);
+            glVertex3f(4.15,-1.12,0.13);
+            glTexCoord2f(0.0,0.0);
+            glVertex3f(4.15,-1.12,-0.13);
+            glTexCoord2f(0.0,1.0);
+            glVertex3f(4.15,6.04,-0.13);
+            glTexCoord2f(0.08,1.0);
+            glVertex3f(4.15,6.04,0.13);
+        glEnd();
+        textureManager->Disable();
+    glPopMatrix();
+
+    //esquerda lateral interna
+    glPushMatrix();
+        setColor(0.765, 0.796, 0.851);
+        textureManager->Bind(8);
+        glBegin(GL_QUADS);
+            glNormal3f(1.0,0.0,0.0);
+            glTexCoord2f(0.08,0.0);
+            glVertex3f(-3.865,-1.12,0.13);
+            glTexCoord2f(0.0,0.0);
+            glVertex3f(-3.865,-1.12,-0.13);
+            glTexCoord2f(0.0,1.0);
+            glVertex3f(-3.865,6.04,-0.13);
+            glTexCoord2f(0.08,1.0);
+            glVertex3f(-3.865,6.04,0.13);
+        glEnd();
+        textureManager->Disable();
+    glPopMatrix();
+
+    //direita lateral interna
+    glPushMatrix();
+        setColor(0.765, 0.796, 0.851);
+        textureManager->Bind(8);
+        glBegin(GL_QUADS);
+            glNormal3f(-1.0,0.0,0.0);
+            glTexCoord2f(0.08,0.0);
+            glVertex3f(3.865,-1.12,0.13);
+            glTexCoord2f(0.08,1.0);
+            glVertex3f(3.865,6.04,0.13);
+            glTexCoord2f(0.0,1.0);
+            glVertex3f(3.865,6.04,-0.13);
+            glTexCoord2f(0.0,0.0);
+            glVertex3f(3.865,-1.12,-0.13);
+        glEnd();
+        textureManager->Disable();
+    glPopMatrix();
+
+    //superior campo superior
+    glPushMatrix();
+        setColor(0.765, 0.796, 0.851);
+        textureManager->Bind(7);
+        glBegin(GL_QUADS);
+            glNormal3f(0.0,0.0,1.0);
+            glTexCoord2f(0,0.0);
+            glVertex3f(4.15,6.04,0.13);
+            glTexCoord2f(0.08,0.0);
+            glVertex3f(4.15,6.28,0.13);
+            glTexCoord2f(0.08,1.0);
+            glVertex3f(-4.15,6.28,0.13);
+            glTexCoord2f(0,1.0);
+            glVertex3f(-4.15,6.04,0.13);
+        glEnd();
+        textureManager->Disable();
+    glPopMatrix();
+
+    //superior campo inferior
+    glPushMatrix();
+        setColor(0.765, 0.796, 0.851);
+        textureManager->Bind(7);
+        glBegin(GL_QUADS);
+            glNormal3f(0.0,0.0,1.0);
+            glTexCoord2f(0,0.0);
+            glVertex3f(4.15,-1.38,0.13);
+            glTexCoord2f(0.08,0.0);
+            glVertex3f(4.15,-1.12,0.13);
+            glTexCoord2f(0.08,1.0);
+            glVertex3f(-4.15,-1.12,0.13);
+            glTexCoord2f(0,1.0);
+            glVertex3f(-4.15,-1.38,0.13);
+        glEnd();
+        textureManager->Disable();
+    glPopMatrix();
+
+    //inferior campo superior
+    glPushMatrix();
+        setColor(0.765, 0.796, 0.851);
+        textureManager->Bind(7);
+        glBegin(GL_QUADS);
+            glNormal3f(0.0,0.0,-1.0);
+            glTexCoord2f(0,0.0);
+            glVertex3f(4.15,6.04,-0.13);
+            glTexCoord2f(0,1.0);
+            glVertex3f(-4.15,6.04,-0.13);
+            glTexCoord2f(0.08,1.0);
+            glVertex3f(-4.15,6.28,-0.13);
+            glTexCoord2f(0.08,0.0);
+            glVertex3f(4.15,6.28,-0.13);
+        glEnd();
+        textureManager->Disable();
+    glPopMatrix();
+
+    //inferior campo inferior
+    glPushMatrix();
+        setColor(0.765, 0.796, 0.851);
+        textureManager->Bind(7);
+        glBegin(GL_QUADS);
+            glNormal3f(0.0,0.0,-1.0);
+            glTexCoord2f(0.08,0.0);
+            glVertex3f(4.15,-1.12,-0.13);
+            glTexCoord2f(0,0.0);
+            glVertex3f(4.15,-1.38,-0.13);
+            glTexCoord2f(0,1.0);
+            glVertex3f(-4.15,-1.38,-0.13);
+            glTexCoord2f(0.08,1.0);
+            glVertex3f(-4.15,-1.12,-0.13);
+        glEnd();
+        textureManager->Disable();
+    glPopMatrix();
+
+    //lateral externa campo superior
+    glPushMatrix();
+        setColor(0.765, 0.796, 0.851);
+        textureManager->Bind(7);
+        glBegin(GL_QUADS);
+            glNormal3f(0.0,1.0,0.0);
+            glTexCoord2f(0.0,0.0);
+            glVertex3f(4.15,6.28,0.13);
+            glTexCoord2f(0.08,0.0);
+            glVertex3f(4.15,6.28,-0.13);
+            glTexCoord2f(0.08,1.0);
+            glVertex3f(-4.15,6.28,-0.13);
+            glTexCoord2f(0,1.0);
+            glVertex3f(-4.15,6.28,0.13);
+        glEnd();
+        textureManager->Disable();
+    glPopMatrix();
+
+    //lateral externa campo inferior
+    glPushMatrix();
+        setColor(0.765, 0.796, 0.851);
+        textureManager->Bind(7);
+        glBegin(GL_QUADS);
+            glNormal3f(0.0,-1.0,0.0);
+            glTexCoord2f(0.08,1.0);
+            glVertex3f(4.15,-1.38,0.13);
+            glTexCoord2f(0.08,0.0);
+            glVertex3f(-4.15,-1.38,0.13);
+            glTexCoord2f(0.0,0.0);
+            glVertex3f(-4.15,-1.38,-0.13);
+            glTexCoord2f(0.0,1.0);
+            glVertex3f(4.15,-1.38,-0.13);
+        glEnd();
+        textureManager->Disable();
+    glPopMatrix();
+
+    //lateral interna campo superior
+    glPushMatrix();
+        setColor(0.765, 0.796, 0.851);
+        textureManager->Bind(8);
+        glBegin(GL_QUADS);
+            glNormal3f(0.0,-1.0,0.0);
+            glTexCoord2f(0.0,0.0);
+            glVertex3f(4.15,6.04,0.13);
+            glTexCoord2f(0.08,1.0);
+            glVertex3f(-4.15,6.04,-0.13);
+            glTexCoord2f(0,1.0);
+            glVertex3f(-4.15,6.04,0.13);
+            glTexCoord2f(0.08,0.0);
+            glVertex3f(4.15,6.04,-0.13);
+        glEnd();
+        textureManager->Disable();
+    glPopMatrix();
+
+    //lateral interna campo inferior
+    glPushMatrix();
+        setColor(0.765, 0.796, 0.851);
+        textureManager->Bind(8);
+        glBegin(GL_QUADS);
+            glNormal3f(0.0,1.0,0.0);
+            glTexCoord2f(0.08,1.0);
+            glVertex3f(4.15,-1.12,0.13);
+            glTexCoord2f(0.0,1.0);
+            glVertex3f(4.15,-1.12,-0.13);
+            glTexCoord2f(0.0,0.0);
+            glVertex3f(-4.15,-1.12,-0.13);
+            glTexCoord2f(0.08,0.0);
+            glVertex3f(-4.15,-1.12,0.13);
+        glEnd();
+        textureManager->Disable();
     glPopMatrix();
 
     // Saida dos inimigos
