@@ -30,6 +30,9 @@ class CurvaLateral
         vertice getNormal(vertice v);
         void encontraDoisPontosMaisProximosE(vertice p, vertice* v1, vertice* v2);
         void encontraDoisPontosMaisProximosD(vertice p, vertice* v1, vertice* v2);
+        bool checaColisaoCurvaEsquerda(vertice coords, float raio);
+        bool checaColisaoCurvaDireita(vertice coords, float raio);
+        bool colisaoCurvas(float direction_vector[], vertice position, float raio);
         void setMaterial(int material);
 
 

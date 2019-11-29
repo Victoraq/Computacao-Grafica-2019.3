@@ -244,3 +244,60 @@ void CurvaLateral::encontraDoisPontosMaisProximosD(vertice p, vertice* v1, verti
     *v1=pontosDeConstrucaoD[i];
     *v2=pontosDeConstrucaoD[i+1];
 }
+
+bool CurvaLateral::checaColisaoCurvaEsquerda(vertice coords, float raio)
+{
+    if(utility.calculaDistancia(coords, this->getOrigemE())<=raio+this->getRaio())
+        return true;
+    else
+        return false;
+}
+
+bool CurvaLateral::checaColisaoCurvaDireita(vertice coords, float raio)
+{
+    if(utility.calculaDistancia(coords, this->getOrigemD())<=raio+this->getRaio())
+        return true;
+    else
+        return false;
+}
+
+bool CurvaLateral::colisaoCurvas(float direction_vector[], vertice position, float raio)
+{
+    vertice p1, p2, p3, normal, ball={direction_vector[0], direction_vector[1], direction_vector[2]};
+    float angulo;
+    if(this->checaColisaoCurvaEsquerda(position, raio))
+    {
+        this->encontraDoisPontosMaisProximosE(ball, &p1, &p2);
+        p3=p2;
+        p3.z*=-1;
+        normal=*utility.calculaNormal(&p1, &p2, &p3);
+        utility.unitiza(&normal);
+
+        angulo=utility.calculaAngulo(&ball, &normal);
+        utility.rotaciona(&ball, angulo);
+
+        direction_vector[0]=ball.x;
+        direction_vector[1]=ball.y;
+        direction_vector[2]=ball.z;
+
+        return true;
+    }
+    else if(this->checaColisaoCurvaDireita(position, raio))
+    {
+        this->encontraDoisPontosMaisProximosD(ball, &p1, &p2);
+        p3=p2;
+        p3.z*=-1;
+        normal=*utility.calculaNormal(&p1, &p2, &p3);
+        utility.unitiza(&normal);
+
+        angulo=utility.calculaAngulo(&ball, &normal);
+        utility.rotaciona(&ball, angulo);
+
+        direction_vector[0]=ball.x;
+        direction_vector[1]=ball.y;
+        direction_vector[2]=ball.z;
+
+        return true;
+    }
+    return false;
+}

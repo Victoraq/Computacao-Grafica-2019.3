@@ -283,6 +283,15 @@ void EnemyRandom::colisaoBloco(Enemy* blocos) {
     }
 }
 
+
+void EnemyRandom::colisaoCurvaLateral(CurvaLateral *curva) {
+    float raio_obj = 0.35;
+    for (int i = 0; i < this->quant; i++) {
+        curva->colisaoCurvas(this->direcaoEnemies.at(i), this->enemies.at(i), raio_obj);
+    }
+}
+
+
 void EnemyRandom::resetEnemies()
 {
     vertice origemEsquerda = {-XPOS,YPOS,0.0};

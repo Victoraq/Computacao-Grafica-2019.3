@@ -230,59 +230,6 @@ float calculaDistancia(vertice v1, vertice v2)
 }
 
 
-bool checaColisaoCurvaEsquerda(vertice coords, float raio)
-{
-    if(utility.calculaDistancia(coords, curva->getOrigemE())<=raio+curva->getRaio())
-        return true;
-    else
-        return false;
-}
-
-bool checaColisaoCurvaDireita(vertice coords, float raio)
-{
-    if(utility.calculaDistancia(coords, curva->getOrigemD())<=raio+curva->getRaio())
-        return true;
-    else
-        return false;
-}
-
-
-void colisaoCurvas()
-{
-    vertice p1, p2, p3, normal, ball={ball_vector[0], ball_vector[1], ball_vector[2]};
-    float angulo;
-    if(checaColisaoCurvaEsquerda(ball_coords, RAIO))
-    {
-        curva->encontraDoisPontosMaisProximosE(ball, &p1, &p2);
-        p3=p2;
-        p3.z*=-1;
-        normal=*utility.calculaNormal(&p1, &p2, &p3);
-        utility.unitiza(&normal);
-
-        angulo=utility.calculaAngulo(&ball, &normal);
-        utility.rotaciona(&ball, angulo);
-
-        ball_vector[0]=ball.x;
-        ball_vector[1]=ball.y;
-        ball_vector[2]=ball.z;
-    }
-    else if(checaColisaoCurvaDireita(ball_coords, RAIO))
-    {
-        curva->encontraDoisPontosMaisProximosD(ball, &p1, &p2);
-        p3=p2;
-        p3.z*=-1;
-        normal=*utility.calculaNormal(&p1, &p2, &p3);
-        utility.unitiza(&normal);
-
-        angulo=utility.calculaAngulo(&ball, &normal);
-        utility.rotaciona(&ball, angulo);
-
-        ball_vector[0]=ball.x;
-        ball_vector[1]=ball.y;
-        ball_vector[2]=ball.z;
-    }
-}
-
 
 bool checaColisaoPlayer(vertice origem)
 {
@@ -633,7 +580,8 @@ void idle ()
     }
 
     colisaoParedes();
-    colisaoCurvas();
+    curva->colisaoCurvas(ball_vector, ball_coords, RAIO);
+    randomEnemy->colisaoCurvaLateral(curva);
 
     //Quantidade de vidas
     drawVidas();
