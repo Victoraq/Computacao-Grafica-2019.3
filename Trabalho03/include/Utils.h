@@ -29,8 +29,10 @@ class Utils
         float norma(vertice* vet);
         void unitiza(vertice* vet);
         float calculaAngulo(vertice* v1, vertice* v2);
+        float calculaAnguloRotacao(vertice* v1, vertice* v2, char colisor='p');
         vertice* rotaciona(vertice* vet, float angulo);
         vertice pontoMedio(vertice v1, vertice v2);
+        void inverte(vertice* p);
 
     protected:
 

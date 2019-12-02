@@ -49,8 +49,8 @@ void CurvaLateral::iniciaPontosConstrucao()
     pontosDeConstrucaoE[0]=*p;
     pontosDeConstrucaoD[0]=*p;
     pontosDeConstrucaoD[0].x*=-1;
-    printf("[%f][%f][%f]\n", pontosDeConstrucaoE[0].x, pontosDeConstrucaoE[0].y,  pontosDeConstrucaoE[0].z);
-    printf("[%f][%f][%f]\n", pontosDeConstrucaoD[0].x, pontosDeConstrucaoD[0].y,  pontosDeConstrucaoD[0].z);
+    //printf("[%f][%f][%f]\n", pontosDeConstrucaoE[0].x, pontosDeConstrucaoE[0].y,  pontosDeConstrucaoE[0].z);
+    //printf("[%f][%f][%f]\n", pontosDeConstrucaoD[0].x, pontosDeConstrucaoD[0].y,  pontosDeConstrucaoD[0].z);
     for(int i=1; i<nPontos; i++)
     {
         pontosDeConstrucaoE[i]=*utility.rotaciona(p, utility.grausParaRadianos(5));
@@ -272,8 +272,9 @@ bool CurvaLateral::colisaoCurvas(float direction_vector[], vertice position, flo
         p3.z*=-1;
         normal=*utility.calculaNormal(&p1, &p2, &p3);
         utility.unitiza(&normal);
+        utility.inverte(&ball);
 
-        angulo=utility.calculaAngulo(&ball, &normal);
+        angulo=utility.calculaAnguloRotacao(&ball, &normal, 'e');
         utility.rotaciona(&ball, angulo);
 
         direction_vector[0]=ball.x;
@@ -289,8 +290,9 @@ bool CurvaLateral::colisaoCurvas(float direction_vector[], vertice position, flo
         p3.z*=-1;
         normal=*utility.calculaNormal(&p1, &p2, &p3);
         utility.unitiza(&normal);
+        utility.inverte(&ball);
 
-        angulo=utility.calculaAngulo(&ball, &normal);
+        angulo=utility.calculaAnguloRotacao(&ball, &normal, 'd');
         utility.rotaciona(&ball, angulo);
 
         direction_vector[0]=ball.x;

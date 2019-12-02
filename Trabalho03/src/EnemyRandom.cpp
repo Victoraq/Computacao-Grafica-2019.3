@@ -120,6 +120,27 @@ void EnemyRandom::movimenta(float step) {
 
 }
 
+void EnemyRandom::colisaoBola(vertice* bola, float bolaVet[], float raioBola)
+{
+    vertice vet={bolaVet[0], bolaVet[1], bolaVet[2]};
+
+    for (int i = 0; i < this->quant; i++)
+    {
+        if (this->status.at(i) != 0)
+            continue;
+
+        if(utility.calculaDistancia(*bola, enemies.at(i))<=this->raio+raioBola)
+        {
+            this->removeEnemy(i);
+            utility.rotaciona(&vet, (rand()%180)+90);
+            bolaVet[0]=vet.x;
+            bolaVet[1]=vet.y;
+            bolaVet[2]=vet.z;
+        }
+    }
+}
+
+/*
 void EnemyRandom::colisaoBola(vertice centro, float vetor_direcao[], float raio) {
 
     for (int i = 0; i < this->quant; i++) {
@@ -252,6 +273,7 @@ void EnemyRandom::colisaoBola(vertice centro, float vetor_direcao[], float raio)
     }
 
 }
+*/
 
 void EnemyRandom::colisaoParedes(float coord_sup, float coord_inf, float coord_lat) {
 

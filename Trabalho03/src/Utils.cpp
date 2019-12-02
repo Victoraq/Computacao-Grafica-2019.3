@@ -101,6 +101,37 @@ float Utils::calculaAngulo(vertice* v1, vertice* v2)
         return (180-a);
 }
 
+float Utils::calculaAnguloRotacao(vertice* vet, vertice* normal, char colisor)
+{
+    float aVet, aNormal, anguloVN, res;
+    vertice vetOrigem;
+    if(colisor=='e')
+        vetOrigem={0, -1, 0};
+    else if(colisor=='d')
+        vetOrigem={0, 1, 0};
+    else
+        vetOrigem={1, 0, 0};
+    inverte(vet);
+
+    aVet=grausParaRadianos(calculaAngulo(vet, &vetOrigem));
+    aNormal=grausParaRadianos(calculaAngulo(normal, &vetOrigem));
+    anguloVN=calculaAngulo(vet, normal);
+
+    if(aVet<aNormal)
+        res= 2*calculaAngulo(vet, normal);
+    else if(aVet>aNormal)
+        res= (2*(calculaAngulo(vet, normal)))*-1;
+    else
+        res= 0;
+
+    printf("vet[%f][%f][%f]\n", vet->x, vet->y, vet->z);
+    printf("normal[%f][%f][%f]\n", normal->x, normal->y, normal->z);
+    printf("res %f", res);
+
+    return res;
+
+}
+
 vertice* Utils::rotaciona(vertice* vet, float angulo)
 {
     float a, b;
@@ -118,4 +149,11 @@ vertice Utils::pontoMedio(vertice v1, vertice v2)
 {
     vertice p={(v1.x+v2.x)/2, (v1.y+v2.y)/2, (v1.z+v2.z)/2};
     return p;
+}
+
+void Utils::inverte(vertice* p)
+{
+    p->x*=-1;
+    p->y*=-1;
+    p->z*=-1;
 }

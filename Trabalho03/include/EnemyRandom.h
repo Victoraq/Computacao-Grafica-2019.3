@@ -10,6 +10,8 @@
 #include <Enemy.h>
 #include <glcWavefrontObject.h>
 #include "CurvaLateral.h"
+#include "Utils.h"
+#include <ctime>
 
 using namespace std;
 
@@ -27,7 +29,7 @@ class EnemyRandom
 
         void drawEnemies(bool newEnemy);
         void movimenta(float step);
-        void colisaoBola(vertice centro, float vetor_direcao[], float raio);
+        void colisaoBola(vertice* bola, float bolaVet[], float raioBola);
         void colisaoParedes(float coord_sup, float coord_inf, float coord_lat);
         void colisaoCurvaLateral(CurvaLateral *curva);
         void colisaoBloco(Enemy* blocos);
@@ -36,6 +38,7 @@ class EnemyRandom
         void removeEnemy(int index);
         void setMaterial();
         vector<vertice> getPosicoes() { return this->enemies; }
+        float getRaio() {return this->raio;}
 
 
     private:
@@ -49,10 +52,12 @@ class EnemyRandom
         // status > 0 -> colisao
         vector<float> status;
         int regressao = 10;
-        char objFile[200] = "/home/victor/Documentos/UFJF/CG/Computacao-Grafica-2019.3/Trabalho02/modelo3D/ARV_Craft_Low_Poly.obj";
+        char objFile[200] = "/home/romulo/Downloads/Computacao-Grafica-2019.3-master/Trabalho03/modelo3D/ARV_Craft_Low_Poly.obj";
         glcWavefrontObject *objectManager = NULL;
         float XPOS = 2;
         float YPOS = 5.65;
+        float raio=0.35;
+        Utils utility;
 
 };
 

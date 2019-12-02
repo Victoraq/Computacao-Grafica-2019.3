@@ -373,13 +373,13 @@ void drawCampo(void) {
         glBegin(GL_QUADS);
             glNormal3f(-1.0,0.0,0.0);
             glTexCoord2f(0.08,0.0);
-            glVertex3f(-4.15,-1.39,0.13);
+            glVertex3f(-4.15,-1.12,0.13);
             glTexCoord2f(0.08,1.0);
-            glVertex3f(-4.15,6.24,0.13);
+            glVertex3f(-4.15,6.04,0.13);
             glTexCoord2f(0.0,1.0);
-            glVertex3f(-4.15,6.24,-0.13);
+            glVertex3f(-4.15,6.04,-0.13);
             glTexCoord2f(0.0,0.0);
-            glVertex3f(-4.15,-1.39,-0.13);
+            glVertex3f(-4.15,-1.12,-0.13);
         glEnd();
         textureManager->Disable();
     glPopMatrix();
@@ -391,13 +391,13 @@ void drawCampo(void) {
         glBegin(GL_QUADS);
             glNormal3f(1.0,0.0,0.0);
             glTexCoord2f(0.08,0.0);
-            glVertex3f(4.15,-1.39,0.13);
+            glVertex3f(4.15,-1.12,0.13);
             glTexCoord2f(0.0,0.0);
-            glVertex3f(4.15,-1.39,-0.13);
+            glVertex3f(4.15,-1.12,-0.13);
             glTexCoord2f(0.0,1.0);
-            glVertex3f(4.15,6.24,-0.13);
+            glVertex3f(4.15,6.04,-0.13);
             glTexCoord2f(0.08,1.0);
-            glVertex3f(4.15,6.24,0.13);
+            glVertex3f(4.15,6.04,0.13);
         glEnd();
         textureManager->Disable();
     glPopMatrix();
@@ -645,6 +645,7 @@ void colisaoBolaPlayer(float direction[])
     obj_direction->y=direction[1];
     obj_direction->z=direction[2];
     utility.unitiza(obj_direction);
+    utility.inverte(obj_direction);
 
     encontraDoisPontosMaisProximos(&p2, &p1); ///pega os pontos e calcula a normal
     p3=p2;
@@ -656,7 +657,7 @@ void colisaoBolaPlayer(float direction[])
 
     if(inicio)
     {
-        angulo=utility.calculaAngulo(obj_direction, normal); ///calcula o angulo e gira o vetor
+        angulo=utility.calculaAnguloRotacao(obj_direction, normal); ///calcula o angulo e gira o vetor
         utility.rotaciona(obj_direction, angulo);
         obj_direction->z=0.25;
         utility.unitiza(obj_direction);
@@ -829,7 +830,7 @@ void idle ()
 
     enemy->colisao(ball_coords, ball_vector, RAIO);
 
-    randomEnemy->colisaoBola(ball_coords, ball_vector, RAIO);
+    randomEnemy->colisaoBola(&ball_coords, ball_vector, RAIO);
 
     randomEnemy->colisaoBloco(enemy);
 
@@ -994,40 +995,20 @@ void mouseMoveFlipper(int x, int y)
 {
     if (pause)
         return;
-
     // Retorna o mouse para uma posição, assim o travando
-    if(x>550)
+    if(player->Getorigem().x>=3)
     {
-        glutWarpPointer(500, 500);
+        glutWarpPointer(900, 500);
     }
-    if(x<450)
+    if(player->Getorigem().x<=-3)
     {
-        glutWarpPointer(500, 500);
+        glutWarpPointer(100, 500);
     }
     if (y != 500) {
         glutWarpPointer(x, 500);
     }
-
-    // verifica a movimentação a partir da mudança de direção do mouse
-    if (x < mouseX && playerCenter.x-flipperStep > -3.1 ) {
-        playerCenter.x = playerCenter.x-flipperStep;
-        //playerCenter.x = cos((playerCenter.x+90)*3.14/180);
-        player->Setorigem(playerCenter);
-        if (!inicio)
-            ball_coords.x = playerCenter.x;
-    }
-    if (mouseX < x && playerCenter.x+flipperStep < 3.1 ) {
-        playerCenter.x = playerCenter.x+flipperStep;
-        //playerCenter.x = cos((playerCenter.x+90)*3.14/180);
-        player->Setorigem(playerCenter);
-        if (!inicio)
-            ball_coords.x = playerCenter.x;
-    }
-    mouseX = x; // atualiza a posição do mouse
-//playerCenter.x=(x/156.25)-3.2;
-//    player->Setorigem(playerCenter);
-//    if (!inicio)
-//    ball_coords.x = playerCenter.x;
+    playerCenter.x=(x/156.25)-3.2;
+    player->Setorigem(playerCenter);
 }
 
 /// Main
